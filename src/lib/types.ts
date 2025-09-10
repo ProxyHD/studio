@@ -36,3 +36,11 @@ export type Event = {
   location?: string;
   guests?: { email: string }[];
 };
+
+export type DayOfWeek = 'seg' | 'ter' | 'qua' | 'qui' | 'sex' | 'sab' | 'dom';
+
+export type Habit = {
+  id: string;
+  name: string;
+  days: DayOfWeek[];
+};
