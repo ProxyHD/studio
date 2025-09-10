@@ -4,7 +4,7 @@ import { createContext, useState, ReactNode, useEffect } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event, UserProfile } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
@@ -22,6 +22,8 @@ export const AppContext = createContext<AppContextType>({
   setHabits: () => {},
   completedHabits: [],
   setCompletedHabits: () => {},
+  locale: 'pt-BR',
+  setLocale: () => {},
   loading: true,
 });
 
@@ -36,6 +38,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completedHabits, setCompletedHabits] = useState<string[]>([]);
+  const [locale, setLocale] = useState<Locale>('pt-BR');
   
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {
@@ -63,9 +66,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
         selectedMood,
         habits,
         completedHabits,
+        locale,
       });
     }
-  }, [profile, tasks, notes, events, selectedMood, habits, completedHabits, user, loading, debouncedSaveData]);
+  }, [profile, tasks, notes, events, selectedMood, habits, completedHabits, locale, user, loading, debouncedSaveData]);
 
 
   // Effect to load data from Firestore on user login
@@ -87,15 +91,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setSelectedMood(data.selectedMood || null);
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
+          setLocale(data.locale || 'pt-BR');
         } else {
           // New user, document doesn't exist yet, but we can set up a default profile
-          setProfile({ firstName: '', lastName: '', email: user.email || '' });
+          const initialProfile = { firstName: '', lastName: '', email: user.email || '' };
+          setProfile(initialProfile);
           setTasks([]);
           setNotes([]);
           setEvents([]);
           setSelectedMood(null);
           setHabits([]);
           setCompletedHabits([]);
+          setLocale('pt-BR');
+           // Save the initial empty state for the new user
+          setDoc(docRef, { 
+            profile: initialProfile,
+            tasks: [],
+            notes: [],
+            events: [],
+            selectedMood: null,
+            habits: [],
+            completedHabits: [],
+            locale: 'pt-BR',
+          });
         }
         setLoading(false);
       }, (error) => {
@@ -112,6 +130,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setSelectedMood(null);
       setHabits([]);
       setCompletedHabits([]);
+      setLocale('pt-BR');
       setLoading(false);
     }
     
@@ -135,6 +154,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setHabits,
         completedHabits,
         setCompletedHabits,
+        locale,
+        setLocale,
         loading,
       }}
     >

@@ -9,13 +9,15 @@ import { RoutineSuggester } from '@/components/dashboard/routine-suggester';
 import { AppContext } from '@/context/app-provider';
 
 export default function DashboardPage() {
-  const { tasks, selectedMood } = useContext(AppContext);
+  const { tasks, selectedMood, locale } = useContext(AppContext);
 
   const completedTasks = tasks.filter(t => t.status === 'done').length;
   const totalTasks = tasks.length;
   
   // Placeholder for habit streak logic
   const habitStreak = 0;
+
+  const currency = locale === 'pt-BR' ? '€' : '$';
 
   return (
     <div className="flex flex-col h-full">
@@ -32,7 +34,7 @@ export default function DashboardPage() {
             value={selectedMood || 'N/A'}
             icon={Heart} 
           />
-          <SummaryCard title="Despesas" value="€0" icon={DollarSign} />
+          <SummaryCard title="Despesas" value={`${currency}0`} icon={DollarSign} />
           <SummaryCard 
             title="Sequência de Hábitos" 
             value={`${habitStreak} dias`}

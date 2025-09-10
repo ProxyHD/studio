@@ -53,6 +53,8 @@ export type Habit = {
   days: DayOfWeek[];
 };
 
+export type Locale = 'pt-BR' | 'en-US';
+
 export interface AppContextType {
   profile: UserProfile | null;
   setProfile: Dispatch<SetStateAction<UserProfile | null>>;
@@ -68,6 +70,8 @@ export interface AppContextType {
   setHabits: Dispatch<SetStateAction<Habit[]>>;
   completedHabits: string[];
   setCompletedHabits: Dispatch<SetStateAction<string[]>>;
+  locale: Locale;
+  setLocale: Dispatch<SetStateAction<Locale>>;
   loading: boolean;
 }
 
