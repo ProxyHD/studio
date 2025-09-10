@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Dot } from 'lucide-react';
+import { PlusCircle, Dot, MapPin, Users } from 'lucide-react';
 import { AddEventDialog } from '@/components/calendar/add-event-dialog';
 import type { Event } from '@/lib/types';
 import { format } from 'date-fns';
@@ -92,16 +92,35 @@ export default function CalendarPage() {
               <CardContent className="space-y-4">
                 {selectedDayEvents.length > 0 ? (
                   selectedDayEvents.map(event => (
-                    <div key={event.id} className="p-3 bg-secondary/50 rounded-lg">
-                      <p className="font-semibold">{event.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {event.startTime && event.endTime
-                          ? `${event.startTime} - ${event.endTime}`
-                          : event.startTime
-                          ? `Às ${event.startTime}`
-                          : 'O dia todo'}
-                      </p>
+                    <div key={event.id} className="p-3 bg-secondary/50 rounded-lg space-y-2">
+                      <div>
+                        <p className="font-semibold">{event.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {event.startTime && event.endTime
+                            ? `${event.startTime} - ${event.endTime}`
+                            : event.startTime
+                            ? `Às ${event.startTime}`
+                            : 'O dia todo'}
+                        </p>
+                      </div>
                        {event.description && <p className="text-sm mt-1">{event.description}</p>}
+                       {event.location && (
+                         <div className="flex items-center gap-2 text-sm">
+                           <MapPin className="h-4 w-4 text-muted-foreground" />
+                           <span>{event.location}</span>
+                         </div>
+                       )}
+                       {event.guests && event.guests.length > 0 && (
+                          <div className="flex items-start gap-2 text-sm">
+                            <Users className="h-4 w-4 text-muted-foreground mt-0.5" />
+                            <div>
+                              <p className="font-medium">Convidados:</p>
+                              <ul className="list-disc list-inside">
+                                {event.guests.map(guest => <li key={guest.email}>{guest.email}</li>)}
+                              </ul>
+                            </div>
+                          </div>
+                       )}
                     </div>
                   ))
                 ) : (

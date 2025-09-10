@@ -33,4 +33,6 @@ export type Event = {
   startTime?: string;
   endTime?: string;
   description?: string;
+  location?: string;
+  guests?: { email: string }[];
 };

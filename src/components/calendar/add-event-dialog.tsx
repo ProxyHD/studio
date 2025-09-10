@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Zap, PlusCircle, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -44,6 +44,10 @@ const eventSchema = z.object({
   startTime: z.string().optional(),
   endTime: z.string().optional(),
   description: z.string().optional(),
+  location: z.string().optional(),
+  guests: z.array(z.object({
+    email: z.string().email('Por favor, insira um e-mail válido.'),
+  })).optional(),
 });
 
 type EventFormValues = z.infer<typeof eventSchema>;
@@ -56,6 +60,8 @@ interface AddEventDialogProps {
 }
 
 export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate }: AddEventDialogProps) {
+  const isProUser = true; // Mock value, would come from user session
+
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
     defaultValues: {
@@ -64,7 +70,14 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
       startTime: '',
       endTime: '',
       description: '',
+      location: '',
+      guests: [],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "guests",
   });
 
   useEffect(() => {
@@ -75,7 +88,15 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
 
   const onSubmit = (data: EventFormValues) => {
     onAddEvent(data);
-    form.reset();
+    form.reset({
+      title: '',
+      date: selectedDate || new Date(),
+      startTime: '',
+      endTime: '',
+      description: '',
+      location: '',
+      guests: [],
+    });
     onOpenChange(false);
   };
 
@@ -89,7 +110,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="title"
@@ -182,7 +203,78 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
                 </FormItem>
               )}
             />
-            <DialogFooter>
+
+            {/* Pro Feature: Location */}
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center gap-2">
+                    Localização
+                    {!isProUser && <Zap className="h-4 w-4 text-accent" />}
+                  </FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Ex: Escritório" 
+                      {...field}
+                      disabled={!isProUser} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Pro Feature: Guests */}
+            <div>
+              <FormLabel className="flex items-center gap-2 mb-2">
+                Convidados
+                {!isProUser && <Zap className="h-4 w-4 text-accent" />}
+              </FormLabel>
+              <div className="space-y-2">
+                {fields.map((field, index) => (
+                   <FormField
+                    key={field.id}
+                    control={form.control}
+                    name={`guests.${index}.email`}
+                    render={({ field: guestField }) => (
+                      <FormItem className="flex items-center gap-2">
+                        <FormControl>
+                           <Input 
+                            {...guestField}
+                            placeholder="email@exemplo.com"
+                            disabled={!isProUser}
+                          />
+                        </FormControl>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => remove(index)}
+                          disabled={!isProUser}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </FormItem>
+                    )}
+                  />
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => append({ email: "" })}
+                  disabled={!isProUser}
+                  className="w-full"
+                >
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Adicionar Convidado
+                </Button>
+              </div>
+            </div>
+
+            <DialogFooter className="pt-4">
               <Button type="submit">Salvar Evento</Button>
             </DialogFooter>
           </form>
