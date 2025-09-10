@@ -26,6 +26,7 @@ export function VerificationForm({ onSuccess }: VerificationFormProps) {
     toast({
       title: 'Código de Verificação',
       description: `Para fins de demonstração, seu código é: ${newCode}`,
+      duration: 15000,
     });
     setTimer(TIMER_SECONDS);
     setIsResendDisabled(true);
