@@ -10,7 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { notes as initialNotes } from '@/lib/data';
 import type { Note } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { PlusCircle, Sparkles, Loader2 } from 'lucide-react';
+import { PlusCircle, Sparkles, Loader2, Trash2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -31,14 +31,25 @@ export default function NotesPage() {
   const { toast } = useToast();
   const isPro = true; // Mock value
 
-  const handleNoteChange = (content: string) => {
+  const handleNoteChange = (key: 'title' | 'content', value: string) => {
     if (selectedNote) {
-      const newNote = { ...selectedNote, content };
+      const newNote = { ...selectedNote, [key]: value };
       setSelectedNote(newNote);
       setNotes(notes.map(n => n.id === newNote.id ? newNote : n));
     }
   };
 
+  const handleAddNewNote = () => {
+    const newNote: Note = {
+      id: crypto.randomUUID(),
+      title: 'Nova Nota',
+      content: '',
+      createdAt: new Date().toLocaleDateString('pt-BR'),
+    };
+    setNotes([newNote, ...notes]);
+    setSelectedNote(newNote);
+  };
+  
   const handleSummarize = async () => {
     if (!selectedNote || !isPro) return;
 
@@ -68,7 +79,7 @@ export default function NotesPage() {
           <aside className="hidden md:flex flex-col border-r h-full">
             <div className="p-4 space-y-4">
               <Input placeholder="Buscar notas..." />
-              <Button className="w-full">
+              <Button className="w-full" onClick={handleAddNewNote}>
                 <PlusCircle className="mr-2 h-4 w-4" /> Nova Nota
               </Button>
             </div>
@@ -84,7 +95,7 @@ export default function NotesPage() {
                     )}
                   >
                     <h3 className="font-semibold truncate">{note.title}</h3>
-                    <p className="text-sm text-muted-foreground truncate">{note.content}</p>
+                    <p className="text-sm text-muted-foreground truncate">{note.content || 'Nenhum conteúdo'}</p>
                   </button>
                 ))}
               </div>
@@ -94,18 +105,22 @@ export default function NotesPage() {
             {selectedNote ? (
               <div className="flex flex-col h-full">
                 <div className="p-4 border-b">
-                  <h2 className="text-2xl font-bold">{selectedNote.title}</h2>
+                  <Input
+                    value={selectedNote.title}
+                    onChange={(e) => handleNoteChange('title', e.target.value)}
+                    className="text-2xl font-bold border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
+                  />
                   <p className="text-sm text-muted-foreground">Criado em {selectedNote.createdAt}</p>
                 </div>
                 <div className="flex-1 p-4 overflow-y-auto">
                    <Textarea
                       value={selectedNote.content}
-                      onChange={(e) => handleNoteChange(e.target.value)}
+                      onChange={(e) => handleNoteChange('content', e.target.value)}
                       className="w-full h-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
                       placeholder="Comece a escrever..."
                     />
                 </div>
-                <div className="p-4 border-t mt-auto">
+                <div className="p-4 border-t mt-auto flex justify-between">
                    <Button onClick={handleSummarize} disabled={!isPro || isSummaryLoading}>
                       {isSummaryLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
