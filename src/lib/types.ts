@@ -90,4 +90,6 @@ export type ThemeContextType = {
   setPalette: (paletteName: string) => void;
   palettes: ColorPalette[];
   isPlusUser: boolean;
+  setCustomColor: (colorName: 'primary' | 'secondary' | 'accent', value: string) => void;
+  resetPalette: () => void;
 };

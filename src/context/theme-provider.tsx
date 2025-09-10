@@ -55,7 +55,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme: nextTheme, setTheme: setNextTheme } = useNextTheme();
   const [palette, setPalette] = useState<ColorPalette>(defaultPalette);
-  const isPlusUser = false; // Mock value - in a real app, this would come from user session/context
+  const isPlusUser = true; // Mock value - in a real app, this would come from user session/context
 
   const applyColors = useCallback((selectedPalette: ColorPalette) => {
     const root = document.documentElement;
@@ -63,7 +63,6 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
     root.style.setProperty('--secondary', selectedPalette.secondary);
     root.style.setProperty('--accent', selectedPalette.accent);
     
-    // Set background based on light/dark mode
     if (nextTheme === 'dark') {
       root.style.setProperty('--background', selectedPalette.darkBackground);
     } else {
@@ -72,14 +71,25 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   }, [nextTheme]);
 
   useEffect(() => {
-    // On initial load, try to get palette from localStorage
-    const storedPaletteName = localStorage.getItem('color-palette');
-    const initialPalette = palettes.find(p => p.name === storedPaletteName) || defaultPalette;
-    setPalette(initialPalette);
-    applyColors(initialPalette);
+    try {
+      const storedPalette = localStorage.getItem('custom-palette');
+      if (storedPalette) {
+        const parsedPalette = JSON.parse(storedPalette);
+        setPalette(parsedPalette);
+        applyColors(parsedPalette);
+      } else {
+        const storedPaletteName = localStorage.getItem('color-palette') || 'default';
+        const initialPalette = palettes.find(p => p.name === storedPaletteName) || defaultPalette;
+        setPalette(initialPalette);
+        applyColors(initialPalette);
+      }
+    } catch (error) {
+        console.error("Failed to parse palette from localStorage", error);
+        setPalette(defaultPalette);
+        applyColors(defaultPalette);
+    }
   }, [applyColors]);
-
-  // Re-apply background color when theme (light/dark) changes
+  
   useEffect(() => {
     applyColors(palette);
   }, [nextTheme, palette, applyColors]);
@@ -89,11 +99,30 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setColorPalette = (paletteName: string) => {
-    if (!isPlusUser) return; // Block changing if not Plus user
+    if (!isPlusUser) return;
     const newPalette = palettes.find(p => p.name === paletteName) || defaultPalette;
     setPalette(newPalette);
     localStorage.setItem('color-palette', paletteName);
+    localStorage.removeItem('custom-palette'); // Remove custom palette when a preset is chosen
     applyColors(newPalette);
+  };
+
+  const setCustomColor = (colorName: 'primary' | 'secondary' | 'accent', value: string) => {
+    if (!isPlusUser) return;
+    const newPalette = {
+        ...palette,
+        name: 'custom',
+        [colorName]: value,
+    };
+    setPalette(newPalette);
+    localStorage.setItem('custom-palette', JSON.stringify(newPalette));
+    localStorage.setItem('color-palette', 'custom');
+    applyColors(newPalette);
+  };
+
+  const resetPalette = () => {
+    if (!isPlusUser) return;
+    setColorPalette('default');
   };
 
   const value = {
@@ -103,6 +132,8 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
     setPalette: setColorPalette,
     palettes,
     isPlusUser,
+    setCustomColor,
+    resetPalette,
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
