@@ -55,7 +55,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme: nextTheme, setTheme: setNextTheme } = useNextTheme();
   const [palette, setPalette] = useState<ColorPalette>(defaultPalette);
-  const isPlusUser = true; // Mock value - in a real app, this would come from user session/context
+  const isPlusUser = false; // Mock value - in a real app, this would come from user session/context
 
   const applyColors = useCallback((selectedPalette: ColorPalette) => {
     const root = document.documentElement;
