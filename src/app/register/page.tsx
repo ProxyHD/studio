@@ -49,6 +49,8 @@ export default function RegisterPage() {
        let description = 'Não foi possível concluir o cadastro. Tente novamente.';
       if (error.code === 'auth/email-already-in-use') {
         description = 'Este e-mail já está em uso.';
+      } else if (error.code === 'auth/configuration-not-found') {
+        description = 'Erro de configuração. Verifique se o método de login por E-mail/Senha está ativado no Console do Firebase.';
       }
       toast({
         title: 'Erro de Cadastro',

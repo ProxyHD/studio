@@ -43,6 +43,8 @@ export default function LoginPage() {
       let description = 'Ocorreu um erro ao fazer login. Tente novamente.';
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
         description = 'E-mail ou senha inválidos.';
+      } else if (error.code === 'auth/configuration-not-found') {
+        description = 'Erro de configuração. Verifique se os métodos de login estão ativados no Console do Firebase.';
       }
       toast({
         title: 'Erro de Login',
@@ -57,11 +59,15 @@ export default function LoginPage() {
     try {
       await signInWithPopup(auth, provider);
       router.push('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro no login com Google:", error);
+      let description = 'Não foi possível fazer login com o Google. Tente novamente.';
+      if (error.code === 'auth/configuration-not-found') {
+        description = 'Erro de configuração. Verifique se o login com Google está ativado no Console do Firebase.';
+      }
       toast({
         title: 'Erro',
-        description: 'Não foi possível fazer login com o Google. Tente novamente.',
+        description,
         variant: 'destructive',
       });
     }
