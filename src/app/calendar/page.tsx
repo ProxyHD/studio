@@ -1,21 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Dot, MapPin, Users } from 'lucide-react';
+import { PlusCircle, Dot, MapPin, Users, Trash2 } from 'lucide-react';
 import { AddEventDialog } from '@/components/calendar/add-event-dialog';
 import type { Event } from '@/lib/types';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { cn } from '@/lib/utils';
 
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const storedEvents = localStorage.getItem('events');
+    if (storedEvents) {
+      // Dates need to be parsed back into Date objects
+      const parsedEvents = JSON.parse(storedEvents).map((event: Event) => ({
+        ...event,
+        date: parse(event.date as unknown as string, 'yyyy-MM-dd', new Date()),
+      }));
+      setEvents(parsedEvents);
+    }
+  }, []);
+  
+  useEffect(() => {
+    // When saving, convert Date objects to a storable format like 'yyyy-MM-dd'
+    const storableEvents = events.map(event => ({
+        ...event,
+        date: format(event.date, 'yyyy-MM-dd'),
+    }));
+    localStorage.setItem('events', JSON.stringify(storableEvents));
+  }, [events]);
 
   const selectedDayEvents = date
     ? events.filter(
@@ -29,6 +49,10 @@ export default function CalendarPage() {
       ...eventData,
     };
     setEvents((prevEvents) => [...prevEvents, newEvent]);
+  };
+
+  const deleteEvent = (eventId: string) => {
+    setEvents(events.filter(event => event.id !== eventId));
   };
 
   return (
@@ -93,15 +117,20 @@ export default function CalendarPage() {
                 {selectedDayEvents.length > 0 ? (
                   selectedDayEvents.map(event => (
                     <div key={event.id} className="p-3 bg-secondary/50 rounded-lg space-y-2">
-                      <div>
-                        <p className="font-semibold">{event.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {event.startTime && event.endTime
-                            ? `${event.startTime} - ${event.endTime}`
-                            : event.startTime
-                            ? `Às ${event.startTime}`
-                            : 'O dia todo'}
-                        </p>
+                      <div className="flex justify-between items-start">
+                        <div>
+                            <p className="font-semibold">{event.title}</p>
+                            <p className="text-sm text-muted-foreground">
+                            {event.startTime && event.endTime
+                                ? `${event.startTime} - ${event.endTime}`
+                                : event.startTime
+                                ? `Às ${event.startTime}`
+                                : 'O dia todo'}
+                            </p>
+                        </div>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteEvent(event.id)}>
+                            <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                        {event.description && <p className="text-sm mt-1">{event.description}</p>}
                        {event.location && (

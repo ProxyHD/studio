@@ -4,7 +4,7 @@ import { useState, useContext } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Folder } from 'lucide-react';
+import { PlusCircle, Folder, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -49,6 +49,10 @@ export default function TasksPage() {
     }));
   };
 
+  const deleteTask = (taskId: string) => {
+    setTasks(tasks.filter(task => task.id !== taskId));
+  };
+
 
   const todoTasks = tasks.filter(t => t.status === 'todo');
   const inProgressTasks = tasks.filter(t => t.status === 'in-progress');
@@ -67,9 +71,9 @@ export default function TasksPage() {
             </Button>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
-            <TaskColumn title="A Fazer" tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} />
-            <TaskColumn title="Em Progresso" tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} />
-            <TaskColumn title="Concluído" tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} />
+            <TaskColumn title="A Fazer" tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} />
+            <TaskColumn title="Em Progresso" tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} />
+            <TaskColumn title="Concluído" tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} />
           </div>
         </div>
       </div>
@@ -87,9 +91,10 @@ interface TaskColumnProps {
   tasks: Task[];
   onToggleTask: (taskId: string) => void;
   onToggleSubtask: (taskId: string, subtaskId: string) => void;
+  onDeleteTask: (taskId: string) => void;
 }
 
-function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask }: TaskColumnProps) {
+function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask }: TaskColumnProps) {
   return (
     <Card className="bg-muted/30">
       <CardHeader>
@@ -112,9 +117,14 @@ function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask }: TaskColumnP
                   </label>
                   {task.dueDate && <p className="text-xs text-muted-foreground">{task.dueDate}</p>}
                 </div>
-                <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className="capitalize">
-                  {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
-                </Badge>
+                <div className="flex items-center gap-1">
+                  <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className="capitalize">
+                    {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
+                  </Badge>
+                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onDeleteTask(task.id)}>
+                      <Trash2 className="h-4 w-4" />
+                   </Button>
+                </div>
               </div>
                {task.project && (
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">

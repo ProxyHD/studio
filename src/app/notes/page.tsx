@@ -1,13 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { notes as initialNotes } from '@/lib/data';
 import type { Note } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { PlusCircle, Sparkles, Loader2, Trash2 } from 'lucide-react';
@@ -17,19 +16,46 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { summarizeNotes } from '@/ai/flows/summarize-notes';
 import { useToast } from '@/hooks/use-toast';
 
 
 export default function NotesPage() {
-  const [notes, setNotes] = useState<Note[]>(initialNotes);
-  const [selectedNote, setSelectedNote] = useState<Note | null>(notes[0] || null);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [summary, setSummary] = useState('');
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const { toast } = useToast();
   const isPro = true; // Mock value
+
+  useEffect(() => {
+    const storedNotes = localStorage.getItem('notes');
+    if (storedNotes) {
+      const parsedNotes = JSON.parse(storedNotes);
+      setNotes(parsedNotes);
+      if (parsedNotes.length > 0) {
+        setSelectedNote(parsedNotes[0]);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
 
   const handleNoteChange = (key: 'title' | 'content', value: string) => {
     if (selectedNote) {
@@ -50,6 +76,14 @@ export default function NotesPage() {
     setSelectedNote(newNote);
   };
   
+  const handleDeleteNote = (noteId: string) => {
+    const newNotes = notes.filter(n => n.id !== noteId);
+    setNotes(newNotes);
+    if (selectedNote?.id === noteId) {
+      setSelectedNote(newNotes[0] || null);
+    }
+  };
+
   const handleSummarize = async () => {
     if (!selectedNote || !isPro) return;
 
@@ -104,13 +138,34 @@ export default function NotesPage() {
           <main className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col h-full">
             {selectedNote ? (
               <div className="flex flex-col h-full">
-                <div className="p-4 border-b">
-                  <Input
-                    value={selectedNote.title}
-                    onChange={(e) => handleNoteChange('title', e.target.value)}
-                    className="text-2xl font-bold border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
-                  />
-                  <p className="text-sm text-muted-foreground">Criado em {selectedNote.createdAt}</p>
+                <div className="p-4 border-b flex items-center justify-between">
+                    <div>
+                        <Input
+                            value={selectedNote.title}
+                            onChange={(e) => handleNoteChange('title', e.target.value)}
+                            className="text-2xl font-bold border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
+                        />
+                        <p className="text-sm text-muted-foreground">Criado em {selectedNote.createdAt}</p>
+                    </div>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta ação não pode ser desfeita. Isso excluirá permanentemente sua nota.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDeleteNote(selectedNote.id)}>Continuar</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                 </div>
                 <div className="flex-1 p-4 overflow-y-auto">
                    <Textarea
@@ -133,7 +188,12 @@ export default function NotesPage() {
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
-                <p className="text-muted-foreground">Selecione uma nota para visualizar ou crie uma nova.</p>
+                 <div className="text-center">
+                    <p className="text-muted-foreground">Selecione uma nota para visualizar ou crie uma nova.</p>
+                    <Button className="mt-4" onClick={handleAddNewNote}>
+                        <PlusCircle className="mr-2 h-4 w-4" /> Criar Primeira Nota
+                    </Button>
+                </div>
               </div>
             )}
           </main>
@@ -150,6 +210,9 @@ export default function NotesPage() {
           <div className="prose prose-sm max-w-none">
             <p>{summary}</p>
           </div>
+          <DialogFooter>
+            <Button onClick={() => setIsSummaryDialogOpen(false)}>Fechar</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

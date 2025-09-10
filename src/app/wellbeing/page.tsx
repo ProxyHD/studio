@@ -4,7 +4,7 @@ import { useState, useMemo, useContext } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Flame, Laugh, Meh, Frown, Smile as SmileIcon, Angry, PlusCircle } from 'lucide-react';
+import { Check, Flame, Laugh, Meh, Frown, Smile as SmileIcon, Angry, PlusCircle, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Habit } from '@/lib/types';
 import { AddHabitDialog } from '@/components/wellbeing/add-habit-dialog';
@@ -54,6 +54,15 @@ export default function WellbeingPage() {
       ...habitData,
     };
     setHabits(prev => [...prev, newHabit]);
+  };
+
+  const deleteHabit = (habitId: string) => {
+    setHabits(prev => prev.filter(h => h.id !== habitId));
+    setCompletedHabits(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(habitId);
+        return newSet;
+    });
   };
 
   const handleHabitToggle = (habitId: string) => {
@@ -136,18 +145,23 @@ export default function WellbeingPage() {
                 <h3 className="font-semibold text-lg mb-4">Todos os Hábitos</h3>
                 <div className="space-y-2">
                   {habits.map(habit => (
-                    <div key={habit.id} className="p-3 border rounded-lg">
-                      <p className="font-medium">{habit.name}</p>
-                      <div className="flex gap-2 mt-2">
-                        {daysOfWeek.map(day => (
-                          <span key={day.id} className={cn(
-                            "text-xs px-2 py-1 rounded-full",
-                            habit.days.includes(day.id) ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"
-                          )}>
-                            {day.name.substring(0, 3)}
-                          </span>
-                        ))}
+                    <div key={habit.id} className="p-3 border rounded-lg flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">{habit.name}</p>
+                        <div className="flex gap-2 mt-2">
+                          {daysOfWeek.map(day => (
+                            <span key={day.id} className={cn(
+                              "text-xs px-2 py-1 rounded-full",
+                              habit.days.includes(day.id) ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"
+                            )}>
+                              {day.name.substring(0, 3)}
+                            </span>
+                          ))}
+                        </div>
                       </div>
+                      <Button variant="ghost" size="icon" onClick={() => deleteHabit(habit.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   ))}
                   {habits.length === 0 && (
