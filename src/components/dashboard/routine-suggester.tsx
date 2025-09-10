@@ -15,7 +15,7 @@ export function RoutineSuggester() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const isPro = false; // Mock value, would come from user session
+  const isPro = true; // Mock value, would come from user session
 
   const handleGenerate = async () => {
     if (!isPro) {
@@ -81,7 +81,7 @@ export function RoutineSuggester() {
         )}
       </CardContent>
       <CardFooter>
-        <Button onClick={handleGenerate} className="w-full" disabled={isLoading}>
+        <Button onClick={handleGenerate} className="w-full" disabled={isLoading || !isPro}>
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : isPro ? (
