@@ -44,8 +44,8 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" asChild>
               <Link href="/upgrade">Login</Link>
             </Button>
-            <Button variant="outline" className="w-full">
-              Login com Google
+            <Button variant="outline" className="w-full" asChild>
+              <Link href="/upgrade">Login com Google</Link>
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
