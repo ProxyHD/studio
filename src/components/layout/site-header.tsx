@@ -17,6 +17,9 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -46,6 +49,10 @@ export function SiteHeader({ title }: SiteHeaderProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
+             <SheetHeader className="sr-only">
+                <SheetTitle>Navigation Menu</SheetTitle>
+                <SheetDescription>Main navigation links for the application.</SheetDescription>
+            </SheetHeader>
             {/* Pass a function to close the menu on item click */}
             <SiteSidebar onLinkClick={() => setIsMobileMenuOpen(false)} isMobile />
           </SheetContent>
