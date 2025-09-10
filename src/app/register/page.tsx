@@ -12,8 +12,8 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const registerSchema = z.object({
-  firstName: z.string().min(1, 'O nome é obrigatório.'),
-  lastName: z.string().min(1, 'O sobrenome é obrigatório.'),
+  firstName: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres.'),
+  lastName: z.string().min(3, 'O sobrenome deve ter pelo menos 3 caracteres.'),
   email: z.string().email('Por favor, insira um e-mail válido.').min(1, 'O e-mail é obrigatório.'),
   password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres.'),
 });
