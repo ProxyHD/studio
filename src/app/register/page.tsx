@@ -11,6 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const registerSchema = z.object({
   firstName: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres.'),
@@ -34,21 +36,25 @@ export default function RegisterPage() {
     },
   });
 
-  function onSubmit(data: RegisterFormValues) {
+  async function onSubmit(data: RegisterFormValues) {
     try {
-      localStorage.setItem('user', JSON.stringify(data));
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
       toast({
         title: 'Sucesso!',
         description: 'Cadastro realizado com sucesso. Agora você pode fazer login.',
       });
       router.push('/');
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Registration error:', error);
+       let description = 'Não foi possível concluir o cadastro. Tente novamente.';
+      if (error.code === 'auth/email-already-in-use') {
+        description = 'Este e-mail já está em uso.';
+      }
       toast({
-        title: 'Erro',
-        description: 'Não foi possível concluir o cadastro. Tente novamente.',
+        title: 'Erro de Cadastro',
+        description,
         variant: 'destructive',
       });
-      console.error('Registration error:', error);
     }
   }
 

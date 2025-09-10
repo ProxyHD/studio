@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { SiteSidebar } from '@/components/layout/site-sidebar';
 import { LoadingScreen } from '@/components/layout/loading-screen';
 import { AppProvider } from '@/context/app-provider';
+import { AuthProvider } from '@/context/auth-provider';
 
 export default function RootLayoutClient({
   children,
@@ -28,17 +29,19 @@ export default function RootLayoutClient({
   }
 
   return (
-    <AppProvider>
-      {showSidebar ? (
-        <div className="flex min-h-screen">
-          <SiteSidebar />
-          <main className="flex-1 md:pl-64">
-            {children}
-          </main>
-        </div>
-      ) : (
-        <main>{children}</main>
-      )}
-    </AppProvider>
+    <AuthProvider>
+      <AppProvider>
+        {showSidebar ? (
+          <div className="flex min-h-screen">
+            <SiteSidebar />
+            <main className="flex-1 md:pl-64">
+              {children}
+            </main>
+          </div>
+        ) : (
+          <main>{children}</main>
+        )}
+      </AppProvider>
+    </AuthProvider>
   );
 }

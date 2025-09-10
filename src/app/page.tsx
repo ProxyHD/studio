@@ -11,10 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { app } from '@/lib/firebase';
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
-import { VerificationForm } from '@/components/auth/verification-form';
 
 const loginSchema = z.object({
   email: z.string().email('Por favor, insira um e-mail válido.').min(1, 'O e-mail é obrigatório.'),
@@ -26,7 +25,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [showVerification, setShowVerification] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -36,34 +34,29 @@ export default function LoginPage() {
     },
   });
 
-  function onSubmit(data: LoginFormValues) {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      if (user.email === data.email && user.password === data.password) {
-        setShowVerification(true);
-      } else {
-        toast({
-          title: 'Erro',
-          description: 'E-mail ou senha inválidos.',
-          variant: 'destructive',
-        });
+  async function onSubmit(data: LoginFormValues) {
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error("Erro no login:", error);
+      let description = 'Ocorreu um erro ao fazer login. Tente novamente.';
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        description = 'E-mail ou senha inválidos.';
       }
-    } else {
       toast({
-        title: 'Erro',
-        description: 'Nenhum usuário cadastrado. Por favor, cadastre-se primeiro.',
+        title: 'Erro de Login',
+        description,
         variant: 'destructive',
       });
     }
   }
 
   const handleGoogleLogin = async () => {
-    const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      router.push('/upgrade');
+      router.push('/dashboard');
     } catch (error) {
       console.error("Erro no login com Google:", error);
       toast({
@@ -73,10 +66,6 @@ export default function LoginPage() {
       });
     }
   };
-
-  if (showVerification) {
-    return <VerificationForm onSuccess={() => router.push('/upgrade')} />;
-  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">

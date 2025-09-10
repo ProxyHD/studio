@@ -6,6 +6,7 @@ import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Gem, Settings,
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/context/auth-provider';
 
 const navItems = [
   { href: '/dashboard', label: 'Painel', icon: LayoutDashboard },
@@ -19,6 +20,7 @@ const proItem = { href: '/upgrade', label: 'Upgrade para Pro', icon: Zap };
 
 export function SiteSidebar() {
   const pathname = usePathname();
+  const { logout } = useAuth();
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-card border-r fixed h-screen">
@@ -56,11 +58,9 @@ export function SiteSidebar() {
           <Settings className="mr-2 h-4 w-4" />
           Configurações
         </Button>
-        <Button variant="ghost" className="w-full justify-start" asChild>
-          <Link href="/">
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </Link>
+        <Button variant="ghost" className="w-full justify-start" onClick={logout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          Sair
         </Button>
       </div>
     </aside>
