@@ -1,3 +1,5 @@
+import type { Dispatch, SetStateAction } from 'react';
+
 export type Task = {
   id: string;
   title: string;
@@ -44,3 +46,14 @@ export type Habit = {
   name: string;
   days: DayOfWeek[];
 };
+
+export interface AppContextType {
+  tasks: Task[];
+  setTasks: Dispatch<SetStateAction<Task[]>>;
+  selectedMood: string | null;
+  setSelectedMood: Dispatch<SetStateAction<string | null>>;
+  habits: Habit[];
+  setHabits: Dispatch<SetStateAction<Habit[]>>;
+  completedHabits: Set<string>;
+  setCompletedHabits: Dispatch<SetStateAction<Set<string>>>;
+}

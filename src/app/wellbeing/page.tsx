@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useContext } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { Check, Flame, Laugh, Meh, Frown, Smile as SmileIcon, Angry, PlusCircle 
 import { cn } from '@/lib/utils';
 import type { Habit } from '@/lib/types';
 import { AddHabitDialog } from '@/components/wellbeing/add-habit-dialog';
+import { AppContext } from '@/context/app-provider';
 
 const moods = [
   { name: 'Feliz', icon: Laugh },
@@ -31,9 +31,14 @@ const daysOfWeek = [
 const dayIndexToId = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
 
 export default function WellbeingPage() {
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [habits, setHabits] = useState<Habit[]>([]);
-  const [completedHabits, setCompletedHabits] = useState<Set<string>>(new Set());
+  const {
+    selectedMood,
+    setSelectedMood,
+    habits,
+    setHabits,
+    completedHabits,
+    setCompletedHabits,
+  } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const today = useMemo(() => {

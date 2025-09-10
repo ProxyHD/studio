@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { SiteSidebar } from '@/components/layout/site-sidebar';
 import { LoadingScreen } from '@/components/layout/loading-screen';
+import { AppProvider } from '@/context/app-provider';
 
 export default function RootLayoutClient({
   children,
@@ -27,7 +28,7 @@ export default function RootLayoutClient({
   }
 
   return (
-    <>
+    <AppProvider>
       {showSidebar ? (
         <div className="flex min-h-screen">
           <SiteSidebar />
@@ -38,6 +39,6 @@ export default function RootLayoutClient({
       ) : (
         <main>{children}</main>
       )}
-    </>
+    </AppProvider>
   );
 }

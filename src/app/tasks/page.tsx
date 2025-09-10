@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,9 +10,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 import type { Task } from '@/lib/types';
 import { AddTaskDialog } from '@/components/tasks/add-task-dialog';
+import { AppContext } from '@/context/app-provider';
+
 
 export default function TasksPage() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const { tasks, setTasks } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const addTask = (task: Omit<Task, 'id' | 'status'>) => {
