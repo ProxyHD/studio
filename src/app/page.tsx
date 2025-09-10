@@ -62,7 +62,9 @@ export default function LoginPage() {
     } catch (error: any) {
       console.error("Erro no login com Google:", error);
       let description = 'Não foi possível fazer login com o Google. Tente novamente.';
-      if (error.code === 'auth/configuration-not-found') {
+       if (error.code === 'auth/popup-blocked') {
+        description = 'O pop-up de login foi bloqueado pelo navegador. Por favor, habilite os pop-ups para este site.';
+      } else if (error.code === 'auth/configuration-not-found') {
         description = 'Erro de configuração do Firebase. Ative o login com Google no Console do Firebase.';
       }
       toast({
