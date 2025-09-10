@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useAuth } from '@/context/auth-provider';
 
 interface SiteHeaderProps {
   title: string;
@@ -12,6 +13,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ title }: SiteHeaderProps) {
   const userAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar');
+  const { logout } = useAuth();
 
   return (
     <header className="flex items-center justify-between h-20 px-4 md:px-8 border-b bg-card">
@@ -43,11 +45,13 @@ export function SiteHeader({ title }: SiteHeaderProps) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Configurações</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/settings">Configurações</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>Suporte</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/">Sair</Link>
+            <DropdownMenuItem onClick={logout}>
+              Sair
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
