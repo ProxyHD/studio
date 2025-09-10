@@ -4,6 +4,8 @@ export type Task = {
   status: 'todo' | 'in-progress' | 'done';
   priority: 'low' | 'medium' | 'high';
   dueDate?: string;
+  project?: string;
+  subtasks?: { id: string; title: string; done: boolean }[];
 };
 
 export type Note = {

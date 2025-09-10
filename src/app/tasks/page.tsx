@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Folder } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -33,6 +33,21 @@ export default function TasksPage() {
     }));
   };
 
+  const toggleSubtask = (taskId: string, subtaskId: string) => {
+    setTasks(tasks.map(task => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          subtasks: task.subtasks?.map(subtask => 
+            subtask.id === subtaskId ? { ...subtask, done: !subtask.done } : subtask
+          ),
+        };
+      }
+      return task;
+    }));
+  };
+
+
   const todoTasks = tasks.filter(t => t.status === 'todo');
   const inProgressTasks = tasks.filter(t => t.status === 'in-progress');
   const doneTasks = tasks.filter(t => t.status === 'done');
@@ -50,9 +65,9 @@ export default function TasksPage() {
             </Button>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
-            <TaskColumn title="A Fazer" tasks={todoTasks} onToggleTask={toggleTask} />
-            <TaskColumn title="Em Progresso" tasks={inProgressTasks} onToggleTask={toggleTask} />
-            <TaskColumn title="Concluído" tasks={doneTasks} onToggleTask={toggleTask} />
+            <TaskColumn title="A Fazer" tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} />
+            <TaskColumn title="Em Progresso" tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} />
+            <TaskColumn title="Concluído" tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} />
           </div>
         </div>
       </div>
@@ -65,7 +80,14 @@ export default function TasksPage() {
   );
 }
 
-function TaskColumn({ title, tasks, onToggleTask }: { title: string; tasks: Task[]; onToggleTask: (taskId: string) => void; }) {
+interface TaskColumnProps {
+  title: string;
+  tasks: Task[];
+  onToggleTask: (taskId: string) => void;
+  onToggleSubtask: (taskId: string, subtaskId: string) => void;
+}
+
+function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask }: TaskColumnProps) {
   return (
     <Card className="bg-muted/30">
       <CardHeader>
@@ -74,22 +96,49 @@ function TaskColumn({ title, tasks, onToggleTask }: { title: string; tasks: Task
       <CardContent className="space-y-4">
         {tasks.map(task => (
           <Card key={task.id}>
-            <CardContent className="p-4 flex items-start gap-4">
-              <Checkbox 
-                id={`task-${task.id}`} 
-                checked={task.status === 'done'} 
-                onCheckedChange={() => onToggleTask(task.id)}
-                className="mt-1" 
-              />
-              <div className="flex-1 space-y-1">
-                <label htmlFor={`task-${task.id}`} className={cn("font-medium", task.status === 'done' && 'line-through text-muted-foreground')}>
-                  {task.title}
-                </label>
-                {task.dueDate && <p className="text-xs text-muted-foreground">{task.dueDate}</p>}
+            <CardContent className="p-4 flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <Checkbox 
+                  id={`task-${task.id}`} 
+                  checked={task.status === 'done'} 
+                  onCheckedChange={() => onToggleTask(task.id)}
+                  className="mt-1" 
+                />
+                <div className="flex-1 space-y-1">
+                  <label htmlFor={`task-${task.id}`} className={cn("font-medium", task.status === 'done' && 'line-through text-muted-foreground')}>
+                    {task.title}
+                  </label>
+                  {task.dueDate && <p className="text-xs text-muted-foreground">{task.dueDate}</p>}
+                </div>
+                <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className="capitalize">
+                  {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
+                </Badge>
               </div>
-              <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className="capitalize">
-                {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
-              </Badge>
+               {task.project && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Folder className="h-3 w-3" />
+                  <span>{task.project}</span>
+                </div>
+              )}
+              {task.subtasks && task.subtasks.length > 0 && (
+                <div className="pl-6 space-y-2 border-l ml-2">
+                  {task.subtasks.map(subtask => (
+                    <div key={subtask.id} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`subtask-${subtask.id}`}
+                        checked={subtask.done}
+                        onCheckedChange={() => onToggleSubtask(task.id, subtask.id)}
+                      />
+                      <label 
+                        htmlFor={`subtask-${subtask.id}`}
+                        className={cn("text-sm", subtask.done && 'line-through text-muted-foreground')}
+                      >
+                        {subtask.title}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
