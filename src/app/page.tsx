@@ -5,12 +5,15 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { LifeBuoy } from 'lucide-react';
+import { LifeBuoy, Chrome } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { app } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 const loginSchema = z.object({
   email: z.string().email('Por favor, insira um e-mail válido.').min(1, 'O e-mail é obrigatório.'),
@@ -21,6 +24,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -33,6 +37,22 @@ export default function LoginPage() {
     console.log('Login successful with:', data);
     router.push('/upgrade');
   }
+
+  const handleGoogleLogin = async () => {
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      router.push('/upgrade');
+    } catch (error) {
+      console.error("Erro no login com Google:", error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível fazer login com o Google. Tente novamente.',
+        variant: 'destructive',
+      });
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -59,7 +79,6 @@ export default function LoginPage() {
                       <Input
                         type="email"
                         placeholder="m@example.com"
-                        required
                         {...field}
                       />
                     </FormControl>
@@ -82,7 +101,7 @@ export default function LoginPage() {
                       </Link>
                     </div>
                     <FormControl>
-                      <Input type="password" required {...field} />
+                      <Input type="password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -103,8 +122,9 @@ export default function LoginPage() {
               </span>
             </div>
           </div>
-          <Button variant="outline" className="w-full" asChild>
-            <Link href="/upgrade">Login com Google</Link>
+          <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
+            <Chrome className="mr-2 h-4 w-4" />
+            Login com Google
           </Button>
           <div className="mt-4 text-center text-sm">
             Não tem uma conta?{' '}
