@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Gem, Settings, LogOut, Zap, LifeBuoy } from 'lucide-react';
+import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Settings, LogOut, Zap, LifeBuoy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -11,7 +11,12 @@ import { useAuth } from '@/context/auth-provider';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
-export function SiteSidebar() {
+interface SiteSidebarProps {
+  isMobile?: boolean;
+  onLinkClick?: () => void; // Callback to close mobile menu
+}
+
+export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps) {
   const pathname = usePathname();
   const { logout } = useAuth();
   const { locale } = useContext(AppContext);
@@ -27,10 +32,36 @@ export function SiteSidebar() {
   const proItem = { href: '/upgrade', label: t('Upgrade to Pro', locale), icon: Zap };
   const settingsItem = { href: '/settings', label: t('Settings', locale), icon: Settings };
 
+  const handleLinkClick = () => {
+    if (onLinkClick) {
+      onLinkClick();
+    }
+  };
+  
+  const handleLogout = () => {
+    handleLinkClick();
+    logout();
+  }
+
+  const sidebarClasses = cn(
+    'flex flex-col h-full',
+    {
+      'md:flex w-64 bg-card border-r fixed': !isMobile,
+      'bg-card': isMobile,
+    }
+  );
+  
+  const navContainerClasses = cn(
+    'hidden',
+    {
+      'md:flex flex-col': !isMobile
+    }
+  );
+
   return (
-    <aside className="hidden md:flex flex-col w-64 bg-card border-r fixed h-screen">
+    <aside className={cn(sidebarClasses, { [navContainerClasses]: !isMobile })}>
       <div className="p-6">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2" onClick={handleLinkClick}>
           <LifeBuoy className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline">LifeHub</h1>
         </Link>
@@ -41,6 +72,7 @@ export function SiteSidebar() {
             <Button
               variant={pathname === item.href ? 'secondary' : 'ghost'}
               className="w-full justify-start"
+              onClick={handleLinkClick}
             >
               <item.icon className="mr-2 h-4 w-4" />
               {item.label}
@@ -51,6 +83,7 @@ export function SiteSidebar() {
             <Button
               variant={pathname === proItem.href ? 'default' : 'ghost'}
               className={cn("w-full justify-start", pathname !== proItem.href && "text-primary hover:bg-primary/10 hover:text-primary")}
+              onClick={handleLinkClick}
             >
               <proItem.icon className="mr-2 h-4 w-4" />
               {proItem.label}
@@ -63,12 +96,13 @@ export function SiteSidebar() {
             <Button 
                 variant={pathname === settingsItem.href ? 'secondary' : 'ghost'}
                 className="w-full justify-start"
+                onClick={handleLinkClick}
             >
                 <settingsItem.icon className="mr-2 h-4 w-4" />
                 {settingsItem.label}
             </Button>
         </Link>
-        <Button variant="ghost" className="w-full justify-start" onClick={logout}>
+        <Button variant="ghost" className="w-full justify-start" onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           {t('Logout', locale)}
         </Button>
