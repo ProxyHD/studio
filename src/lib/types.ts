@@ -70,3 +70,24 @@ export interface AppContextType {
   setCompletedHabits: Dispatch<SetStateAction<string[]>>;
   loading: boolean;
 }
+
+// Theme types
+export type Theme = 'light' | 'dark' | 'system';
+
+export type ColorPalette = {
+  name: string;
+  primary: string;
+  secondary: string;
+  accent: string;
+  background: string;
+  darkBackground: string;
+};
+
+export type ThemeContextType = {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  palette: ColorPalette;
+  setPalette: (paletteName: string) => void;
+  palettes: ColorPalette[];
+  isPlusUser: boolean;
+};
