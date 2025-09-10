@@ -1,4 +1,4 @@
-import type { Task, Note, Plan } from './types';
+import type { Task, Note, Plan, Event } from './types';
 
 export const tasks: Task[] = [];
 
@@ -68,4 +68,30 @@ export const plans: Plan[] = [
     cta: 'Upgrade para Pro',
     accent: true,
   },
+];
+
+const today = new Date();
+export const events: Event[] = [
+  {
+    id: '1',
+    title: 'Reunião de equipe',
+    date: today,
+    startTime: '10:00',
+    endTime: '11:00',
+    description: 'Reunião semanal de alinhamento.'
+  },
+  {
+    id: '2',
+    title: 'Consulta Médica',
+    date: today,
+    startTime: '14:30',
+    description: 'Check-up anual.'
+  },
+   {
+    id: '3',
+    title: 'Apresentação do Projeto',
+    date: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2),
+    startTime: '09:00',
+    endTime: '12:00',
+  }
 ];

@@ -25,3 +25,12 @@ export type Plan = {
   cta: string;
   accent?: boolean;
 };
+
+export type Event = {
+  id: string;
+  title: string;
+  date: Date;
+  startTime?: string;
+  endTime?: string;
+  description?: string;
+};
