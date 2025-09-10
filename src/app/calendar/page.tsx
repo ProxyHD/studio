@@ -9,13 +9,15 @@ import { PlusCircle, Dot, MapPin, Users, Trash2 } from 'lucide-react';
 import { AddEventDialog } from '@/components/calendar/add-event-dialog';
 import type { Event } from '@/lib/types';
 import { format, parseISO } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { ptBR, enUS } from 'date-fns/locale';
 import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export default function CalendarPage() {
-  const { events, setEvents } = useContext(AppContext);
+  const { events, setEvents, locale } = useContext(AppContext);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
 
   // Helper to safely parse dates, which are now stored as ISO strings from Firestore
   const parseEventDate = (event: Event): Date => {
@@ -49,7 +51,7 @@ export default function CalendarPage() {
   return (
     <>
       <div className="flex flex-col h-full">
-        <SiteHeader title="Calendário" />
+        <SiteHeader title={t('Calendar', locale)} />
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 pt-6 md:p-8">
           <div className="lg:col-span-2">
             <Card>
@@ -59,7 +61,7 @@ export default function CalendarPage() {
                   selected={date}
                   onSelect={setDate}
                   className="p-0 w-full"
-                  locale={ptBR}
+                  locale={dateLocale}
                   classNames={{
                     months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full',
                     month: 'space-y-4 w-full',
@@ -95,12 +97,12 @@ export default function CalendarPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>
-                      {date ? format(date, "d 'de' MMMM", { locale: ptBR }) : 'Selecione um dia'}
+                      {date ? format(date, "d 'de' MMMM", { locale: dateLocale }) : t('Select a day', locale)}
                     </CardTitle>
                   </div>
                   <Button size="sm" onClick={() => setIsDialogOpen(true)}>
                     <PlusCircle className="mr-2 h-4 w-4" />
-                    Evento
+                    {t('Event', locale)}
                   </Button>
                 </div>
               </CardHeader>
@@ -115,8 +117,8 @@ export default function CalendarPage() {
                             {event.startTime && event.endTime
                                 ? `${event.startTime} - ${event.endTime}`
                                 : event.startTime
-                                ? `Às ${event.startTime}`
-                                : 'O dia todo'}
+                                ? t('At {time}', locale, { time: event.startTime })
+                                : t('All day', locale)}
                             </p>
                         </div>
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteEvent(event.id)}>
@@ -134,7 +136,7 @@ export default function CalendarPage() {
                           <div className="flex items-start gap-2 text-sm">
                             <Users className="h-4 w-4 text-muted-foreground mt-0.5" />
                             <div>
-                              <p className="font-medium">Convidados:</p>
+                              <p className="font-medium">{t('Guests:', locale)}</p>
                               <ul className="list-disc list-inside">
                                 {event.guests.map(guest => <li key={guest.email}>{guest.email}</li>)}
                               </ul>
@@ -144,7 +146,7 @@ export default function CalendarPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-muted-foreground">Nenhum evento para este dia.</p>
+                  <p className="text-sm text-muted-foreground">{t('No events for this day.', locale)}</p>
                 )}
               </CardContent>
             </Card>

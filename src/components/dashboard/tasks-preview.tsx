@@ -7,9 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export function TasksPreview() {
-  const { tasks, setTasks } = useContext(AppContext);
+  const { tasks, setTasks, locale } = useContext(AppContext);
   const pendingTasks = tasks.filter(t => t.status !== 'done');
 
   const handleToggle = (taskId: string) => {
@@ -19,12 +20,18 @@ export function TasksPreview() {
         : task
     ));
   };
+  
+  const getPriorityText = (priority: 'low' | 'medium' | 'high') => {
+    if (priority === 'high') return t('High', locale);
+    if (priority === 'medium') return t('Medium', locale);
+    return t('Low', locale);
+  };
 
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>Tarefas de Hoje</CardTitle>
-        <CardDescription>Você tem {pendingTasks.length} {pendingTasks.length === 1 ? 'tarefa pendente' : 'tarefas pendentes'}.</CardDescription>
+        <CardTitle>{t('Today\'s Tasks', locale)}</CardTitle>
+        <CardDescription>{t('You have {count} pending {task, plural, one {task} other {tasks}}.', locale, { count: pendingTasks.length, task: 'task' })}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         <ScrollArea className="h-80">
@@ -44,14 +51,14 @@ export function TasksPreview() {
                     {task.title}
                   </label>
                   <Badge variant={task.priority === 'high' ? 'destructive' : task.priority === 'medium' ? 'secondary' : 'outline'} className="capitalize">
-                    {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
+                    {getPriorityText(task.priority)}
                   </Badge>
                 </div>
               </div>
             ))}
              {tasks.length === 0 && (
               <div className="flex items-center justify-center h-full">
-                <p className="text-sm text-muted-foreground">Nenhuma tarefa para hoje.</p>
+                <p className="text-sm text-muted-foreground">{t('No tasks for today.', locale)}</p>
               </div>
             )}
           </div>

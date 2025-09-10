@@ -1,7 +1,7 @@
 import type { Locale } from './types';
 
 const translations: Record<string, Record<Locale, string>> = {
-  // General
+  // General UI
   'Dashboard': { 'pt-BR': 'Painel', 'en-US': 'Dashboard' },
   'Tasks': { 'pt-BR': 'Tarefas', 'en-US': 'Tasks' },
   'Calendar': { 'pt-BR': 'Calendário', 'en-US': 'Calendar' },
@@ -12,12 +12,74 @@ const translations: Record<string, Record<Locale, string>> = {
   'Logout': { 'pt-BR': 'Sair', 'en-US': 'Logout' },
   'N/A': { 'pt-BR': 'N/D', 'en-US': 'N/A' },
   'days': { 'pt-BR': 'dias', 'en-US': 'days' },
+  'Save': { 'pt-BR': 'Salvar', 'en-US': 'Save' },
+  'Cancel': { 'pt-BR': 'Cancelar', 'en-US': 'Cancel' },
+  'Continue': { 'pt-BR': 'Continuar', 'en-US': 'Continue' },
+  'Close': { 'pt-BR': 'Fechar', 'en-US': 'Close' },
+  'Error': { 'pt-BR': 'Erro', 'en-US': 'Error' },
+  'Success': { 'pt-BR': 'Sucesso!', 'en-US': 'Success!' },
+  'Title': { 'pt-BR': 'Título', 'en-US': 'Title' },
+  'Description': { 'pt-BR': 'Descrição', 'en-US': 'Description' },
+  'Search...': { 'pt-BR': 'Buscar...', 'en-US': 'Search...' },
+  'My Account': { 'pt-BR': 'Minha Conta', 'en-US': 'My Account' },
+  'Support': { 'pt-BR': 'Suporte', 'en-US': 'Support' },
 
   // Dashboard
   'Completed Tasks': { 'pt-BR': 'Tarefas Concluídas', 'en-US': 'Completed Tasks' },
   'Current Mood': { 'pt-BR': 'Humor Atual', 'en-US': 'Current Mood' },
   'Expenses': { 'pt-BR': 'Despesas', 'en-US': 'Expenses' },
   'Habit Streak': { 'pt-BR': 'Sequência de Hábitos', 'en-US': 'Habit Streak' },
+  'Today\'s Tasks': { 'pt-BR': 'Tarefas de Hoje', 'en-US': 'Today\'s Tasks' },
+  'You have {count} pending {task, plural, one {task} other {tasks}}.': { 
+    'pt-BR': 'Você tem {count} {task, plural, one {tarefa pendente} other {tarefas pendentes}}.', 
+    'en-US': 'You have {count} pending {task, plural, one {task} other {tasks}}.' 
+  },
+  'No tasks for today.': { 'pt-BR': 'Nenhuma tarefa para hoje.', 'en-US': 'No tasks for today.' },
+  'Smart Suggestions': { 'pt-BR': 'Sugestões Inteligentes', 'en-US': 'Smart Suggestions' },
+  'Describe your goals and current habits to get an AI-generated routine.': { 'pt-BR': 'Descreva seus objetivos e hábitos atuais para obter uma rotina gerada por IA.', 'en-US': 'Describe your goals and current habits to get an AI-generated routine.' },
+  'ex: I want to wake up earlier, exercise 3 times a week, and read more books.': { 'pt-BR': 'ex: Eu quero acordar mais cedo, me exercitar 3 vezes por semana e ler mais livros.', 'en-US': 'ex: I want to wake up earlier, exercise 3 times a week, and read more books.' },
+  'Suggested Routine:': { 'pt-BR': 'Rotina Sugerida:', 'en-US': 'Suggested Routine:' },
+  'Generating...': { 'pt-BR': 'Gerando...', 'en-US': 'Generating...' },
+  'Generate Routine': { 'pt-BR': 'Gerar Rotina', 'en-US': 'Generate Routine' },
+  'Upgrade to Generate': { 'pt-BR': 'Faça Upgrade para Gerar', 'en-US': 'Upgrade to Generate' },
+  'Pro': { 'pt-BR': 'Pro', 'en-US': 'Pro' },
+
+
+  // Login / Register
+  'Login': { 'pt-BR': 'Login', 'en-US': 'Login' },
+  'Enter your email below to login to your LifeHub account': { 'pt-BR': 'Digite seu e-mail abaixo para fazer login na sua conta LifeHub', 'en-US': 'Enter your email below to login to your LifeHub account' },
+  'Email': { 'pt-BR': 'E-mail', 'en-US': 'Email' },
+  'Please enter a valid email.': { 'pt-BR': 'Por favor, insira um e-mail válido.', 'en-US': 'Please enter a valid email.' },
+  'Email is required.': { 'pt-BR': 'O e-mail é obrigatório.', 'en-US': 'Email is required.' },
+  'Password': { 'pt-BR': 'Senha', 'en-US': 'Password' },
+  'Password is required.': { 'pt-BR': 'A senha é obrigatória.', 'en-US': 'Password is required.' },
+  'Forgot your password?': { 'pt-BR': 'Esqueceu sua senha?', 'en-US': 'Forgot your password?' },
+  'Or continue with': { 'pt-BR': 'Ou continue com', 'en-US': 'Or continue with' },
+  'Login with Google': { 'pt-BR': 'Login com Google', 'en-US': 'Login with Google' },
+  'Don\'t have an account?': { 'pt-BR': 'Não tem uma conta?', 'en-US': 'Don\'t have an account?' },
+  'Sign up': { 'pt-BR': 'Cadastre-se', 'en-US': 'Sign up' },
+  'Login Error': { 'pt-BR': 'Erro de Login', 'en-US': 'Login Error' },
+  'An error occurred while logging in. Try again.': { 'pt-BR': 'Ocorreu um erro ao fazer login. Tente novamente.', 'en-US': 'An error occurred while logging in. Try again.' },
+  'Invalid email or password.': { 'pt-BR': 'E-mail ou senha inválidos.', 'en-US': 'Invalid email or password.' },
+  'Firebase configuration error.': { 'pt-BR': 'Erro de configuração do Firebase.', 'en-US': 'Firebase configuration error.' },
+  'Enable Email/Password login in the Firebase Console.': { 'pt-BR': 'Ative o login por E-mail/Senha no Console do Firebase.', 'en-US': 'Enable Email/Password login in the Firebase Console.' },
+  'Enable Google login in the Firebase Console.': { 'pt-BR': 'Ative o login com Google no Console do Firebase.', 'en-US': 'Enable Google login in the Firebase Console.' },
+  'Login popup was blocked by the browser.': { 'pt-BR': 'O pop-up de login foi bloqueado pelo navegador.', 'en-US': 'Login popup was blocked by the browser.' },
+  
+  'Register': { 'pt-BR': 'Cadastro', 'en-US': 'Register' },
+  'Create your LifeHub account to start organizing your life': { 'pt-BR': 'Crie sua conta LifeHub para começar a organizar sua vida', 'en-US': 'Create your LifeHub account to start organizing your life' },
+  'First Name': { 'pt-BR': 'Nome', 'en-US': 'First Name' },
+  'First name must be at least 3 characters.': { 'pt-BR': 'O nome deve ter pelo menos 3 caracteres.', 'en-US': 'First name must be at least 3 characters.' },
+  'Last Name': { 'pt-BR': 'Sobrenome', 'en-US': 'Last Name' },
+  'Last name must be at least 3 characters.': { 'pt-BR': 'O sobrenome deve ter pelo menos 3 caracteres.', 'en-US': 'Last name must be at least 3 characters.' },
+  'Password must be at least 6 characters.': { 'pt-BR': 'A senha deve ter pelo menos 6 caracteres.', 'en-US': 'Password must be at least 6 characters.' },
+  'Create account': { 'pt-BR': 'Criar conta', 'en-US': 'Create account' },
+  'Already have an account?': { 'pt-BR': 'Já tem uma conta?', 'en-US': 'Already have an account?' },
+  'Registration successful. You can now log in.': { 'pt-BR': 'Cadastro realizado com sucesso. Agora você pode fazer login.', 'en-US': 'Registration successful. You can now log in.' },
+  'Registration Error': { 'pt-BR': 'Erro de Cadastro', 'en-US': 'Registration Error' },
+  'Could not complete registration. Try again.': { 'pt-BR': 'Não foi possível concluir o cadastro. Tente novamente.', 'en-US': 'Could not complete registration. Try again.' },
+  'This email is already in use.': { 'pt-BR': 'Este e-mail já está em uso.', 'en-US': 'This email is already in use.' },
+
 
   // Upgrade Page
   'Plans & Pricing': { 'pt-BR': 'Planos e Preços', 'en-US': 'Plans & Pricing' },
@@ -28,9 +90,153 @@ const translations: Record<string, Record<Locale, string>> = {
   },
   'Most Popular': { 'pt-BR': 'Mais Popular', 'en-US': 'Most Popular' },
 
-  // Add other translations here
+  // Settings
+  'Language and Region': { 'pt-BR': 'Idioma e Região', 'en-US': 'Language and Region' },
+  'Change the application language and currency.': { 'pt-BR': 'Altere o idioma e a moeda do aplicativo.', 'en-US': 'Change the application language and currency.' },
+  'Language': { 'pt-BR': 'Idioma', 'en-US': 'Language' },
+  'Select language': { 'pt-BR': 'Selecione o idioma', 'en-US': 'Select language' },
+  'Portuguese (Brazil)': { 'pt-BR': 'Português (Brasil)', 'en-US': 'Portuguese (Brazil)' },
+  'English (United States)': { 'pt-BR': 'English (United States)', 'en-US': 'English (United States)' },
+  'Appearance': { 'pt-BR': 'Aparência', 'en-US': 'Appearance' },
+  'Select the theme for the application appearance.': { 'pt-BR': 'Selecione o tema para a aparência do aplicativo.', 'en-US': 'Select the theme for the application appearance.' },
+  'Light': { 'pt-BR': 'Claro', 'en-US': 'Light' },
+  'Dark': { 'pt-BR': 'Escuro', 'en-US': 'Dark' },
+  'Color Palette': { 'pt-BR': 'Paleta de Cores', 'en-US': 'Color Palette' },
+  'Customize the application\'s appearance. Requires Plus plan.': { 'pt-BR': 'Personalize a aparência do aplicativo. Requer o plano Plus.', 'en-US': 'Customize the application\'s appearance. Requires Plus plan.' },
+  'Upgrade to Plus': { 'pt-BR': 'Upgrade para Plus', 'en-US': 'Upgrade to Plus' },
+  'Presets': { 'pt-BR': 'Predefinições', 'en-US': 'Presets' },
+  'Default': { 'pt-BR': 'Padrão', 'en-US': 'Default' },
+  'Custom Colors': { 'pt-BR': 'Cores Personalizadas', 'en-US': 'Custom Colors' },
+  'Reset': { 'pt-BR': 'Redefinir', 'en-US': 'Reset' },
+  'Primary': { 'pt-BR': 'Primária', 'en-US': 'Primary' },
+  'Secondary': { 'pt-BR': 'Secundária', 'en-US': 'Secondary' },
+  'Accent': { 'pt-BR': 'Destaque', 'en-US': 'Accent' },
+
+  // Tasks
+  'Task Board': { 'pt-BR': 'Quadro de Tarefas', 'en-US': 'Task Board' },
+  'Add Task': { 'pt-BR': 'Adicionar Tarefa', 'en-US': 'Add Task' },
+  'To Do': { 'pt-BR': 'A Fazer', 'en-US': 'To Do' },
+  'In Progress': { 'pt-BR': 'Em Progresso', 'en-US': 'In Progress' },
+  'Done': { 'pt-BR': 'Concluído', 'en-US': 'Done' },
+  'High': { 'pt-BR': 'Alta', 'en-US': 'High' },
+  'Medium': { 'pt-BR': 'Média', 'en-US': 'Medium' },
+  'Low': { 'pt-BR': 'Baixa', 'en-US': 'Low' },
+  'No tasks here.': { 'pt-BR': 'Nenhuma tarefa aqui.', 'en-US': 'No tasks here.' },
+  'Add New Task': { 'pt-BR': 'Adicionar Nova Tarefa', 'en-US': 'Add New Task' },
+  'Fill in the details of your new task. Click save when you\'re done.': { 'pt-BR': 'Preencha os detalhes da sua nova tarefa. Clique em salvar quando terminar.', 'en-US': 'Fill in the details of your new task. Click save when you\'re done.' },
+  'Priority': { 'pt-BR': 'Prioridade', 'en-US': 'Priority' },
+  'Select priority': { 'pt-BR': 'Selecione a prioridade', 'en-US': 'Select priority' },
+  'Due Date': { 'pt-BR': 'Data de Vencimento', 'en-US': 'Due Date' },
+  'Pick a date': { 'pt-BR': 'Escolha uma data', 'en-US': 'Pick a date' },
+  'Project': { 'pt-BR': 'Projeto', 'en-US': 'Project' },
+  'e.g., Work, Personal': { 'pt-BR': 'Ex: Trabalho, Pessoal', 'en-US': 'e.g., Work, Personal' },
+  'Sub-tasks': { 'pt-BR': 'Sub-tarefas', 'en-US': 'Sub-tasks' },
+  'e.g., Research the topic': { 'pt-BR': 'Ex: Pesquisar sobre o tópico', 'en-US': 'e.g., Research the topic' },
+  'Add Sub-task': { 'pt-BR': 'Adicionar Sub-tarefa', 'en-US': 'Add Sub-task' },
+  'Save Task': { 'pt-BR': 'Salvar Tarefa', 'en-US': 'Save Task' },
+
+  // Calendar
+  'Select a day': { 'pt-BR': 'Selecione um dia', 'en-US': 'Select a day' },
+  'Event': { 'pt-BR': 'Evento', 'en-US': 'Event' },
+  'No events for this day.': { 'pt-BR': 'Nenhum evento para este dia.', 'en-US': 'No events for this day.' },
+  'Guests:': { 'pt-BR': 'Convidados:', 'en-US': 'Guests:' },
+  'All day': { 'pt-BR': 'O dia todo', 'en-US': 'All day' },
+  'At {time}': { 'pt-BR': 'Às {time}', 'en-US': 'At {time}' },
+  'Add New Event': { 'pt-BR': 'Adicionar Novo Evento', 'en-US': 'Add New Event' },
+  'Fill in the details for your new event. Click save when you\'re done.': { 'pt-BR': 'Preencha os detalhes do seu novo evento. Clique em salvar quando terminar.', 'en-US': 'Fill in the details for your new event. Click save when you\'re done.' },
+  'e.g., Meeting with the team': { 'pt-BR': 'Ex: Reunião com a equipe', 'en-US': 'e.g., Meeting with the team' },
+  'Date': { 'pt-BR': 'Data', 'en-US': 'Date' },
+  'Start Time': { 'pt-BR': 'Hora de Início', 'en-US': 'Start Time' },
+  'End Time': { 'pt-BR': 'Hora de Fim', 'en-US': 'End Time' },
+  'Event details...': { 'pt-BR': 'Detalhes do evento...', 'en-US': 'Event details...' },
+  'Location': { 'pt-BR': 'Localização', 'en-US': 'Location' },
+  'e.g., Office': { 'pt-BR': 'Ex: Escritório', 'en-US': 'e.g., Office' },
+  'Guests': { 'pt-BR': 'Convidados', 'en-US': 'Guests' },
+  'email@example.com': { 'pt-BR': 'email@exemplo.com', 'en-US': 'email@example.com' },
+  'Add Guest': { 'pt-BR': 'Adicionar Convidado', 'en-US': 'Add Guest' },
+  'Save Event': { 'pt-BR': 'Salvar Evento', 'en-US': 'Save Event' },
+
+  // Wellbeing
+  'How are you feeling today?': { 'pt-BR': 'Como você está se sentindo hoje?', 'en-US': 'How are you feeling today?' },
+  'Log your mood to track your well-being over time.': { 'pt-BR': 'Registre seu humor para acompanhar seu bem-estar ao longo do tempo.', 'en-US': 'Log your mood to track your well-being over time.' },
+  'Happy': { 'pt-BR': 'Feliz', 'en-US': 'Happy' },
+  'Good': { 'pt-BR': 'Bem', 'en-US': 'Good' },
+  'Ok': { 'pt-BR': 'Ok', 'en-US': 'Ok' },
+  'Sad': { 'pt-BR': 'Triste', 'en-US': 'Sad' },
+  'Angry': { 'pt-BR': 'Irritado', 'en-US': 'Angry' },
+  'Weekly Habits': { 'pt-BR': 'Hábitos da Semana', 'en-US': 'Weekly Habits' },
+  'Create and track your habits for each day of the week.': { 'pt-BR': 'Crie e acompanhe seus hábitos para cada dia da semana.', 'en-US': 'Create and track your habits for each day of the week.' },
+  'Add Habit': { 'pt-BR': 'Adicionar Hábito', 'en-US': 'Add Habit' },
+  'Today\'s Habits ({day})': { 'pt-BR': 'Hábitos de Hoje ({day})', 'en-US': 'Today\'s Habits ({day})' },
+  'No habits for today. Add a new one!': { 'pt-BR': 'Nenhum hábito para hoje. Adicione um novo!', 'en-US': 'No habits for today. Add a new one!' },
+  'All Habits': { 'pt-BR': 'Todos os Hábitos', 'en-US': 'All Habits' },
+  'You haven\'t created any habits yet.': { 'pt-BR': 'Você ainda não criou nenhum hábito.', 'en-US': 'You haven\'t created any habits yet.' },
+  'Monday': { 'pt-BR': 'Segunda', 'en-US': 'Monday' },
+  'Tuesday': { 'pt-BR': 'Terça', 'en-US': 'Tuesday' },
+  'Wednesday': { 'pt-BR': 'Quarta', 'en-US': 'Wednesday' },
+  'Thursday': { 'pt-BR': 'Quinta', 'en-US': 'Thursday' },
+  'Friday': { 'pt-BR': 'Sexta', 'en-US': 'Friday' },
+  'Saturday': { 'pt-BR': 'Sábado', 'en-US': 'Saturday' },
+  'Sunday': { 'pt-BR': 'Domingo', 'en-US': 'Sunday' },
+  'Mon': { 'pt-BR': 'Seg', 'en-US': 'Mon' },
+  'Tue': { 'pt-BR': 'Ter', 'en-US': 'Tue' },
+  'Wed': { 'pt-BR': 'Qua', 'en-US': 'Wed' },
+  'Thu': { 'pt-BR': 'Qui', 'en-US': 'Thu' },
+  'Fri': { 'pt-BR': 'Sex', 'en-US': 'Fri' },
+  'Sat': { 'pt-BR': 'Sab', 'en-US': 'Sat' },
+  'Sun': { 'pt-BR': 'Dom', 'en-US': 'Sun' },
+  'Add New Habit': { 'pt-BR': 'Adicionar Novo Hábito', 'en-US': 'Add New Habit' },
+  'Define a new habit and choose the days to practice it.': { 'pt-BR': 'Defina um novo hábito e escolha os dias para praticá-lo.', 'en-US': 'Define a new habit and choose the days to practice it.' },
+  'Habit Name': { 'pt-BR': 'Nome do Hábito', 'en-US': 'Habit Name' },
+  'e.g., Read for 30 minutes': { 'pt-BR': 'Ex: Ler por 30 minutos', 'en-US': 'e.g., Read for 30 minutes' },
+  'Habit name is required.': { 'pt-BR': 'O nome do hábito é obrigatório.', 'en-US': 'Habit name is required.' },
+  'Repeat on': { 'pt-BR': 'Repetir em', 'en-US': 'Repeat on' },
+  'Select at least one day of the week.': { 'pt-BR': 'Selecione pelo menos um dia da semana.', 'en-US': 'Select at least one day of the week.' },
+  'Save Habit': { 'pt-BR': 'Salvar Hábito', 'en-US': 'Save Habit' },
+  'M': { 'pt-BR': 'S', 'en-US': 'M' },
+  'T': { 'pt-BR': 'T', 'en-US': 'T' },
+  'W': { 'pt-BR': 'Q', 'en-US': 'W' },
+  'Th': { 'pt-BR': 'Q', 'en-US': 'T' },
+  'F': { 'pt-BR': 'S', 'en-US': 'F' },
+  'S': { 'pt-BR': 'S', 'en-US': 'S' },
+  'Su': { 'pt-BR': 'D', 'en-US': 'S' },
+
+  // Notes
+  'Search notes...': { 'pt-BR': 'Buscar notas...', 'en-US': 'Search notes...' },
+  'New Note': { 'pt-BR': 'Nova Nota', 'en-US': 'New Note' },
+  'No content': { 'pt-BR': 'Nenhum conteúdo', 'en-US': 'No content' },
+  'Created on {date}': { 'pt-BR': 'Criado em {date}', 'en-US': 'Created on {date}' },
+  'Are you sure?': { 'pt-BR': 'Você tem certeza?', 'en-US': 'Are you sure?' },
+  'This action cannot be undone. This will permanently delete your note.': { 'pt-BR': 'Esta ação não pode ser desfeita. Isso excluirá permanentemente sua nota.', 'en-US': 'This action cannot be undone. This will permanently delete your note.' },
+  'Summarizing...': { 'pt-BR': 'Resumindo...', 'en-US': 'Summarizing...' },
+  'Summarize with AI': { 'pt-BR': 'Resumir com AI', 'en-US': 'Summarize with AI' },
+  'Failed to generate summary. Please try again.': { 'pt-BR': 'Falha ao gerar resumo. Por favor, tente novamente.', 'en-US': 'Failed to generate summary. Please try again.' },
+  'Select a note to view or create a new one.': { 'pt-BR': 'Selecione uma nota para visualizar ou crie uma nova.', 'en-US': 'Select a note to view or create a new one.' },
+  'Create First Note': { 'pt-BR': 'Criar Primeira Nota', 'en-US': 'Create First Note' },
+  'Note Summary': { 'pt-BR': 'Resumo da Nota', 'en-US': 'Note Summary' },
+  'Here is a summary of your note generated by AI.': { 'pt-BR': 'Aqui está um resumo da sua nota gerado por IA.', 'en-US': 'Here is a summary of your note generated by AI.' },
+  'Start writing...': { 'pt-BR': 'Comece a escrever...', 'en-US': 'Start writing...' },
 };
 
-export const t = (key: string, locale: Locale): string => {
-  return translations[key]?.[locale] || key;
+export const t = (key: string, locale: Locale, options?: Record<string, string | number>): string => {
+  let translation = translations[key]?.[locale] || key;
+  
+  if (options) {
+    Object.keys(options).forEach(optionKey => {
+      const regex = new RegExp(`{${optionKey}(, [a-zA-Z]+, (one|other) {[^}]+})?}`, 'g');
+      
+      // Basic pluralization for tasks
+      if (optionKey === 'task' && typeof options.count === 'number') {
+        const pluralString = options.count === 1 
+            ? (locale === 'pt-BR' ? 'tarefa pendente' : 'task')
+            : (locale === 'pt-BR' ? 'tarefas pendentes' : 'tasks');
+        translation = translation.replace('{task, plural, one {tarefa pendente} other {tarefas pendentes}}', pluralString)
+                                 .replace('{task, plural, one {task} other {tasks}}', pluralString);
+      } else {
+        translation = translation.replace(`{${optionKey}}`, String(options[optionKey]));
+      }
+    });
+  }
+  
+  return translation;
 };

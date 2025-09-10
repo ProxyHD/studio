@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -14,17 +14,26 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
-
-const loginSchema = z.object({
-  email: z.string().email('Por favor, insira um e-mail válido.').min(1, 'O e-mail é obrigatório.'),
-  password: z.string().min(1, 'A senha é obrigatória.'),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import { useAppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { locale } = useAppContext();
+
+  const getLoginSchema = (locale: 'pt-BR' | 'en-US') => z.object({
+    email: z.string().email(t('Please enter a valid email.', locale)).min(1, t('Email is required.', locale)),
+    password: z.string().min(1, t('Password is required.', locale)),
+  });
+
+  const [loginSchema, setLoginSchema] = useState(getLoginSchema(locale));
+
+  useEffect(() => {
+    setLoginSchema(getLoginSchema(locale));
+  }, [locale]);
+
+  type LoginFormValues = z.infer<typeof loginSchema>;
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -33,20 +42,25 @@ export default function LoginPage() {
       password: '',
     },
   });
+  
+  useEffect(() => {
+    form.trigger();
+  }, [locale, form]);
+
 
   async function onSubmit(data: LoginFormValues) {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       router.push('/dashboard');
     } catch (error: any) {
-      let description = 'Ocorreu um erro ao fazer login. Tente novamente.';
+      let description = t('An error occurred while logging in. Try again.', locale);
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-        description = 'E-mail ou senha inválidos.';
+        description = t('Invalid email or password.', locale);
       } else if (error.code === 'auth/configuration-not-found') {
-        description = 'Erro de configuração do Firebase. Ative o login por E-mail/Senha no Console do Firebase.';
+        description = `${t('Firebase configuration error.', locale)} ${t('Enable Email/Password login in the Firebase Console.', locale)}`;
       }
       toast({
-        title: 'Erro de Login',
+        title: t('Login Error', locale),
         description,
         variant: 'destructive',
       });
@@ -59,14 +73,14 @@ export default function LoginPage() {
       await signInWithPopup(auth, provider);
       router.push('/dashboard');
     } catch (error: any) {
-      let description = 'Não foi possível fazer login com o Google. Tente novamente.';
+      let description = 'Could not log in with Google. Try again.';
        if (error.code === 'auth/popup-blocked') {
-        description = 'O pop-up de login foi bloqueado pelo navegador. Por favor, habilite os pop-ups para este site.';
+        description = t('Login popup was blocked by the browser.', locale);
       } else if (error.code === 'auth/configuration-not-found') {
-        description = 'Erro de configuração do Firebase. Ative o login com Google no Console do Firebase.';
+        description = `${t('Firebase configuration error.', locale)} ${t('Enable Google login in the Firebase Console.', locale)}`;
       }
       toast({
-        title: 'Erro',
+        title: t('Error', locale),
         description,
         variant: 'destructive',
       });
@@ -80,9 +94,9 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <LifeBuoy className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
+          <CardTitle className="text-2xl text-center">{t('Login', locale)}</CardTitle>
           <CardDescription className="text-center">
-            Digite seu e-mail abaixo para fazer login na sua conta LifeHub
+            {t('Enter your email below to login to your LifeHub account', locale)}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -93,7 +107,7 @@ export default function LoginPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-mail</FormLabel>
+                    <FormLabel>{t('Email', locale)}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -111,12 +125,12 @@ export default function LoginPage() {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center">
-                      <FormLabel>Senha</FormLabel>
+                      <FormLabel>{t('Password', locale)}</FormLabel>
                       <Link
                         href="#"
                         className="ml-auto inline-block text-sm underline"
                       >
-                        Esqueceu sua senha?
+                        {t('Forgot your password?', locale)}
                       </Link>
                     </div>
                     <FormControl>
@@ -127,7 +141,7 @@ export default function LoginPage() {
                 )}
               />
               <Button type="submit" className="w-full">
-                Login
+                {t('Login', locale)}
               </Button>
             </form>
           </Form>
@@ -137,18 +151,18 @@ export default function LoginPage() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-background px-2 text-muted-foreground">
-                Ou continue com
+                {t('Or continue with', locale)}
               </span>
             </div>
           </div>
           <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
             <Chrome className="mr-2 h-4 w-4" />
-            Login com Google
+            {t('Login with Google', locale)}
           </Button>
           <div className="mt-4 text-center text-sm">
-            Não tem uma conta?{' '}
+            {t('Don\'t have an account?', locale)}{' '}
             <Link href="/register" className="underline">
-              Cadastre-se
+              {t('Sign up', locale)}
             </Link>
           </div>
         </CardContent>

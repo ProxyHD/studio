@@ -11,10 +11,10 @@ import { cn } from '@/lib/utils';
 import type { Task } from '@/lib/types';
 import { AddTaskDialog } from '@/components/tasks/add-task-dialog';
 import { AppContext } from '@/context/app-provider';
-
+import { t } from '@/lib/translations';
 
 export default function TasksPage() {
-  const { tasks, setTasks } = useContext(AppContext);
+  const { tasks, setTasks, locale } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const addTask = (task: Omit<Task, 'id' | 'status'>) => {
@@ -61,19 +61,19 @@ export default function TasksPage() {
   return (
     <>
       <div className="flex flex-col h-full">
-        <SiteHeader title="Tarefas" />
+        <SiteHeader title={t('Tasks', locale)} />
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold tracking-tight">Quadro de Tarefas</h2>
+            <h2 className="text-2xl font-bold tracking-tight">{t('Task Board', locale)}</h2>
             <Button onClick={() => setIsDialogOpen(true)}>
               <PlusCircle className="mr-2 h-4 w-4" />
-              Adicionar Tarefa
+              {t('Add Task', locale)}
             </Button>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
-            <TaskColumn title="A Fazer" tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} />
-            <TaskColumn title="Em Progresso" tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} />
-            <TaskColumn title="Concluído" tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} />
+            <TaskColumn title={t('To Do', locale)} tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} locale={locale} />
+            <TaskColumn title={t('In Progress', locale)} tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} locale={locale} />
+            <TaskColumn title={t('Done', locale)} tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} locale={locale} />
           </div>
         </div>
       </div>
@@ -92,9 +92,16 @@ interface TaskColumnProps {
   onToggleTask: (taskId: string) => void;
   onToggleSubtask: (taskId: string, subtaskId: string) => void;
   onDeleteTask: (taskId: string) => void;
+  locale: 'pt-BR' | 'en-US';
 }
 
-function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask }: TaskColumnProps) {
+function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask, locale }: TaskColumnProps) {
+  const getPriorityText = (priority: 'low' | 'medium' | 'high') => {
+    if (priority === 'high') return t('High', locale);
+    if (priority === 'medium') return t('Medium', locale);
+    return t('Low', locale);
+  };
+  
   return (
     <Card className="bg-muted/30">
       <CardHeader>
@@ -119,7 +126,7 @@ function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask 
                 </div>
                 <div className="flex items-center gap-1">
                   <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className="capitalize">
-                    {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
+                    {getPriorityText(task.priority)}
                   </Badge>
                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onDeleteTask(task.id)}>
                       <Trash2 className="h-4 w-4" />
@@ -156,7 +163,7 @@ function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask 
         ))}
         {tasks.length === 0 && (
           <div className="flex items-center justify-center h-24">
-            <p className="text-sm text-muted-foreground">Nenhuma tarefa aqui.</p>
+            <p className="text-sm text-muted-foreground">{t('No tasks here.', locale)}</p>
           </div>
         )}
       </CardContent>

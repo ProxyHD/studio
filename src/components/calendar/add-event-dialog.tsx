@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { ptBR, enUS } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Zap, PlusCircle, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -35,6 +35,8 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import type { Event } from '@/lib/types';
+import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 const eventSchema = z.object({
   title: z.string().min(1, 'O título é obrigatório.'),
@@ -60,7 +62,9 @@ interface AddEventDialogProps {
 }
 
 export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate }: AddEventDialogProps) {
+  const { locale } = useContext(AppContext);
   const isProUser = true; // Mock value, would come from user session
+  const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -104,9 +108,9 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Adicionar Novo Evento</DialogTitle>
+          <DialogTitle>{t('Add New Event', locale)}</DialogTitle>
           <DialogDescription>
-            Preencha os detalhes do seu novo evento. Clique em salvar quando terminar.
+            {t('Fill in the details for your new event. Click save when you\'re done.', locale)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -116,9 +120,9 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Título</FormLabel>
+                  <FormLabel>{t('Title', locale)}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Ex: Reunião com a equipe" {...field} />
+                    <Input placeholder={t('e.g., Meeting with the team', locale)} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,7 +133,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
               name="date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Data</FormLabel>
+                  <FormLabel>{t('Date', locale)}</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -141,9 +145,9 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
                           )}
                         >
                           {field.value ? (
-                            format(field.value, 'PPP', { locale: ptBR })
+                            format(field.value, 'PPP', { locale: dateLocale })
                           ) : (
-                            <span>Escolha uma data</span>
+                            <span>{t('Pick a date', locale)}</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -168,7 +172,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
                 name="startTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hora de Início</FormLabel>
+                    <FormLabel>{t('Start Time', locale)}</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -181,7 +185,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
                 name="endTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hora de Fim</FormLabel>
+                    <FormLabel>{t('End Time', locale)}</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -195,9 +199,9 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição</FormLabel>
+                  <FormLabel>{t('Description', locale)}</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Detalhes do evento..." {...field} />
+                    <Textarea placeholder={t('Event details...', locale)} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -211,12 +215,12 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
-                    Localização
+                    {t('Location', locale)}
                     {!isProUser && <Zap className="h-4 w-4 text-accent" />}
                   </FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="Ex: Escritório" 
+                      placeholder={t('e.g., Office', locale)} 
                       {...field}
                       disabled={!isProUser} 
                     />
@@ -229,7 +233,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
             {/* Pro Feature: Guests */}
             <div>
               <FormLabel className="flex items-center gap-2 mb-2">
-                Convidados
+                {t('Guests', locale)}
                 {!isProUser && <Zap className="h-4 w-4 text-accent" />}
               </FormLabel>
               <div className="space-y-2">
@@ -243,7 +247,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
                         <FormControl>
                            <Input 
                             {...guestField}
-                            placeholder="email@exemplo.com"
+                            placeholder={t('email@example.com', locale)}
                             disabled={!isProUser}
                           />
                         </FormControl>
@@ -269,13 +273,13 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
                   className="w-full"
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
-                  Adicionar Convidado
+                  {t('Add Guest', locale)}
                 </Button>
               </div>
             </div>
 
             <DialogFooter className="pt-4">
-              <Button type="submit">Salvar Evento</Button>
+              <Button type="submit">{t('Save Event', locale)}</Button>
             </DialogFooter>
           </form>
         </Form>

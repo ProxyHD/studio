@@ -18,6 +18,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { AppContext } from '@/context/app-provider';
 import type { Locale } from '@/lib/types';
+import { t } from '@/lib/translations';
 
 export function LanguageForm() {
   const { locale, setLocale } = useContext(AppContext);
@@ -29,21 +30,21 @@ export function LanguageForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Idioma e Região</CardTitle>
+        <CardTitle>{t('Language and Region', locale)}</CardTitle>
         <CardDescription>
-          Altere o idioma e a moeda do aplicativo.
+          {t('Change the application language and currency.', locale)}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-2">
-          <Label htmlFor="language">Idioma</Label>
+          <Label htmlFor="language">{t('Language', locale)}</Label>
           <Select value={locale} onValueChange={handleLocaleChange}>
-            <SelectTrigger id="language" className="w-[180px]">
-              <SelectValue placeholder="Selecione o idioma" />
+            <SelectTrigger id="language" className="w-[220px]">
+              <SelectValue placeholder={t('Select language', locale)} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="pt-BR">Português (Brasil)</SelectItem>
-              <SelectItem value="en-US">English (United States)</SelectItem>
+              <SelectItem value="pt-BR">{t('Portuguese (Brazil)', locale)}</SelectItem>
+              <SelectItem value="en-US">{t('English (United States)', locale)}</SelectItem>
             </SelectContent>
           </Select>
         </div>

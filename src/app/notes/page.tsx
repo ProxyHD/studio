@@ -32,10 +32,10 @@ import {
 import { summarizeNotes } from '@/ai/flows/summarize-notes';
 import { useToast } from '@/hooks/use-toast';
 import { AppContext } from '@/context/app-provider';
-
+import { t } from '@/lib/translations';
 
 export default function NotesPage() {
-  const { notes, setNotes } = useContext(AppContext);
+  const { notes, setNotes, locale } = useContext(AppContext);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [summary, setSummary] = useState('');
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
@@ -60,7 +60,7 @@ export default function NotesPage() {
   const handleAddNewNote = () => {
     const newNote: Note = {
       id: crypto.randomUUID(),
-      title: 'Nova Nota',
+      title: t('New Note', locale),
       content: '',
       createdAt: new Date().toISOString(),
     };
@@ -88,8 +88,8 @@ export default function NotesPage() {
     } catch (error) {
       console.error(error);
       toast({
-        title: 'Erro',
-        description: 'Falha ao gerar resumo. Por favor, tente novamente.',
+        title: t('Error', locale),
+        description: t('Failed to generate summary. Please try again.', locale),
         variant: 'destructive',
       });
     } finally {
@@ -100,13 +100,13 @@ export default function NotesPage() {
   return (
     <>
       <div className="flex flex-col h-screen max-h-screen overflow-hidden">
-        <SiteHeader title="Notas" />
+        <SiteHeader title={t('Notes', locale)} />
         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-0 overflow-hidden">
           <aside className="hidden md:flex flex-col border-r h-full">
             <div className="p-4 space-y-4">
-              <Input placeholder="Buscar notas..." />
+              <Input placeholder={t('Search notes...', locale)} />
               <Button className="w-full" onClick={handleAddNewNote}>
-                <PlusCircle className="mr-2 h-4 w-4" /> Nova Nota
+                <PlusCircle className="mr-2 h-4 w-4" /> {t('New Note', locale)}
               </Button>
             </div>
             <ScrollArea className="flex-1">
@@ -121,7 +121,7 @@ export default function NotesPage() {
                     )}
                   >
                     <h3 className="font-semibold truncate">{note.title}</h3>
-                    <p className="text-sm text-muted-foreground truncate">{note.content || 'Nenhum conteúdo'}</p>
+                    <p className="text-sm text-muted-foreground truncate">{note.content || t('No content', locale)}</p>
                   </button>
                 ))}
               </div>
@@ -137,7 +137,7 @@ export default function NotesPage() {
                             onChange={(e) => handleNoteChange('title', e.target.value)}
                             className="text-2xl font-bold border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
                         />
-                         <p className="text-sm text-muted-foreground">Criado em {new Date(selectedNote.createdAt).toLocaleDateString('pt-BR')}</p>
+                         <p className="text-sm text-muted-foreground">{t('Created on {date}', locale, { date: new Date(selectedNote.createdAt).toLocaleDateString(locale) })}</p>
                     </div>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -147,14 +147,14 @@ export default function NotesPage() {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+                          <AlertDialogTitle>{t('Are you sure?', locale)}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Esta ação não pode ser desfeita. Isso excluirá permanentemente sua nota.
+                            {t('This action cannot be undone. This will permanently delete your note.', locale)}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDeleteNote(selectedNote.id)}>Continuar</AlertDialogAction>
+                          <AlertDialogCancel>{t('Cancel', locale)}</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDeleteNote(selectedNote.id)}>{t('Continue', locale)}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -164,7 +164,7 @@ export default function NotesPage() {
                       value={selectedNote.content}
                       onChange={(e) => handleNoteChange('content', e.target.value)}
                       className="w-full h-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-                      placeholder="Comece a escrever..."
+                      placeholder={t('Start writing...', locale)}
                     />
                 </div>
                 <div className="p-4 border-t mt-auto flex justify-between">
@@ -174,16 +174,16 @@ export default function NotesPage() {
                       ) : (
                         <Sparkles className="mr-2 h-4 w-4" />
                       )}
-                      {isSummaryLoading ? 'Resumindo...' : 'Resumir com IA'}
+                      {isSummaryLoading ? t('Summarizing...', locale) : t('Summarize with AI', locale)}
                    </Button>
                 </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
                  <div className="text-center">
-                    <p className="text-muted-foreground">Selecione uma nota para visualizar ou crie uma nova.</p>
+                    <p className="text-muted-foreground">{t('Select a note to view or create a new one.', locale)}</p>
                     <Button className="mt-4" onClick={handleAddNewNote}>
-                        <PlusCircle className="mr-2 h-4 w-4" /> Criar Primeira Nota
+                        <PlusCircle className="mr-2 h-4 w-4" /> {t('Create First Note', locale)}
                     </Button>
                 </div>
               </div>
@@ -194,16 +194,16 @@ export default function NotesPage() {
       <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Resumo da Nota</DialogTitle>
+            <DialogTitle>{t('Note Summary', locale)}</DialogTitle>
             <DialogDescription>
-              Aqui está um resumo da sua nota gerado por IA.
+              {t('Here is a summary of your note generated by AI.', locale)}
             </DialogDescription>
           </DialogHeader>
           <div className="prose prose-sm max-w-none">
             <p>{summary}</p>
           </div>
           <DialogFooter>
-            <Button onClick={() => setIsSummaryDialogOpen(false)}>Fechar</Button>
+            <Button onClick={() => setIsSummaryDialogOpen(false)}>{t('Close', locale)}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

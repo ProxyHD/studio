@@ -1,5 +1,6 @@
 'use client';
 
+import { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -14,19 +15,29 @@ import { useToast } from '@/hooks/use-toast';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-
-const registerSchema = z.object({
-  firstName: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres.'),
-  lastName: z.string().min(3, 'O sobrenome deve ter pelo menos 3 caracteres.'),
-  email: z.string().email('Por favor, insira um e-mail válido.').min(1, 'O e-mail é obrigatório.'),
-  password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres.'),
-});
-
-type RegisterFormValues = z.infer<typeof registerSchema>;
+import { useAppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { locale } = useAppContext();
+  
+  const getRegisterSchema = (locale: 'pt-BR' | 'en-US') => z.object({
+    firstName: z.string().min(3, t('First name must be at least 3 characters.', locale)),
+    lastName: z.string().min(3, t('Last name must be at least 3 characters.', locale)),
+    email: z.string().email(t('Please enter a valid email.', locale)).min(1, t('Email is required.', locale)),
+    password: z.string().min(6, t('Password must be at least 6 characters.', locale)),
+  });
+
+  const [registerSchema, setRegisterSchema] = useState(getRegisterSchema(locale));
+
+  useEffect(() => {
+    setRegisterSchema(getRegisterSchema(locale));
+  }, [locale]);
+  
+  type RegisterFormValues = z.infer<typeof registerSchema>;
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -36,6 +47,11 @@ export default function RegisterPage() {
       password: '',
     },
   });
+  
+  useEffect(() => {
+    form.trigger();
+  }, [locale, form]);
+
 
   async function onSubmit(data: RegisterFormValues) {
     try {
@@ -59,20 +75,20 @@ export default function RegisterPage() {
       });
 
       toast({
-        title: 'Sucesso!',
-        description: 'Cadastro realizado com sucesso. Agora você pode fazer login.',
+        title: t('Success', locale),
+        description: t('Registration successful. You can now log in.', locale),
       });
       router.push('/');
     } catch (error: any) {
       console.error('Registration error:', error);
-      let description = 'Não foi possível concluir o cadastro. Tente novamente.';
+      let description = t('Could not complete registration. Try again.', locale);
       if (error.code === 'auth/email-already-in-use') {
-        description = 'Este e-mail já está em uso.';
+        description = t('This email is already in use.', locale);
       } else if (error.code === 'auth/configuration-not-found') {
-        description = 'Erro de configuração do Firebase. Ative o login por E-mail/Senha no Console do Firebase.';
+        description = `${t('Firebase configuration error.', locale)} ${t('Enable Email/Password login in the Firebase Console.', locale)}`;
       }
       toast({
-        title: 'Erro de Cadastro',
+        title: t('Registration Error', locale),
         description,
         variant: 'destructive',
       });
@@ -86,9 +102,9 @@ export default function RegisterPage() {
           <div className="flex justify-center mb-4">
             <LifeBuoy className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl text-center">Cadastro</CardTitle>
+          <CardTitle className="text-2xl text-center">{t('Register', locale)}</CardTitle>
           <CardDescription className="text-center">
-            Crie sua conta LifeHub para começar a organizar sua vida
+            {t('Create your LifeHub account to start organizing your life', locale)}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -100,7 +116,7 @@ export default function RegisterPage() {
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nome</FormLabel>
+                      <FormLabel>{t('First Name', locale)}</FormLabel>
                       <FormControl>
                         <Input placeholder="Max" {...field} />
                       </FormControl>
@@ -113,7 +129,7 @@ export default function RegisterPage() {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Sobrenome</FormLabel>
+                      <FormLabel>{t('Last Name', locale)}</FormLabel>
                       <FormControl>
                         <Input placeholder="Robinson" {...field} />
                       </FormControl>
@@ -127,7 +143,7 @@ export default function RegisterPage() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-mail</FormLabel>
+                    <FormLabel>{t('Email', locale)}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -144,7 +160,7 @@ export default function RegisterPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Senha</FormLabel>
+                    <FormLabel>{t('Password', locale)}</FormLabel>
                     <FormControl>
                       <Input type="password" {...field} />
                     </FormControl>
@@ -153,14 +169,14 @@ export default function RegisterPage() {
                 )}
               />
               <Button type="submit" className="w-full">
-                Criar conta
+                {t('Create account', locale)}
               </Button>
             </form>
           </Form>
           <div className="mt-4 text-center text-sm">
-            Já tem uma conta?{' '}
+            {t('Already have an account?', locale)}{' '}
             <Link href="/" className="underline">
-              Login
+              {t('Login', locale)}
             </Link>
           </div>
         </CardContent>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useContext } from 'react';
 import { useTheme } from '@/context/theme-provider';
 import { Sun, Moon } from 'lucide-react';
 import {
@@ -10,16 +11,19 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export function ThemeForm() {
   const { theme, setTheme } = useTheme();
+  const { locale } = useContext(AppContext);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Aparência</CardTitle>
+        <CardTitle>{t('Appearance', locale)}</CardTitle>
         <CardDescription>
-          Selecione o tema para a aparência do aplicativo.
+          {t('Select the theme for the application appearance.', locale)}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -30,7 +34,7 @@ export function ThemeForm() {
             className="h-24 flex-col gap-2"
           >
             <Sun className="h-6 w-6" />
-            Claro
+            {t('Light', locale)}
           </Button>
           <Button
             variant={theme === 'dark' ? 'secondary' : 'outline'}
@@ -38,7 +42,7 @@ export function ThemeForm() {
             className="h-24 flex-col gap-2"
           >
             <Moon className="h-6 w-6" />
-            Escuro
+            {t('Dark', locale)}
           </Button>
         </div>
       </CardContent>

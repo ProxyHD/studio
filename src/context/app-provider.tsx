@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useState, ReactNode, useEffect, useContext } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
@@ -122,7 +122,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       });
 
     } else {
-      // No user, clear all data
+      // No user, clear all data and don't show loading screen
+      if (window.location.pathname === '/' || window.location.pathname === '/register') {
+        setLoading(false);
+      }
       setProfile(null);
       setTasks([]);
       setNotes([]);
@@ -131,7 +134,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setHabits([]);
       setCompletedHabits([]);
       setLocale('pt-BR');
-      setLoading(false);
     }
     
     return () => unsubscribe(); // Cleanup snapshot listener on component unmount or user change
@@ -163,3 +165,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     </AppContext.Provider>
   );
 }
+
+// Add a hook to use the context easily
+export const useAppContext = () => {
+  const context = useContext(AppContext);
+  if (context === undefined) {
+    throw new Error('useAppContext must be used within an AppProvider');
+  }
+  return context;
+};

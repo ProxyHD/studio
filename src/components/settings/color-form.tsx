@@ -1,5 +1,6 @@
 'use client';
 
+import { useContext } from 'react';
 import { useTheme } from '@/context/theme-provider';
 import {
   Card,
@@ -7,7 +8,6 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -15,13 +15,17 @@ import { Zap, Check, Palette, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export function ColorForm() {
   const { palette, setPalette, palettes, isPlusUser, setCustomColor, resetPalette } = useTheme();
+  const { locale } = useContext(AppContext);
 
   // Helper to convert HSL string to HEX color for the color input
   const hslToHex = (hsl: string) => {
-    const [h, s, l] = hsl.split(' ').map(parseFloat);
+    if (!hsl) return '#000000';
+    const [h, s, l] = hsl.split(' ').map(val => parseFloat(val));
     const s_norm = s / 100;
     const l_norm = l / 100;
     const c = (1 - Math.abs(2 * l_norm - 1)) * s_norm;
@@ -87,23 +91,23 @@ export function ColorForm() {
     <Card className={cn(!isPlusUser && 'bg-muted/30 border-dashed')}>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Paleta de Cores</CardTitle>
+          <CardTitle>{t('Color Palette', locale)}</CardTitle>
           {!isPlusUser && (
             <Button size="sm" asChild>
               <Link href="/upgrade">
                 <Zap className="mr-2 h-4 w-4" />
-                Upgrade para Plus
+                {t('Upgrade to Plus', locale)}
               </Link>
             </Button>
           )}
         </div>
         <CardDescription>
-          Personalize a aparência do aplicativo. Requer o plano Plus.
+          {t('Customize the application\'s appearance. Requires Plus plan.', locale)}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
         <div>
-          <h4 className="font-medium mb-4 text-sm text-muted-foreground">Predefinições</h4>
+          <h4 className="font-medium mb-4 text-sm text-muted-foreground">{t('Presets', locale)}</h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {palettes.map((p) => (
               <button
@@ -135,7 +139,7 @@ export function ColorForm() {
                   ></div>
                 </div>
                 <span className="text-sm font-medium capitalize">
-                  {p.name === 'default' ? 'Padrão' : p.name}
+                  {p.name === 'default' ? t('Default', locale) : p.name}
                 </span>
                 {palette.name === p.name && (
                   <div
@@ -156,7 +160,7 @@ export function ColorForm() {
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
                 <Palette className="h-4 w-4" />
-                Cores Personalizadas
+                {t('Custom Colors', locale)}
             </h4>
             <Button 
                 variant="ghost" 
@@ -165,12 +169,12 @@ export function ColorForm() {
                 disabled={!isPlusUser}
             >
                 <RotateCcw className="mr-2 h-4 w-4" />
-                Redefinir
+                {t('Reset', locale)}
             </Button>
           </div>
           <fieldset disabled={!isPlusUser} className="grid grid-cols-2 md:grid-cols-4 gap-4 disabled:opacity-50 disabled:cursor-not-allowed">
             <div className="space-y-2">
-                <Label htmlFor="primaryColor">Primária</Label>
+                <Label htmlFor="primaryColor">{t('Primary', locale)}</Label>
                 <Input 
                     id="primaryColor"
                     type="color"
@@ -180,7 +184,7 @@ export function ColorForm() {
                 />
             </div>
              <div className="space-y-2">
-                <Label htmlFor="secondaryColor">Secundária</Label>
+                <Label htmlFor="secondaryColor">{t('Secondary', locale)}</Label>
                 <Input 
                     id="secondaryColor"
                     type="color"
@@ -190,7 +194,7 @@ export function ColorForm() {
                 />
             </div>
              <div className="space-y-2">
-                <Label htmlFor="accentColor">Destaque</Label>
+                <Label htmlFor="accentColor">{t('Accent', locale)}</Label>
                 <Input 
                     id="accentColor"
                     type="color"

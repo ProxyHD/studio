@@ -9,26 +9,7 @@ import { cn } from '@/lib/utils';
 import type { Habit } from '@/lib/types';
 import { AddHabitDialog } from '@/components/wellbeing/add-habit-dialog';
 import { AppContext } from '@/context/app-provider';
-
-const moods = [
-  { name: 'Feliz', icon: Laugh },
-  { name: 'Bem', icon: SmileIcon },
-  { name: 'Ok', icon: Meh },
-  { name: 'Triste', icon: Frown },
-  { name: 'Irritado', icon: Angry },
-];
-
-const daysOfWeek = [
-  { id: 'seg', name: 'Segunda' },
-  { id: 'ter', name: 'Terça' },
-  { id: 'qua', name: 'Quarta' },
-  { id: 'qui', name: 'Quinta' },
-  { id: 'sex', name: 'Sexta' },
-  { id: 'sab', name: 'Sábado' },
-  { id: 'dom', name: 'Domingo' },
-];
-
-const dayIndexToId = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+import { t } from '@/lib/translations';
 
 export default function WellbeingPage() {
   const {
@@ -38,9 +19,30 @@ export default function WellbeingPage() {
     setHabits,
     completedHabits,
     setCompletedHabits,
+    locale,
   } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  const moods = [
+    { name: t('Happy', locale), icon: Laugh, key: 'Happy' },
+    { name: t('Good', locale), icon: SmileIcon, key: 'Good' },
+    { name: t('Ok', locale), icon: Meh, key: 'Ok' },
+    { name: t('Sad', locale), icon: Frown, key: 'Sad' },
+    { name: t('Angry', locale), icon: Angry, key: 'Angry' },
+  ];
 
+  const daysOfWeek = useMemo(() => [
+    { id: 'seg', name: t('Monday', locale), short: t('Mon', locale) },
+    { id: 'ter', name: t('Tuesday', locale), short: t('Tue', locale) },
+    { id: 'qua', name: t('Wednesday', locale), short: t('Wed', locale) },
+    { id: 'qui', name: t('Thursday', locale), short: t('Thu', locale) },
+    { id: 'sex', name: t('Friday', locale), short: t('Fri', locale) },
+    { id: 'sab', name: t('Saturday', locale), short: t('Sat', locale) },
+    { id: 'dom', name: t('Sunday', locale), short: t('Sun', locale) },
+  ], [locale]);
+
+  const dayIndexToId = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+  
   const today = useMemo(() => {
     const todayIndex = new Date().getDay();
     return dayIndexToId[todayIndex];
@@ -82,21 +84,21 @@ export default function WellbeingPage() {
   return (
     <>
       <div className="flex flex-col h-full">
-        <SiteHeader title="Bem-estar" />
+        <SiteHeader title={t('Well-being', locale)} />
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
           <Card>
             <CardHeader>
-              <CardTitle>Como você está se sentindo hoje?</CardTitle>
-              <CardDescription>Registre seu humor para acompanhar seu bem-estar ao longo do tempo.</CardDescription>
+              <CardTitle>{t('How are you feeling today?', locale)}</CardTitle>
+              <CardDescription>{t('Log your mood to track your well-being over time.', locale)}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-4">
               {moods.map(mood => (
                 <Button 
-                  key={mood.name} 
-                  variant={selectedMood === mood.name ? 'secondary' : 'outline'}
+                  key={mood.key} 
+                  variant={selectedMood === mood.key ? 'secondary' : 'outline'}
                   size="lg" 
                   className="flex-col h-24 w-24 gap-2"
-                  onClick={() => setSelectedMood(mood.name)}
+                  onClick={() => setSelectedMood(mood.key)}
                 >
                   <mood.icon className="h-8 w-8" />
                   <span>{mood.name}</span>
@@ -109,17 +111,17 @@ export default function WellbeingPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Hábitos da Semana</CardTitle>
-                  <CardDescription>Crie e acompanhe seus hábitos para cada dia da semana.</CardDescription>
+                  <CardTitle>{t('Weekly Habits', locale)}</CardTitle>
+                  <CardDescription>{t('Create and track your habits for each day of the week.', locale)}</CardDescription>
                 </div>
                 <Button onClick={() => setIsDialogOpen(true)}>
                   <PlusCircle className="mr-2 h-4 w-4" />
-                  Adicionar Hábito
+                  {t('Add Habit', locale)}
                 </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
-              <h3 className="font-semibold text-lg">Hábitos de Hoje ({daysOfWeek.find(d => d.id === today)?.name})</h3>
+              <h3 className="font-semibold text-lg">{t('Today\'s Habits ({day})', locale, { day: daysOfWeek.find(d => d.id === today)?.name || '' })}</h3>
               {todaysHabits.length > 0 ? (
                 todaysHabits.map(habit => {
                   const isDone = completedHabitsSet.has(habit.id);
@@ -140,11 +142,11 @@ export default function WellbeingPage() {
                   );
                 })
               ) : (
-                 <p className="text-sm text-muted-foreground">Nenhum hábito para hoje. Adicione um novo!</p>
+                 <p className="text-sm text-muted-foreground">{t('No habits for today. Add a new one!', locale)}</p>
               )}
 
               <div className="mt-8">
-                <h3 className="font-semibold text-lg mb-4">Todos os Hábitos</h3>
+                <h3 className="font-semibold text-lg mb-4">{t('All Habits', locale)}</h3>
                 <div className="space-y-2">
                   {habits.map(habit => (
                     <div key={habit.id} className="p-3 border rounded-lg flex justify-between items-center">
@@ -156,7 +158,7 @@ export default function WellbeingPage() {
                               "text-xs px-2 py-1 rounded-full",
                               habit.days.includes(day.id) ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"
                             )}>
-                              {day.name.substring(0, 3)}
+                              {day.short}
                             </span>
                           ))}
                         </div>
@@ -167,7 +169,7 @@ export default function WellbeingPage() {
                     </div>
                   ))}
                   {habits.length === 0 && (
-                    <p className="text-sm text-muted-foreground">Você ainda não criou nenhum hábito.</p>
+                    <p className="text-sm text-muted-foreground">{t('You haven\'t created any habits yet.', locale)}</p>
                   )}
                 </div>
               </div>
