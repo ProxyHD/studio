@@ -1,21 +1,29 @@
+'use client';
+
+import { useContext } from 'react';
 import Link from 'next/link';
 import { SiteHeader } from '@/components/layout/site-header';
-import { plans } from '@/lib/data';
+import { getPlans } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export default function UpgradePage() {
+  const { locale } = useContext(AppContext);
+  const plans = getPlans(locale);
+
   return (
     <div className="flex flex-col h-full">
-      <SiteHeader title="Planos e Preços" />
+      <SiteHeader title={t('Plans & Pricing', locale)} />
       <div className="flex-1 p-4 pt-6 md:p-8">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold font-headline">Encontre o Plano Perfeito</h2>
+          <h2 className="text-4xl font-bold font-headline">{t('Find the Perfect Plan', locale)}</h2>
           <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
-            Desbloqueie seu potencial com o LifeHub. Escolha o plano que melhor se adapta à sua vida e aos seus objetivos.
+            {t('Unlock your potential with LifeHub. Choose the plan that best suits your life and goals.', locale)}
           </p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -25,7 +33,7 @@ export default function UpgradePage() {
               className={cn("flex flex-col", plan.accent && "border-primary ring-2 ring-primary shadow-lg")}
             >
               {plan.accent && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground">Mais Popular</Badge>
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground">{t('Most Popular', locale)}</Badge>
               )}
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">{plan.name}</CardTitle>
@@ -51,7 +59,7 @@ export default function UpgradePage() {
                   disabled={plan.isCurrent}
                   asChild
                 >
-                  <Link href="/dashboard">{plan.isCurrent ? "Plano Atual" : "Escolher Plano"}</Link>
+                  <Link href="/dashboard">{plan.cta}</Link>
                 </Button>
               </CardFooter>
             </Card>

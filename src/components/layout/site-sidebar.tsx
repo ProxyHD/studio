@@ -1,5 +1,6 @@
 'use client';
 
+import { useContext } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Gem, Settings, LogOut, Zap, LifeBuoy } from 'lucide-react';
@@ -7,22 +8,24 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/auth-provider';
-
-const navItems = [
-  { href: '/dashboard', label: 'Painel', icon: LayoutDashboard },
-  { href: '/tasks', label: 'Tarefas', icon: CheckSquare },
-  { href: '/calendar', label: 'Calendário', icon: Calendar },
-  { href: '/wellbeing', label: 'Bem-estar', icon: Smile },
-  { href: '/notes', label: 'Notas', icon: Notebook },
-];
-
-const proItem = { href: '/upgrade', label: 'Upgrade para Pro', icon: Zap };
-const settingsItem = { href: '/settings', label: 'Configurações', icon: Settings };
-
+import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export function SiteSidebar() {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const { locale } = useContext(AppContext);
+
+  const navItems = [
+    { href: '/dashboard', label: t('Dashboard', locale), icon: LayoutDashboard },
+    { href: '/tasks', label: t('Tasks', locale), icon: CheckSquare },
+    { href: '/calendar', label: t('Calendar', locale), icon: Calendar },
+    { href: '/wellbeing', label: t('Well-being', locale), icon: Smile },
+    { href: '/notes', label: t('Notes', locale), icon: Notebook },
+  ];
+
+  const proItem = { href: '/upgrade', label: t('Upgrade to Pro', locale), icon: Zap };
+  const settingsItem = { href: '/settings', label: t('Settings', locale), icon: Settings };
 
   return (
     <aside className="hidden md:flex flex-col w-64 bg-card border-r fixed h-screen">
@@ -67,7 +70,7 @@ export function SiteSidebar() {
         </Link>
         <Button variant="ghost" className="w-full justify-start" onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" />
-          Sair
+          {t('Logout', locale)}
         </Button>
       </div>
     </aside>

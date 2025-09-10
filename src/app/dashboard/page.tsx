@@ -7,6 +7,7 @@ import { SummaryCard } from '@/components/dashboard/summary-card';
 import { TasksPreview } from '@/components/dashboard/tasks-preview';
 import { RoutineSuggester } from '@/components/dashboard/routine-suggester';
 import { AppContext } from '@/context/app-provider';
+import { t } from '@/lib/translations';
 
 export default function DashboardPage() {
   const { tasks, selectedMood, locale } = useContext(AppContext);
@@ -21,23 +22,23 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <SiteHeader title="Painel" />
+      <SiteHeader title={t('Dashboard', locale)} />
       <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <SummaryCard 
-            title="Tarefas Concluídas" 
+            title={t('Completed Tasks', locale)} 
             value={`${completedTasks} / ${totalTasks}`} 
             icon={CheckCircle} 
           />
           <SummaryCard 
-            title="Humor Atual" 
-            value={selectedMood || 'N/A'}
+            title={t('Current Mood', locale)}
+            value={selectedMood || t('N/A', locale)}
             icon={Heart} 
           />
-          <SummaryCard title="Despesas" value={`${currency}0`} icon={DollarSign} />
+          <SummaryCard title={t('Expenses', locale)} value={`${currency}0`} icon={DollarSign} />
           <SummaryCard 
-            title="Sequência de Hábitos" 
-            value={`${habitStreak} dias`}
+            title={t('Habit Streak', locale)} 
+            value={`${habitStreak} ${t('days', locale)}`}
             icon={Activity} 
           />
         </div>
