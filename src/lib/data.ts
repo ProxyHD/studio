@@ -1,12 +1,6 @@
 import type { Task, Note, Plan } from './types';
 
-export const tasks: Task[] = [
-  { id: '1', title: 'Finalizar relatório do 3º trimestre', status: 'in-progress', priority: 'high', dueDate: '2024-08-15' },
-  { id: '2', title: 'Projetar nova página inicial', status: 'todo', priority: 'medium', dueDate: '2024-08-20' },
-  { id: '3', title: 'Corrigir bug de login', status: 'done', priority: 'high', dueDate: '2024-08-10' },
-  { id: '4', title: 'Agendar reunião de equipe', status: 'todo', priority: 'low', dueDate: '2024-08-12' },
-  { id: '5', title: 'Atualizar documentação', status: 'in-progress', priority: 'medium' },
-];
+export const tasks: Task[] = [];
 
 export const notes: Note[] = [
     {
