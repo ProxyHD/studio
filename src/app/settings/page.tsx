@@ -82,7 +82,9 @@ export default function SettingsPage() {
     return (
         <div className="flex flex-col h-full">
             <SiteHeader title="Configurações" />
-            <div className="p-8">Carregando...</div>
+            <div className="flex-1 p-4 pt-6 md:p-8 flex items-center justify-center">
+                <p>Carregando...</p>
+            </div>
         </div>
     );
   }
