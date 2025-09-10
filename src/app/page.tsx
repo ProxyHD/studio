@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -9,11 +10,11 @@ import { LifeBuoy, Chrome } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { app } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
+import { VerificationForm } from '@/components/auth/verification-form';
 
 const loginSchema = z.object({
   email: z.string().email('Por favor, insira um e-mail válido.').min(1, 'O e-mail é obrigatório.'),
@@ -25,6 +26,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [showVerification, setShowVerification] = useState(false);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -34,8 +37,25 @@ export default function LoginPage() {
   });
 
   function onSubmit(data: LoginFormValues) {
-    console.log('Login successful with:', data);
-    router.push('/upgrade');
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      if (user.email === data.email && user.password === data.password) {
+        setShowVerification(true);
+      } else {
+        toast({
+          title: 'Erro',
+          description: 'E-mail ou senha inválidos.',
+          variant: 'destructive',
+        });
+      }
+    } else {
+      toast({
+        title: 'Erro',
+        description: 'Nenhum usuário cadastrado. Por favor, cadastre-se primeiro.',
+        variant: 'destructive',
+      });
+    }
   }
 
   const handleGoogleLogin = async () => {
@@ -53,6 +73,10 @@ export default function LoginPage() {
       });
     }
   };
+
+  if (showVerification) {
+    return <VerificationForm onSuccess={() => router.push('/upgrade')} />;
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">

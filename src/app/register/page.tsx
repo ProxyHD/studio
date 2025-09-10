@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useToast } from '@/hooks/use-toast';
 
 const registerSchema = z.object({
   firstName: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres.'),
@@ -22,6 +23,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -33,8 +35,21 @@ export default function RegisterPage() {
   });
 
   function onSubmit(data: RegisterFormValues) {
-    console.log('Registration successful with:', data);
-    router.push('/upgrade');
+    try {
+      localStorage.setItem('user', JSON.stringify(data));
+      toast({
+        title: 'Sucesso!',
+        description: 'Cadastro realizado com sucesso. Agora você pode fazer login.',
+      });
+      router.push('/');
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível concluir o cadastro. Tente novamente.',
+        variant: 'destructive',
+      });
+      console.error('Registration error:', error);
+    }
   }
 
   return (
