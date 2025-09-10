@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { AppContext } from '@/context/app-provider';
 import { useAuth } from '@/context/auth-provider';
 import { useToast } from '@/hooks/use-toast';
 import type { UserProfile } from '@/lib/types';
@@ -23,28 +22,39 @@ const profileSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
-export function ProfileForm() {
-  const { profile, setProfile } = useContext(AppContext);
+interface ProfileFormProps {
+  profile: UserProfile;
+  onSave: (newProfile: UserProfile) => void;
+}
+
+export function ProfileForm({ profile, onSave }: ProfileFormProps) {
   const { user } = useAuth();
   const { toast } = useToast();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
+    // Initialize with default values or profile data
     defaultValues: {
-      firstName: profile?.firstName || '',
-      lastName: profile?.lastName || '',
-      email: profile?.email || '',
+      firstName: '',
+      lastName: '',
+      email: '',
     },
   });
 
+  // Effect to reset the form whenever the profile prop changes
   useEffect(() => {
     if (profile) {
-      form.reset(profile);
+      form.reset({
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        email: profile.email || '',
+      });
     }
   }, [profile, form]);
 
+
   const onSubmit = (data: ProfileFormValues) => {
-    setProfile(data as UserProfile);
+    onSave(data);
     toast({
       title: 'Sucesso!',
       description: 'Seu perfil foi atualizado.',
