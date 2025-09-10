@@ -22,7 +22,8 @@ export default function CalendarPage() {
     if (typeof event.date === 'string') {
       return parseISO(event.date);
     }
-    return event.date;
+    // This part is for dates that might still be Date objects locally before being saved
+    return event.date as Date;
   };
 
   const selectedDayEvents = date
