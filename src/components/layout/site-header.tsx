@@ -19,11 +19,11 @@ export function SiteHeader({ title }: SiteHeaderProps) {
       <div className="flex items-center gap-4">
         <div className="relative hidden md:block">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input type="search" placeholder="Search..." className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-background" />
+          <Input type="search" placeholder="Buscar..." className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-background" />
         </div>
         <Button variant="ghost" size="icon">
           <Bell className="h-5 w-5" />
-          <span className="sr-only">Toggle notifications</span>
+          <span className="sr-only">Alternar notificações</span>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -33,7 +33,7 @@ export function SiteHeader({ title }: SiteHeaderProps) {
                   src={userAvatar.imageUrl}
                   width={36}
                   height={36}
-                  alt="User Avatar"
+                  alt="Avatar do Usuário"
                   data-ai-hint={userAvatar.imageHint}
                   className="rounded-full"
                 />
@@ -41,13 +41,13 @@ export function SiteHeader({ title }: SiteHeaderProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem>Configurações</DropdownMenuItem>
+            <DropdownMenuItem>Suporte</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href="/">Logout</Link>
+              <Link href="/">Sair</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

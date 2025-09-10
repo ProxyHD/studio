@@ -10,12 +10,12 @@ import { Badge } from '@/components/ui/badge';
 export default function UpgradePage() {
   return (
     <div className="flex flex-col h-full">
-      <SiteHeader title="Plans & Pricing" />
+      <SiteHeader title="Planos e Preços" />
       <div className="flex-1 p-4 pt-6 md:p-8">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold font-headline">Find the Perfect Plan</h2>
+          <h2 className="text-4xl font-bold font-headline">Encontre o Plano Perfeito</h2>
           <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
-            Unlock your potential with LifeHub. Choose the plan that best fits your life and goals.
+            Desbloqueie seu potencial com o LifeHub. Escolha o plano que melhor se adapta à sua vida e aos seus objetivos.
           </p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -25,7 +25,7 @@ export default function UpgradePage() {
               className={cn("flex flex-col", plan.accent && "border-primary ring-2 ring-primary shadow-lg")}
             >
               {plan.accent && (
-                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground">Most Popular</Badge>
+                <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground">Mais Popular</Badge>
               )}
               <CardHeader>
                 <CardTitle className="font-headline text-2xl">{plan.name}</CardTitle>
@@ -51,7 +51,7 @@ export default function UpgradePage() {
                   disabled={plan.isCurrent}
                   asChild
                 >
-                  <Link href="/dashboard">{plan.isCurrent ? "Current Plan" : "Choose Plan"}</Link>
+                  <Link href="/dashboard">{plan.isCurrent ? "Plano Atual" : "Escolher Plano"}</Link>
                 </Button>
               </CardFooter>
             </Card>

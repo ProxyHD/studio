@@ -51,8 +51,8 @@ export default function NotesPage() {
     } catch (error) {
       console.error(error);
       toast({
-        title: 'Error',
-        description: 'Failed to generate summary. Please try again.',
+        title: 'Erro',
+        description: 'Falha ao gerar resumo. Por favor, tente novamente.',
         variant: 'destructive',
       });
     } finally {
@@ -63,13 +63,13 @@ export default function NotesPage() {
   return (
     <>
       <div className="flex flex-col h-screen max-h-screen overflow-hidden">
-        <SiteHeader title="Notes" />
+        <SiteHeader title="Notas" />
         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-0 overflow-hidden">
           <aside className="hidden md:flex flex-col border-r h-full">
             <div className="p-4 space-y-4">
-              <Input placeholder="Search notes..." />
+              <Input placeholder="Buscar notas..." />
               <Button className="w-full">
-                <PlusCircle className="mr-2 h-4 w-4" /> New Note
+                <PlusCircle className="mr-2 h-4 w-4" /> Nova Nota
               </Button>
             </div>
             <ScrollArea className="flex-1">
@@ -95,14 +95,14 @@ export default function NotesPage() {
               <div className="flex flex-col h-full">
                 <div className="p-4 border-b">
                   <h2 className="text-2xl font-bold">{selectedNote.title}</h2>
-                  <p className="text-sm text-muted-foreground">Created on {selectedNote.createdAt}</p>
+                  <p className="text-sm text-muted-foreground">Criado em {selectedNote.createdAt}</p>
                 </div>
                 <div className="flex-1 p-4 overflow-y-auto">
                    <Textarea
                       value={selectedNote.content}
                       onChange={(e) => handleNoteChange(e.target.value)}
                       className="w-full h-full resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-                      placeholder="Start writing..."
+                      placeholder="Comece a escrever..."
                     />
                 </div>
                 <div className="p-4 border-t mt-auto">
@@ -112,13 +112,13 @@ export default function NotesPage() {
                       ) : (
                         <Sparkles className="mr-2 h-4 w-4" />
                       )}
-                      {isSummaryLoading ? 'Summarizing...' : 'Summarize with AI'}
+                      {isSummaryLoading ? 'Resumindo...' : 'Resumir com IA'}
                    </Button>
                 </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-full">
-                <p className="text-muted-foreground">Select a note to view or create a new one.</p>
+                <p className="text-muted-foreground">Selecione uma nota para visualizar ou crie uma nova.</p>
               </div>
             )}
           </main>
@@ -127,9 +127,9 @@ export default function NotesPage() {
       <Dialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Note Summary</DialogTitle>
+            <DialogTitle>Resumo da Nota</DialogTitle>
             <DialogDescription>
-              Here is an AI-generated summary of your note.
+              Aqui está um resumo da sua nota gerado por IA.
             </DialogDescription>
           </DialogHeader>
           <div className="prose prose-sm max-w-none">

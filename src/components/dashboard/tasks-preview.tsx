@@ -6,11 +6,12 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function TasksPreview() {
+  const pendingTasks = tasks.filter(t => t.status !== 'done');
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle>Today's Tasks</CardTitle>
-        <CardDescription>You have {tasks.filter(t => t.status !== 'done').length} tasks pending.</CardDescription>
+        <CardTitle>Tarefas de Hoje</CardTitle>
+        <CardDescription>Você tem {pendingTasks.length} {pendingTasks.length === 1 ? 'tarefa pendente' : 'tarefas pendentes'}.</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         <ScrollArea className="h-80">
@@ -26,7 +27,7 @@ export function TasksPreview() {
                     {task.title}
                   </label>
                   <Badge variant={task.priority === 'high' ? 'destructive' : task.priority === 'medium' ? 'secondary' : 'outline'} className="capitalize">
-                    {task.priority}
+                    {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
                   </Badge>
                 </div>
               </div>

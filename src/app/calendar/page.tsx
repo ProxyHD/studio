@@ -5,7 +5,7 @@ import { Calendar } from '@/components/ui/calendar';
 export default function CalendarPage() {
   return (
     <div className="flex flex-col h-full">
-      <SiteHeader title="Calendar" />
+      <SiteHeader title="Calendário" />
       <div className="flex-1 p-4 pt-6 md:p-8">
         <Card>
           <CardContent className="p-2 md:p-4">

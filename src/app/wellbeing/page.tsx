@@ -5,29 +5,29 @@ import { Check, Flame, Laugh, Meh, Frown, Smile as SmileIcon, Angry } from 'luci
 import { Progress } from '@/components/ui/progress';
 
 const moods = [
-  { name: 'Happy', icon: Laugh },
-  { name: 'Good', icon: SmileIcon },
-  { name: 'Okay', icon: Meh },
-  { name: 'Sad', icon: Frown },
-  { name: 'Angry', icon: Angry },
+  { name: 'Feliz', icon: Laugh },
+  { name: 'Bem', icon: SmileIcon },
+  { name: 'Ok', icon: Meh },
+  { name: 'Triste', icon: Frown },
+  { name: 'Irritado', icon: Angry },
 ];
 
 const habits = [
-  { name: 'Drink 8 glasses of water', goal: 8, current: 6, done: false },
-  { name: 'Read for 30 minutes', goal: 1, current: 1, done: true },
-  { name: 'Morning meditation', goal: 1, current: 0, done: false },
-  { name: 'Go for a run', goal: 1, current: 1, done: true },
+  { name: 'Beber 8 copos de água', goal: 8, current: 6, done: false },
+  { name: 'Ler por 30 minutos', goal: 1, current: 1, done: true },
+  { name: 'Meditação matinal', goal: 1, current: 0, done: false },
+  { name: 'Ir para uma corrida', goal: 1, current: 1, done: true },
 ];
 
 export default function WellbeingPage() {
   return (
     <div className="flex flex-col h-full">
-      <SiteHeader title="Well-being" />
+      <SiteHeader title="Bem-estar" />
       <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
         <Card>
           <CardHeader>
-            <CardTitle>How are you feeling today?</CardTitle>
-            <CardDescription>Log your mood to track your well-being over time.</CardDescription>
+            <CardTitle>Como você está se sentindo hoje?</CardTitle>
+            <CardDescription>Registre seu humor para acompanhar seu bem-estar ao longo do tempo.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-4">
             {moods.map(mood => (
@@ -41,8 +41,8 @@ export default function WellbeingPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Daily Habits</CardTitle>
-            <CardDescription>Stay on track with your goals.</CardDescription>
+            <CardTitle>Hábitos Diários</CardTitle>
+            <CardDescription>Mantenha-se no caminho certo com seus objetivos.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {habits.map(habit => (

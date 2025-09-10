@@ -14,19 +14,19 @@ export default function TasksPage() {
 
   return (
     <div className="flex flex-col h-full">
-      <SiteHeader title="Tasks" />
+      <SiteHeader title="Tarefas" />
       <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold tracking-tight">Task Board</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Quadro de Tarefas</h2>
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Add Task
+            Adicionar Tarefa
           </Button>
         </div>
         <div className="grid gap-8 md:grid-cols-3">
-          <TaskColumn title="To Do" tasks={todoTasks} />
-          <TaskColumn title="In Progress" tasks={inProgressTasks} />
-          <TaskColumn title="Done" tasks={doneTasks} />
+          <TaskColumn title="A Fazer" tasks={todoTasks} />
+          <TaskColumn title="Em Progresso" tasks={inProgressTasks} />
+          <TaskColumn title="Concluído" tasks={doneTasks} />
         </div>
       </div>
     </div>
@@ -51,7 +51,7 @@ function TaskColumn({ title, tasks: taskItems }: { title: string, tasks: typeof 
                 <p className="text-xs text-muted-foreground">{task.dueDate}</p>
               </div>
               <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className="capitalize">
-                {task.priority}
+                {task.priority === 'high' ? 'alta' : task.priority === 'medium' ? 'média' : 'baixa'}
               </Badge>
             </CardContent>
           </Card>

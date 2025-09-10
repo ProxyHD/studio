@@ -8,14 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/tasks', label: 'Tasks', icon: CheckSquare },
-  { href: '/calendar', label: 'Calendar', icon: Calendar },
-  { href: '/wellbeing', label: 'Well-being', icon: Smile },
-  { href: '/notes', label: 'Notes', icon: Notebook },
+  { href: '/dashboard', label: 'Painel', icon: LayoutDashboard },
+  { href: '/tasks', label: 'Tarefas', icon: CheckSquare },
+  { href: '/calendar', label: 'Calendário', icon: Calendar },
+  { href: '/wellbeing', label: 'Bem-estar', icon: Smile },
+  { href: '/notes', label: 'Notas', icon: Notebook },
 ];
 
-const proItem = { href: '/upgrade', label: 'Upgrade to Pro', icon: Zap };
+const proItem = { href: '/upgrade', label: 'Upgrade para Pro', icon: Zap };
 
 export function SiteSidebar() {
   const pathname = usePathname();
@@ -54,12 +54,12 @@ export function SiteSidebar() {
         <Separator className="my-2" />
         <Button variant="ghost" className="w-full justify-start">
           <Settings className="mr-2 h-4 w-4" />
-          Settings
+          Configurações
         </Button>
         <Button variant="ghost" className="w-full justify-start" asChild>
           <Link href="/">
             <LogOut className="mr-2 h-4 w-4" />
-            Log Out
+            Sair
           </Link>
         </Button>
       </div>
