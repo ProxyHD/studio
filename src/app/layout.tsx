@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={cn("min-h-screen bg-background font-body antialiased")}>
         <div className="relative flex min-h-screen">
           <SiteSidebar />
-          <div className="flex-1">
+          <div className="flex-1 md:pl-64">
             {children}
           </div>
         </div>
