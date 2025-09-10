@@ -22,11 +22,11 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("min-h-screen bg-background font-body antialiased")}>
-        <div className="relative flex min-h-screen">
+        <div className="flex min-h-screen">
           <SiteSidebar />
-          <div className="flex-1 md:pl-64">
+          <main className="flex-1 md:pl-64">
             {children}
-          </div>
+          </main>
         </div>
         <Toaster />
       </body>
