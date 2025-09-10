@@ -1,4 +1,4 @@
-import { Activity, CheckCircle, DollarSign, Heart, Lightbulb } from 'lucide-react';
+import { Activity, CheckCircle, DollarSign, Heart } from 'lucide-react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SummaryCard } from '@/components/dashboard/summary-card';
 import { TasksPreview } from '@/components/dashboard/tasks-preview';
@@ -15,11 +15,11 @@ export default function DashboardPage() {
           <SummaryCard title="Expenses" value="$1,250" icon={DollarSign} />
           <SummaryCard title="Habit Streak" value="5 days" icon={Activity} />
         </div>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-7">
-          <div className="lg:col-span-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
             <TasksPreview />
           </div>
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-1">
             <RoutineSuggester />
           </div>
         </div>
