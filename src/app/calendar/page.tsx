@@ -7,7 +7,6 @@ import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
 import { PlusCircle, Dot } from 'lucide-react';
 import { AddEventDialog } from '@/components/calendar/add-event-dialog';
-import { events as initialEvents } from '@/lib/data';
 import type { Event } from '@/lib/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -15,7 +14,7 @@ import { cn } from '@/lib/utils';
 
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [events, setEvents] = useState<Event[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const selectedDayEvents = date
