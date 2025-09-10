@@ -39,7 +39,6 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       router.push('/dashboard');
     } catch (error: any) {
-      console.error("Erro no login:", error);
       let description = 'Ocorreu um erro ao fazer login. Tente novamente.';
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
         description = 'E-mail ou senha inválidos.';
@@ -60,7 +59,6 @@ export default function LoginPage() {
       await signInWithPopup(auth, provider);
       router.push('/dashboard');
     } catch (error: any) {
-      console.error("Erro no login com Google:", error);
       let description = 'Não foi possível fazer login com o Google. Tente novamente.';
        if (error.code === 'auth/popup-blocked') {
         description = 'O pop-up de login foi bloqueado pelo navegador. Por favor, habilite os pop-ups para este site.';
