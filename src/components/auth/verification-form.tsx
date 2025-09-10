@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { ShieldCheck } from 'lucide-react';
 
-const MOCK_CODE = '123456';
 const TIMER_SECONDS = 30;
 
 interface VerificationFormProps {
@@ -16,14 +15,17 @@ interface VerificationFormProps {
 
 export function VerificationForm({ onSuccess }: VerificationFormProps) {
   const [code, setCode] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
   const [timer, setTimer] = useState(TIMER_SECONDS);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const { toast } = useToast();
 
   const sendCode = useCallback(() => {
+    const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+    setVerificationCode(newCode);
     toast({
       title: 'Código de Verificação',
-      description: `Para fins de demonstração, seu código é: ${MOCK_CODE}`,
+      description: `Para fins de demonstração, seu código é: ${newCode}`,
     });
     setTimer(TIMER_SECONDS);
     setIsResendDisabled(true);
@@ -46,7 +48,7 @@ export function VerificationForm({ onSuccess }: VerificationFormProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (code === MOCK_CODE) {
+    if (code === verificationCode) {
       toast({
         title: 'Sucesso!',
         description: 'Login verificado com sucesso.',
