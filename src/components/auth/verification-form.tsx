@@ -23,7 +23,7 @@ export function VerificationForm({ onSuccess }: VerificationFormProps) {
   const sendCode = useCallback(() => {
     toast({
       title: 'Código de Verificação',
-      description: `Seu código é: ${MOCK_CODE}`,
+      description: `Para fins de demonstração, seu código é: ${MOCK_CODE}`,
     });
     setTimer(TIMER_SECONDS);
     setIsResendDisabled(true);
@@ -74,7 +74,7 @@ export function VerificationForm({ onSuccess }: VerificationFormProps) {
           </div>
           <CardTitle className="text-2xl text-center">Verificação Necessária</CardTitle>
           <CardDescription className="text-center">
-            Enviamos um código de 6 dígitos para o seu e-mail.
+            Por favor, insira o código de 6 dígitos que foi exibido para você.
           </CardDescription>
         </CardHeader>
         <CardContent>
