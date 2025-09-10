@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 const navItems = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/tasks', label: 'Tasks', icon: CheckSquare },
   { href: '/calendar', label: 'Calendar', icon: Calendar },
   { href: '/wellbeing', label: 'Well-being', icon: Smile },
@@ -23,7 +23,7 @@ export function SiteSidebar() {
   return (
     <aside className="hidden md:flex flex-col w-64 bg-card border-r fixed h-screen">
       <div className="p-6">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <LifeBuoy className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline">LifeFlow</h1>
         </Link>
@@ -56,9 +56,11 @@ export function SiteSidebar() {
           <Settings className="mr-2 h-4 w-4" />
           Settings
         </Button>
-        <Button variant="ghost" className="w-full justify-start">
-          <LogOut className="mr-2 h-4 w-4" />
-          Log Out
+        <Button variant="ghost" className="w-full justify-start" asChild>
+          <Link href="/">
+            <LogOut className="mr-2 h-4 w-4" />
+            Log Out
+          </Link>
         </Button>
       </div>
     </aside>

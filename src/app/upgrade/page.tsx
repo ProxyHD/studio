@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { SiteHeader } from '@/components/layout/site-header';
 import { plans } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -48,8 +49,9 @@ export default function UpgradePage() {
                   className="w-full"
                   variant={plan.accent ? 'default' : 'outline'}
                   disabled={plan.isCurrent}
+                  asChild
                 >
-                  {plan.cta}
+                  <Link href="/dashboard">{plan.isCurrent ? "Current Plan" : "Choose Plan"}</Link>
                 </Button>
               </CardFooter>
             </Card>

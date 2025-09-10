@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { SiteSidebar } from '@/components/layout/site-sidebar';
 import { Toaster } from "@/components/ui/toaster";
+import RootLayoutClient from './layout-client';
 
 export const metadata: Metadata = {
   title: 'LifeFlow',
@@ -22,12 +22,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("min-h-screen bg-background font-body antialiased")}>
-        <div className="flex min-h-screen">
-          <SiteSidebar />
-          <main className="flex-1 md:pl-64">
-            {children}
-          </main>
-        </div>
+        <RootLayoutClient>
+          {children}
+        </RootLayoutClient>
         <Toaster />
       </body>
     </html>
