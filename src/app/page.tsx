@@ -87,7 +87,7 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl text-center">Login</CardTitle>
           <CardDescription className="text-center">
-            Digite seu e-mail abaixo para fazer login em sua conta
+            Digite seu e-mail abaixo para fazer login na sua conta LifeHub
           </CardDescription>
         </CardHeader>
         <CardContent>

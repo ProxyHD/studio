@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import RootLayoutClient from './layout-client';
 
 export const metadata: Metadata = {
-  title: 'LifeFlow',
+  title: 'LifeHub',
   description: 'Your life, organized.',
 };
 

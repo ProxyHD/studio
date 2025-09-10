@@ -15,7 +15,7 @@ export default function UpgradePage() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold font-headline">Find the Perfect Plan</h2>
           <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
-            Unlock your potential with LifeFlow. Choose the plan that best fits your life and goals.
+            Unlock your potential with LifeHub. Choose the plan that best fits your life and goals.
           </p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">

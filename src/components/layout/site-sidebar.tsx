@@ -25,7 +25,7 @@ export function SiteSidebar() {
       <div className="p-6">
         <Link href="/dashboard" className="flex items-center gap-2">
           <LifeBuoy className="h-8 w-8 text-primary" />
-          <h1 className="text-2xl font-bold font-headline">LifeFlow</h1>
+          <h1 className="text-2xl font-bold font-headline">LifeHub</h1>
         </Link>
       </div>
       <nav className="flex-1 px-4 space-y-2">

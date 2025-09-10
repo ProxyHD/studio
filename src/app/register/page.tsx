@@ -61,7 +61,7 @@ export default function RegisterPage() {
           </div>
           <CardTitle className="text-2xl text-center">Cadastro</CardTitle>
           <CardDescription className="text-center">
-            Crie sua conta para começar a organizar sua vida
+            Crie sua conta LifeHub para começar a organizar sua vida
           </CardDescription>
         </CardHeader>
         <CardContent>
