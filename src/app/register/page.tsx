@@ -50,7 +50,7 @@ export default function RegisterPage() {
       if (error.code === 'auth/email-already-in-use') {
         description = 'Este e-mail já está em uso.';
       } else if (error.code === 'auth/configuration-not-found') {
-        description = 'Erro de configuração. Verifique se o método de login por E-mail/Senha está ativado no Console do Firebase.';
+        description = 'Erro de configuração do Firebase. Ative o login por E-mail/Senha no Console do Firebase.';
       }
       toast({
         title: 'Erro de Cadastro',

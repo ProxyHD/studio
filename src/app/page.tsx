@@ -44,7 +44,7 @@ export default function LoginPage() {
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
         description = 'E-mail ou senha inválidos.';
       } else if (error.code === 'auth/configuration-not-found') {
-        description = 'Erro de configuração. Verifique se os métodos de login estão ativados no Console do Firebase.';
+        description = 'Erro de configuração do Firebase. Ative o login por E-mail/Senha no Console do Firebase.';
       }
       toast({
         title: 'Erro de Login',
@@ -63,7 +63,7 @@ export default function LoginPage() {
       console.error("Erro no login com Google:", error);
       let description = 'Não foi possível fazer login com o Google. Tente novamente.';
       if (error.code === 'auth/configuration-not-found') {
-        description = 'Erro de configuração. Verifique se o login com Google está ativado no Console do Firebase.';
+        description = 'Erro de configuração do Firebase. Ative o login com Google no Console do Firebase.';
       }
       toast({
         title: 'Erro',
