@@ -1,13 +1,15 @@
 'use client';
 
-import { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { createContext, useState, ReactNode, useEffect } from 'react';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
+  profile: null,
+  setProfile: () => {},
   tasks: [],
   setTasks: () => {},
   notes: [],
@@ -27,6 +29,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
 
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
@@ -50,6 +53,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (user && !loading) {
       debouncedSaveData(user.uid, {
+        profile,
         tasks,
         notes,
         events,
@@ -58,7 +62,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         completedHabits,
       });
     }
-  }, [tasks, notes, events, selectedMood, habits, completedHabits, user, loading, debouncedSaveData]);
+  }, [profile, tasks, notes, events, selectedMood, habits, completedHabits, user, loading, debouncedSaveData]);
 
 
   // Effect to load data from Firestore on user login
@@ -72,6 +76,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
+          setProfile(data.profile || null)
           setTasks(data.tasks || []);
           setNotes(data.notes || []);
           setEvents(data.events || []);
@@ -79,7 +84,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
         } else {
-          // No data yet, initialize with empty arrays
+          // No data yet, initialize with empty state
+          setProfile(null);
           setTasks([]);
           setNotes([]);
           setEvents([]);
@@ -95,6 +101,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     } else {
       // No user, clear all data
+      setProfile(null);
       setTasks([]);
       setNotes([]);
       setEvents([]);
@@ -110,6 +117,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        profile,
+        setProfile,
         tasks,
         setTasks,
         notes,

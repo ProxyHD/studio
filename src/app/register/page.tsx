@@ -12,7 +12,8 @@ import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 
 const registerSchema = z.object({
   firstName: z.string().min(3, 'O nome deve ter pelo menos 3 caracteres.'),
@@ -38,7 +39,25 @@ export default function RegisterPage() {
 
   async function onSubmit(data: RegisterFormValues) {
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const user = userCredential.user;
+
+      // Save user profile information to Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        profile: {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+        },
+        // Initialize other data arrays
+        tasks: [],
+        notes: [],
+        events: [],
+        habits: [],
+        completedHabits: [],
+        selectedMood: null,
+      });
+
       toast({
         title: 'Sucesso!',
         description: 'Cadastro realizado com sucesso. Agora você pode fazer login.',

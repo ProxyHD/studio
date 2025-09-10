@@ -17,6 +17,8 @@ const navItems = [
 ];
 
 const proItem = { href: '/upgrade', label: 'Upgrade para Pro', icon: Zap };
+const settingsItem = { href: '/settings', label: 'Configurações', icon: Settings };
+
 
 export function SiteSidebar() {
   const pathname = usePathname();
@@ -54,10 +56,15 @@ export function SiteSidebar() {
       </nav>
       <div className="p-4 mt-auto">
         <Separator className="my-2" />
-        <Button variant="ghost" className="w-full justify-start">
-          <Settings className="mr-2 h-4 w-4" />
-          Configurações
-        </Button>
+        <Link href={settingsItem.href} passHref>
+            <Button 
+                variant={pathname === settingsItem.href ? 'secondary' : 'ghost'}
+                className="w-full justify-start"
+            >
+                <settingsItem.icon className="mr-2 h-4 w-4" />
+                {settingsItem.label}
+            </Button>
+        </Link>
         <Button variant="ghost" className="w-full justify-start" onClick={logout}>
           <LogOut className="mr-2 h-4 w-4" />
           Sair

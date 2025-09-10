@@ -1,5 +1,11 @@
 import type { Dispatch, SetStateAction } from 'react';
 
+export type UserProfile = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 export type Task = {
   id: string;
   title: string;
@@ -48,6 +54,8 @@ export type Habit = {
 };
 
 export interface AppContextType {
+  profile: UserProfile | null;
+  setProfile: Dispatch<SetStateAction<UserProfile | null>>;
   tasks: Task[];
   setTasks: Dispatch<SetStateAction<Task[]>>;
   notes: Note[];
