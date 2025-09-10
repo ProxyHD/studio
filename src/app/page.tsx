@@ -48,7 +48,7 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4" suppressHydrationWarning>
               <FormField
                 control={form.control}
                 name="email"
@@ -59,6 +59,7 @@ export default function LoginPage() {
                       <Input
                         type="email"
                         placeholder="m@example.com"
+                        required
                         {...field}
                       />
                     </FormControl>
@@ -81,7 +82,7 @@ export default function LoginPage() {
                       </Link>
                     </div>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" required {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
