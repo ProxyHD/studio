@@ -40,8 +40,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {
       try {
-        const docRef = doc(db, 'users', userId);
-        await setDoc(docRef, data, { merge: true });
+        // We only save if the profile is not null, to avoid overwriting good data with empty data during hydration
+        if (data.profile) {
+          const docRef = doc(db, 'users', userId);
+          await setDoc(docRef, data, { merge: true });
+        }
       } catch (error) {
         console.error("Error saving user data:", error);
       }
@@ -76,7 +79,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
-          setProfile(data.profile || null)
+          // Ensure profile is at least an empty object if it doesn't exist, to stop loading state
+          setProfile(data.profile || { firstName: '', lastName: '', email: user.email || '' });
           setTasks(data.tasks || []);
           setNotes(data.notes || []);
           setEvents(data.events || []);
@@ -84,8 +88,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
         } else {
-          // No data yet, initialize with empty state
-          setProfile(null);
+          // New user, document doesn't exist yet, but we can set up a default profile
+          setProfile({ firstName: '', lastName: '', email: user.email || '' });
           setTasks([]);
           setNotes([]);
           setEvents([]);
