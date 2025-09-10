@@ -14,7 +14,7 @@ export type Note = {
   id: string;
   title: string;
   content: string;
-  createdAt: string;
+  createdAt: string; // Stored as ISO string
 };
 
 export type Plan = {
@@ -31,7 +31,7 @@ export type Plan = {
 export type Event = {
   id: string;
   title: string;
-  date: Date;
+  date: Date | string; // Allow string for Firestore compatibility
   startTime?: string;
   endTime?: string;
   description?: string;
@@ -50,10 +50,15 @@ export type Habit = {
 export interface AppContextType {
   tasks: Task[];
   setTasks: Dispatch<SetStateAction<Task[]>>;
+  notes: Note[];
+  setNotes: Dispatch<SetStateAction<Note[]>>;
+  events: Event[];
+  setEvents: Dispatch<SetStateAction<Event[]>>;
   selectedMood: string | null;
   setSelectedMood: Dispatch<SetStateAction<string | null>>;
   habits: Habit[];
   setHabits: Dispatch<SetStateAction<Habit[]>>;
-  completedHabits: Set<string>;
-  setCompletedHabits: Dispatch<SetStateAction<Set<string>>>;
+  completedHabits: string[];
+  setCompletedHabits: Dispatch<SetStateAction<string[]>>;
+  loading: boolean;
 }

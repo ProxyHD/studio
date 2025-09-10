@@ -59,23 +59,25 @@ export default function WellbeingPage() {
   const deleteHabit = (habitId: string) => {
     setHabits(prev => prev.filter(h => h.id !== habitId));
     setCompletedHabits(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(habitId);
-        return newSet;
+        const newCompleted = new Set(prev);
+        newCompleted.delete(habitId);
+        return Array.from(newCompleted); // Convert back to array for Firestore
     });
   };
 
   const handleHabitToggle = (habitId: string) => {
     setCompletedHabits(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(habitId)) {
-        newSet.delete(habitId);
+      const newCompleted = new Set(prev);
+      if (newCompleted.has(habitId)) {
+        newCompleted.delete(habitId);
       } else {
-        newSet.add(habitId);
+        newCompleted.add(habitId);
       }
-      return newSet;
+      return Array.from(newCompleted); // Convert to array for Firestore
     });
   };
+  
+  const completedHabitsSet = useMemo(() => new Set(completedHabits), [completedHabits]);
 
   return (
     <>
@@ -120,7 +122,7 @@ export default function WellbeingPage() {
               <h3 className="font-semibold text-lg">Hábitos de Hoje ({daysOfWeek.find(d => d.id === today)?.name})</h3>
               {todaysHabits.length > 0 ? (
                 todaysHabits.map(habit => {
-                  const isDone = completedHabits.has(habit.id);
+                  const isDone = completedHabitsSet.has(habit.id);
                   return (
                     <div key={habit.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                       <div className={cn("flex items-center gap-3", isDone && "text-muted-foreground line-through")}>

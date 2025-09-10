@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
@@ -8,45 +8,35 @@ import { Button } from '@/components/ui/button';
 import { PlusCircle, Dot, MapPin, Users, Trash2 } from 'lucide-react';
 import { AddEventDialog } from '@/components/calendar/add-event-dialog';
 import type { Event } from '@/lib/types';
-import { format, parse } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { AppContext } from '@/context/app-provider';
 
 export default function CalendarPage() {
+  const { events, setEvents } = useContext(AppContext);
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [events, setEvents] = useState<Event[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    const storedEvents = localStorage.getItem('events');
-    if (storedEvents) {
-      // Dates need to be parsed back into Date objects
-      const parsedEvents = JSON.parse(storedEvents).map((event: Event) => ({
-        ...event,
-        date: parse(event.date as unknown as string, 'yyyy-MM-dd', new Date()),
-      }));
-      setEvents(parsedEvents);
+  // Helper to safely parse dates, which are now stored as ISO strings from Firestore
+  const parseEventDate = (event: Event): Date => {
+    if (typeof event.date === 'string') {
+      return parseISO(event.date);
     }
-  }, []);
-  
-  useEffect(() => {
-    // When saving, convert Date objects to a storable format like 'yyyy-MM-dd'
-    const storableEvents = events.map(event => ({
-        ...event,
-        date: format(event.date, 'yyyy-MM-dd'),
-    }));
-    localStorage.setItem('events', JSON.stringify(storableEvents));
-  }, [events]);
+    return event.date;
+  };
 
   const selectedDayEvents = date
     ? events.filter(
-        (event) => format(event.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+        (event) => format(parseEventDate(event), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
       )
     : [];
-  
+
   const addEvent = (eventData: Omit<Event, 'id'>) => {
     const newEvent: Event = {
       id: crypto.randomUUID(),
       ...eventData,
+      // Store date as ISO string for Firestore compatibility
+      date: (eventData.date as Date).toISOString(),
     };
     setEvents((prevEvents) => [...prevEvents, newEvent]);
   };
@@ -82,7 +72,7 @@ export default function CalendarPage() {
                   components={{
                     DayContent: ({ date }) => {
                       const hasEvent = events.some(
-                        (event) => format(event.date, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
+                        (event) => format(parseEventDate(event), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
                       );
                       return (
                         <div className="relative h-full w-full flex items-center justify-center">

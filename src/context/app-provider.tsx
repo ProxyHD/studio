@@ -1,70 +1,128 @@
 'use client';
 
-import { createContext, useState, ReactNode, useEffect } from 'react';
-import type { Task, Habit, AppContextType } from '@/lib/types';
+import { createContext, useState, ReactNode, useEffect, useCallback } from 'react';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { useAuth } from './auth-provider';
+import { db } from '@/lib/firebase';
+import type { Task, Habit, AppContextType, Note, Event } from '@/lib/types';
+import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
   tasks: [],
   setTasks: () => {},
+  notes: [],
+  setNotes: () => {},
+  events: [],
+  setEvents: () => {},
   selectedMood: null,
   setSelectedMood: () => {},
   habits: [],
   setHabits: () => {},
-  completedHabits: new Set(),
+  completedHabits: [],
   setCompletedHabits: () => {},
+  loading: true,
 });
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [habits, setHabits] = useState<Habit[]>([]);
-  const [completedHabits, setCompletedHabits] = useState<Set<string>>(new Set());
-
-  // Load state from localStorage on initial render
-  useEffect(() => {
-    const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) setTasks(JSON.parse(storedTasks));
-
-    const storedMood = localStorage.getItem('selectedMood');
-    if (storedMood) setSelectedMood(JSON.parse(storedMood));
-
-    const storedHabits = localStorage.getItem('habits');
-    if (storedHabits) setHabits(JSON.parse(storedHabits));
-
-    const storedCompletedHabits = localStorage.getItem('completedHabits');
-    if (storedCompletedHabits) setCompletedHabits(new Set(JSON.parse(storedCompletedHabits)));
-    
-  }, []);
-
-  // Save state to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
-
-  useEffect(() => {
-    localStorage.setItem('selectedMood', JSON.stringify(selectedMood));
-  }, [selectedMood]);
+  const [completedHabits, setCompletedHabits] = useState<string[]>([]);
   
+  const debouncedSaveData = useDebouncedCallback(
+    async (userId: string, data: any) => {
+      try {
+        const docRef = doc(db, 'users', userId);
+        await setDoc(docRef, data, { merge: true });
+      } catch (error) {
+        console.error("Error saving user data:", error);
+      }
+    },
+    1000 // 1 second debounce delay
+  );
+
+  // Effect to save all data to Firestore when it changes
   useEffect(() => {
-    localStorage.setItem('habits', JSON.stringify(habits));
-  }, [habits]);
+    if (user && !loading) {
+      debouncedSaveData(user.uid, {
+        tasks,
+        notes,
+        events,
+        selectedMood,
+        habits,
+        completedHabits,
+      });
+    }
+  }, [tasks, notes, events, selectedMood, habits, completedHabits, user, loading, debouncedSaveData]);
 
+
+  // Effect to load data from Firestore on user login
   useEffect(() => {
-    localStorage.setItem('completedHabits', JSON.stringify(Array.from(completedHabits)));
-  }, [completedHabits]);
+    let unsubscribe: () => void = () => {};
 
+    if (user) {
+      setLoading(true);
+      const docRef = doc(db, 'users', user.uid);
+      
+      unsubscribe = onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setTasks(data.tasks || []);
+          setNotes(data.notes || []);
+          setEvents(data.events || []);
+          setSelectedMood(data.selectedMood || null);
+          setHabits(data.habits || []);
+          setCompletedHabits(data.completedHabits || []);
+        } else {
+          // No data yet, initialize with empty arrays
+          setTasks([]);
+          setNotes([]);
+          setEvents([]);
+          setSelectedMood(null);
+          setHabits([]);
+          setCompletedHabits([]);
+        }
+        setLoading(false);
+      }, (error) => {
+        console.error("Error fetching user data:", error);
+        setLoading(false);
+      });
 
+    } else {
+      // No user, clear all data
+      setTasks([]);
+      setNotes([]);
+      setEvents([]);
+      setSelectedMood(null);
+      setHabits([]);
+      setCompletedHabits([]);
+      setLoading(false);
+    }
+    
+    return () => unsubscribe(); // Cleanup snapshot listener on component unmount or user change
+  }, [user]);
+  
   return (
     <AppContext.Provider
       value={{
         tasks,
         setTasks,
+        notes,
+        setNotes,
+        events,
+        setEvents,
         selectedMood,
         setSelectedMood,
         habits,
         setHabits,
         completedHabits,
         setCompletedHabits,
+        loading,
       }}
     >
       {children}

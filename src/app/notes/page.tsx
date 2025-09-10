@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,10 +31,11 @@ import {
 } from "@/components/ui/alert-dialog"
 import { summarizeNotes } from '@/ai/flows/summarize-notes';
 import { useToast } from '@/hooks/use-toast';
+import { AppContext } from '@/context/app-provider';
 
 
 export default function NotesPage() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const { notes, setNotes } = useContext(AppContext);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [summary, setSummary] = useState('');
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
@@ -43,19 +44,10 @@ export default function NotesPage() {
   const isPro = true; // Mock value
 
   useEffect(() => {
-    const storedNotes = localStorage.getItem('notes');
-    if (storedNotes) {
-      const parsedNotes = JSON.parse(storedNotes);
-      setNotes(parsedNotes);
-      if (parsedNotes.length > 0) {
-        setSelectedNote(parsedNotes[0]);
-      }
+    if (notes.length > 0 && !selectedNote) {
+      setSelectedNote(notes[0]);
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes]);
+  }, [notes, selectedNote]);
 
   const handleNoteChange = (key: 'title' | 'content', value: string) => {
     if (selectedNote) {
@@ -70,7 +62,7 @@ export default function NotesPage() {
       id: crypto.randomUUID(),
       title: 'Nova Nota',
       content: '',
-      createdAt: new Date().toLocaleDateString('pt-BR'),
+      createdAt: new Date().toISOString(),
     };
     setNotes([newNote, ...notes]);
     setSelectedNote(newNote);
@@ -145,7 +137,7 @@ export default function NotesPage() {
                             onChange={(e) => handleNoteChange('title', e.target.value)}
                             className="text-2xl font-bold border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
                         />
-                        <p className="text-sm text-muted-foreground">Criado em {selectedNote.createdAt}</p>
+                         <p className="text-sm text-muted-foreground">Criado em {new Date(selectedNote.createdAt).toLocaleDateString('pt-BR')}</p>
                     </div>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
