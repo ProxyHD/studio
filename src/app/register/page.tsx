@@ -46,7 +46,7 @@ export default function RegisterPage() {
       router.push('/');
     } catch (error: any) {
       console.error('Registration error:', error);
-       let description = 'Não foi possível concluir o cadastro. Tente novamente.';
+      let description = 'Não foi possível concluir o cadastro. Tente novamente.';
       if (error.code === 'auth/email-already-in-use') {
         description = 'Este e-mail já está em uso.';
       } else if (error.code === 'auth/configuration-not-found') {
