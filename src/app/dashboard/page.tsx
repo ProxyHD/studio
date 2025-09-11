@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { Activity, CheckCircle, Heart } from 'lucide-react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SummaryCard } from '@/components/dashboard/summary-card';
@@ -10,13 +10,19 @@ import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
 export default function DashboardPage() {
-  const { tasks, selectedMood, locale } = useContext(AppContext);
+  const { tasks, moodLogs, locale } = useContext(AppContext);
 
   const completedTasks = tasks.filter(t => t.status === 'done').length;
   const totalTasks = tasks.length;
   
   // Placeholder for habit streak logic
   const habitStreak = 0;
+
+  const todayISO = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const selectedMood = useMemo(() => {
+    const todayLog = moodLogs.find(log => log.date === todayISO);
+    return todayLog ? todayLog.mood : null;
+  }, [moodLogs, todayISO]);
 
   return (
     <div className="flex flex-col h-full">
@@ -30,7 +36,7 @@ export default function DashboardPage() {
           />
           <SummaryCard 
             title={t('Current Mood', locale)}
-            value={selectedMood || t('N/A', locale)}
+            value={selectedMood ? t(selectedMood, locale) : t('N/A', locale)}
             icon={Heart} 
           />
           <SummaryCard 

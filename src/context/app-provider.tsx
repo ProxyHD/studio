@@ -4,7 +4,7 @@ import { createContext, useState, ReactNode, useEffect, useContext } from 'react
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
@@ -18,8 +18,8 @@ export const AppContext = createContext<AppContextType>({
   setEvents: () => {},
   transactions: [],
   setTransactions: () => {},
-  selectedMood: null,
-  setSelectedMood: () => {},
+  moodLogs: [],
+  setMoodLogs: () => {},
   habits: [],
   setHabits: () => {},
   completedHabits: [],
@@ -38,9 +38,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+  const [moodLogs, setMoodLogs] = useState<MoodLog[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
-  const [completedHabits, setCompletedHabits] = useState<string[]>([]);
+  const [completedHabits, setCompletedHabits] = useState<CompletedHabit[]>([]);
   const [locale, setLocale] = useState<Locale>('pt-BR');
   
   const debouncedSaveData = useDebouncedCallback(
@@ -67,13 +67,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
         notes,
         events,
         transactions,
-        selectedMood,
+        moodLogs,
         habits,
         completedHabits,
         locale,
       });
     }
-  }, [profile, tasks, notes, events, transactions, selectedMood, habits, completedHabits, locale, user, loading, debouncedSaveData]);
+  }, [profile, tasks, notes, events, transactions, moodLogs, habits, completedHabits, locale, user, loading, debouncedSaveData]);
 
 
   // Effect to load data from Firestore on user login
@@ -93,7 +93,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setNotes(data.notes || []);
           setEvents(data.events || []);
           setTransactions(data.transactions || []);
-          setSelectedMood(data.selectedMood || null);
+          setMoodLogs(data.moodLogs || []);
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
           setLocale(data.locale || 'pt-BR');
@@ -105,7 +105,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setNotes([]);
           setEvents([]);
           setTransactions([]);
-          setSelectedMood(null);
+          setMoodLogs([]);
           setHabits([]);
           setCompletedHabits([]);
           setLocale('pt-BR');
@@ -116,7 +116,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             notes: [],
             events: [],
             transactions: [],
-            selectedMood: null,
+            moodLogs: [],
             habits: [],
             completedHabits: [],
             locale: 'pt-BR',
@@ -138,7 +138,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setNotes([]);
       setEvents([]);
       setTransactions([]);
-      setSelectedMood(null);
+      setMoodLogs([]);
       setHabits([]);
       setCompletedHabits([]);
       setLocale('pt-BR');
@@ -160,8 +160,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setEvents,
         transactions,
         setTransactions,
-        selectedMood,
-        setSelectedMood,
+        moodLogs,
+        setMoodLogs,
         habits,
         setHabits,
         completedHabits,

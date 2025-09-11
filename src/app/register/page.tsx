@@ -72,7 +72,7 @@ export default function RegisterPage() {
         transactions: [],
         habits: [],
         completedHabits: [],
-        selectedMood: null,
+        moodLogs: [],
       });
 
       toast({

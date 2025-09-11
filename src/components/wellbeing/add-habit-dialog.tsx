@@ -46,13 +46,13 @@ export function AddHabitDialog({ isOpen, onOpenChange, onAddHabit }: AddHabitDia
   const { locale } = useContext(AppContext);
   
   const daysOfWeek = useMemo(() => [
-    { id: 'seg', name: t('M', locale) },
-    { id: 'ter', name: t('T', locale) },
-    { id: 'qua', name: t('W', locale) },
-    { id: 'qui', name: t('Th', locale) },
-    { id: 'sex', name: t('F', locale) },
-    { id: 'sab', name: t('S', locale) },
-    { id: 'dom', name: t('Su', locale) },
+    { id: 'sun', name: t('Su', locale) },
+    { id: 'mon', name: t('M', locale) },
+    { id: 'tue', name: t('T', locale) },
+    { id: 'wed', name: t('W', locale) },
+    { id: 'thu', name: t('Th', locale) },
+    { id: 'fri', name: t('F', locale) },
+    { id: 'sat', name: t('S', locale) },
   ], [locale]);
   
   const form = useForm<HabitFormValues>({

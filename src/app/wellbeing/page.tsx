@@ -1,28 +1,38 @@
 'use client';
 
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check, Flame, Laugh, Meh, Frown, Smile as SmileIcon, Angry, PlusCircle, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Habit } from '@/lib/types';
+import type { Habit, MoodLog } from '@/lib/types';
 import { AddHabitDialog } from '@/components/wellbeing/add-habit-dialog';
+import { WellbeingChart } from '@/components/wellbeing/wellbeing-chart';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
+import { format, subDays, isSameDay } from 'date-fns';
 
 export default function WellbeingPage() {
   const {
-    selectedMood,
-    setSelectedMood,
+    moodLogs,
+    setMoodLogs,
     habits,
     setHabits,
     completedHabits,
     setCompletedHabits,
     locale,
   } = useContext(AppContext);
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
+
+  const todayISO = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  const selectedMood = useMemo(() => {
+    const todayLog = moodLogs.find(log => log.date === todayISO);
+    return todayLog ? todayLog.mood : null;
+  }, [moodLogs, todayISO]);
+
   const moods = [
     { name: t('Happy', locale), icon: Laugh, key: 'Happy' },
     { name: t('Good', locale), icon: SmileIcon, key: 'Good' },
@@ -32,22 +42,18 @@ export default function WellbeingPage() {
   ];
 
   const daysOfWeek = useMemo(() => [
-    { id: 'seg', name: t('Monday', locale), short: t('Mon', locale) },
-    { id: 'ter', name: t('Tuesday', locale), short: t('Tue', locale) },
-    { id: 'qua', name: t('Wednesday', locale), short: t('Wed', locale) },
-    { id: 'qui', name: t('Thursday', locale), short: t('Thu', locale) },
-    { id: 'sex', name: t('Friday', locale), short: t('Fri', locale) },
-    { id: 'sab', name: t('Saturday', locale), short: t('Sat', locale) },
-    { id: 'dom', name: t('Sunday', locale), short: t('Sun', locale) },
+    { id: 'sun', name: t('Sunday', locale), short: t('Sun', locale) },
+    { id: 'mon', name: t('Monday', locale), short: t('Mon', locale) },
+    { id: 'tue', name: t('Tuesday', locale), short: t('Tue', locale) },
+    { id: 'wed', name: t('Wednesday', locale), short: t('Wed', locale) },
+    { id: 'thu', name: t('Thursday', locale), short: t('Thu', locale) },
+    { id: 'fri', name: t('Friday', locale), short: t('Fri', locale) },
+    { id: 'sat', name: t('Saturday', locale), short: t('Sat', locale) },
   ], [locale]);
 
-  const dayIndexToId = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
+  const dayIndexToId = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const today = useMemo(() => dayIndexToId[new Date().getDay()], []);
   
-  const today = useMemo(() => {
-    const todayIndex = new Date().getDay();
-    return dayIndexToId[todayIndex];
-  }, []);
-
   const todaysHabits = habits.filter(habit => habit.days.includes(today));
 
   const addHabit = (habitData: Omit<Habit, 'id'>) => {
@@ -60,52 +66,71 @@ export default function WellbeingPage() {
 
   const deleteHabit = (habitId: string) => {
     setHabits(prev => prev.filter(h => h.id !== habitId));
-    setCompletedHabits(prev => {
-        const newCompleted = new Set(prev);
-        newCompleted.delete(habitId);
-        return Array.from(newCompleted); // Convert back to array for Firestore
+    setCompletedHabits(prev => prev.filter(ch => ch.habitId !== habitId));
+  };
+  
+  const setSelectedMood = (mood: string) => {
+    setMoodLogs(prevLogs => {
+      const existingLogIndex = prevLogs.findIndex(log => log.date === todayISO);
+      const newLog: MoodLog = { date: todayISO, mood };
+      if (existingLogIndex > -1) {
+        // If the same mood is clicked, unselect it
+        if (prevLogs[existingLogIndex].mood === mood) {
+          return prevLogs.filter((_, index) => index !== existingLogIndex);
+        }
+        const updatedLogs = [...prevLogs];
+        updatedLogs[existingLogIndex] = newLog;
+        return updatedLogs;
+      } else {
+        return [...prevLogs, newLog];
+      }
     });
   };
 
   const handleHabitToggle = (habitId: string) => {
     setCompletedHabits(prev => {
-      const newCompleted = new Set(prev);
-      if (newCompleted.has(habitId)) {
-        newCompleted.delete(habitId);
+      const existingIndex = prev.findIndex(ch => ch.date === todayISO && ch.habitId === habitId);
+      if (existingIndex > -1) {
+        return prev.filter((_, index) => index !== existingIndex);
       } else {
-        newCompleted.add(habitId);
+        return [...prev, { date: todayISO, habitId }];
       }
-      return Array.from(newCompleted); // Convert to array for Firestore
     });
   };
-  
-  const completedHabitsSet = useMemo(() => new Set(completedHabits), [completedHabits]);
 
+  const completedHabitsToday = useMemo(() => 
+    new Set(completedHabits.filter(ch => ch.date === todayISO).map(ch => ch.habitId)), 
+    [completedHabits, todayISO]
+  );
+  
   return (
     <>
       <div className="flex flex-col h-full">
         <SiteHeader title={t('Well-being', locale)} />
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('How are you feeling today?', locale)}</CardTitle>
-              <CardDescription>{t('Log your mood to track your well-being over time.', locale)}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-wrap gap-4">
-              {moods.map(mood => (
-                <Button 
-                  key={mood.key} 
-                  variant={selectedMood === mood.key ? 'secondary' : 'outline'}
-                  size="lg" 
-                  className="flex-col h-24 w-24 gap-2"
-                  onClick={() => setSelectedMood(mood.key)}
-                >
-                  <mood.icon className="h-8 w-8" />
-                  <span>{mood.name}</span>
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('How are you feeling today?', locale)}</CardTitle>
+                <CardDescription>{t('Log your mood to track your well-being over time.', locale)}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-4">
+                {moods.map(mood => (
+                  <Button
+                    key={mood.key}
+                    variant={selectedMood === mood.key ? 'secondary' : 'outline'}
+                    size="lg"
+                    className="flex-col h-24 w-24 gap-2"
+                    onClick={() => setSelectedMood(mood.key)}
+                  >
+                    <mood.icon className="h-8 w-8" />
+                    <span>{mood.name}</span>
+                  </Button>
+                ))}
+              </CardContent>
+            </Card>
+            <WellbeingChart />
+          </div>
 
           <Card>
             <CardHeader>
@@ -124,20 +149,22 @@ export default function WellbeingPage() {
               <h3 className="font-semibold text-lg">{t('Today\'s Habits ({day})', locale, { day: daysOfWeek.find(d => d.id === today)?.name || '' })}</h3>
               {todaysHabits.length > 0 ? (
                 todaysHabits.map(habit => {
-                  const isDone = completedHabitsSet.has(habit.id);
+                  const isDone = completedHabitsToday.has(habit.id);
                   return (
                     <div key={habit.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
                       <div className={cn("flex items-center gap-3", isDone && "text-muted-foreground line-through")}>
                         <Flame className={cn("h-5 w-5", isDone ? "text-muted-foreground" : "text-primary")} />
                         <span className="font-medium">{habit.name}</span>
                       </div>
-                      <Button 
-                        variant={isDone ? "secondary" : "outline"}
-                        size="icon"
-                        onClick={() => handleHabitToggle(habit.id)}
-                      >
-                        <Check className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center gap-2">
+                         <Button
+                          variant={isDone ? "secondary" : "outline"}
+                          size="icon"
+                          onClick={() => handleHabitToggle(habit.id)}
+                        >
+                          <Check className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   );
                 })
@@ -178,7 +205,7 @@ export default function WellbeingPage() {
           </Card>
         </div>
       </div>
-      <AddHabitDialog 
+      <AddHabitDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         onAddHabit={addHabit}

@@ -187,7 +187,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'Wed': { 'pt-BR': 'Qua', 'en-US': 'Wed' },
   'Thu': { 'pt-BR': 'Qui', 'en-US': 'Thu' },
   'Fri': { 'pt-BR': 'Sex', 'en-US': 'Fri' },
-  'Sat': { 'pt-BR': 'Sab', 'en-US': 'Sat' },
+  'Sat': { 'pt-BR': 'Sáb', 'en-US': 'Sat' },
   'Sun': { 'pt-BR': 'Dom', 'en-US': 'Sun' },
   'Add New Habit': { 'pt-BR': 'Adicionar Novo Hábito', 'en-US': 'Add New Habit' },
   'Define a new habit and choose the days to practice it.': { 'pt-BR': 'Defina um novo hábito e escolha os dias para praticá-lo.', 'en-US': 'Define a new habit and choose the days to practice it.' },
@@ -204,6 +204,10 @@ const translations: Record<string, Record<Locale, string>> = {
   'F': { 'pt-BR': 'S', 'en-US': 'F' },
   'S': { 'pt-BR': 'S', 'en-US': 'S' },
   'Su': { 'pt-BR': 'D', 'en-US': 'S' },
+  'Weekly Summary': { 'pt-BR': 'Resumo Semanal', 'en-US': 'Weekly Summary' },
+  'Your mood and habits from the last 7 days.': { 'pt-BR': 'Seu humor e hábitos dos últimos 7 dias.', 'en-US': 'Your mood and habits from the last 7 days.' },
+  'Mood': { 'pt-BR': 'Humor', 'en-US': 'Mood' },
+  'Habits': { 'pt-BR': 'Hábitos', 'en-US': 'Habits' },
 
   // Notes
   'Search notes...': { 'pt-BR': 'Buscar notas...', 'en-US': 'Search notes...' },

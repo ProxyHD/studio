@@ -45,12 +45,22 @@ export type Event = {
   guests?: { email: string }[];
 };
 
-export type DayOfWeek = 'seg' | 'ter' | 'qua' | 'qui' | 'sex' | 'sab' | 'dom';
+export type DayOfWeek = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
 
 export type Habit = {
   id: string;
   name: string;
   days: DayOfWeek[];
+};
+
+export type CompletedHabit = {
+  date: string; // YYYY-MM-DD
+  habitId: string;
+};
+
+export type MoodLog = {
+  date: string; // YYYY-MM-DD
+  mood: string;
 };
 
 export type Transaction = {
@@ -75,12 +85,12 @@ export interface AppContextType {
   setEvents: Dispatch<SetStateAction<Event[]>>;
   transactions: Transaction[];
   setTransactions: Dispatch<SetStateAction<Transaction[]>>;
-  selectedMood: string | null;
-  setSelectedMood: Dispatch<SetStateAction<string | null>>;
+  moodLogs: MoodLog[];
+  setMoodLogs: Dispatch<SetStateAction<MoodLog[]>>;
   habits: Habit[];
   setHabits: Dispatch<SetStateAction<Habit[]>>;
-  completedHabits: string[];
-  setCompletedHabits: Dispatch<SetStateAction<string[]>>;
+  completedHabits: CompletedHabit[];
+  setCompletedHabits: Dispatch<SetStateAction<CompletedHabit[]>>;
   locale: Locale;
   setLocale: Dispatch<SetStateAction<Locale>>;
   loading: boolean;
