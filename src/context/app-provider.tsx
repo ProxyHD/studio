@@ -4,7 +4,7 @@ import { createContext, useState, ReactNode, useEffect, useContext } from 'react
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
@@ -16,6 +16,8 @@ export const AppContext = createContext<AppContextType>({
   setNotes: () => {},
   events: [],
   setEvents: () => {},
+  transactions: [],
+  setTransactions: () => {},
   selectedMood: null,
   setSelectedMood: () => {},
   habits: [],
@@ -35,6 +37,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completedHabits, setCompletedHabits] = useState<string[]>([]);
@@ -63,13 +66,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
         tasks,
         notes,
         events,
+        transactions,
         selectedMood,
         habits,
         completedHabits,
         locale,
       });
     }
-  }, [profile, tasks, notes, events, selectedMood, habits, completedHabits, locale, user, loading, debouncedSaveData]);
+  }, [profile, tasks, notes, events, transactions, selectedMood, habits, completedHabits, locale, user, loading, debouncedSaveData]);
 
 
   // Effect to load data from Firestore on user login
@@ -88,6 +92,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setTasks(data.tasks || []);
           setNotes(data.notes || []);
           setEvents(data.events || []);
+          setTransactions(data.transactions || []);
           setSelectedMood(data.selectedMood || null);
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
@@ -99,6 +104,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setTasks([]);
           setNotes([]);
           setEvents([]);
+          setTransactions([]);
           setSelectedMood(null);
           setHabits([]);
           setCompletedHabits([]);
@@ -109,6 +115,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             tasks: [],
             notes: [],
             events: [],
+            transactions: [],
             selectedMood: null,
             habits: [],
             completedHabits: [],
@@ -130,6 +137,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setTasks([]);
       setNotes([]);
       setEvents([]);
+      setTransactions([]);
       setSelectedMood(null);
       setHabits([]);
       setCompletedHabits([]);
@@ -150,6 +158,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setNotes,
         events,
         setEvents,
+        transactions,
+        setTransactions,
         selectedMood,
         setSelectedMood,
         habits,

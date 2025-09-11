@@ -53,6 +53,15 @@ export type Habit = {
   days: DayOfWeek[];
 };
 
+export type Transaction = {
+  id: string;
+  type: 'income' | 'expense';
+  amount: number;
+  description: string;
+  category: string;
+  date: string; // Stored as ISO string
+};
+
 export type Locale = 'pt-BR' | 'en-US';
 
 export interface AppContextType {
@@ -64,6 +73,8 @@ export interface AppContextType {
   setNotes: Dispatch<SetStateAction<Note[]>>;
   events: Event[];
   setEvents: Dispatch<SetStateAction<Event[]>>;
+  transactions: Transaction[];
+  setTransactions: Dispatch<SetStateAction<Transaction[]>>;
   selectedMood: string | null;
   setSelectedMood: Dispatch<SetStateAction<string | null>>;
   habits: Habit[];

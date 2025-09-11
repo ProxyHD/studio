@@ -69,6 +69,7 @@ export default function RegisterPage() {
         tasks: [],
         notes: [],
         events: [],
+        transactions: [],
         habits: [],
         completedHabits: [],
         selectedMood: null,

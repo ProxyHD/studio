@@ -24,11 +24,14 @@ const translations: Record<string, Record<Locale, string>> = {
   'Search...': { 'pt-BR': 'Buscar...', 'en-US': 'Search...' },
   'My Account': { 'pt-BR': 'Minha Conta', 'en-US': 'My Account' },
   'Support': { 'pt-BR': 'Suporte', 'en-US': 'Support' },
+  'Action': { 'pt-BR': 'Ação', 'en-US': 'Action' },
+  'Type': { 'pt-BR': 'Tipo', 'en-US': 'Type' },
+  'Amount': { 'pt-BR': 'Valor', 'en-US': 'Amount' },
+
 
   // Dashboard
   'Completed Tasks': { 'pt-BR': 'Tarefas Concluídas', 'en-US': 'Completed Tasks' },
   'Current Mood': { 'pt-BR': 'Humor Atual', 'en-US': 'Current Mood' },
-  'Expenses': { 'pt-BR': 'Despesas', 'en-US': 'Expenses' },
   'Habit Streak': { 'pt-BR': 'Sequência de Hábitos', 'en-US': 'Habit Streak' },
   'Today\'s Tasks': { 'pt-BR': 'Tarefas de Hoje', 'en-US': 'Today\'s Tasks' },
   'You have {count} pending {task, plural, one {task} other {tasks}}.': { 
@@ -53,7 +56,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'Please enter a valid email.': { 'pt-BR': 'Por favor, insira um e-mail válido.', 'en-US': 'Please enter a valid email.' },
   'Email is required.': { 'pt-BR': 'O e-mail é obrigatório.', 'en-US': 'Email is required.' },
   'Password': { 'pt-BR': 'Senha', 'en-US': 'Password' },
-  'Password is required.': { 'pt-BR': 'A senha é obrigatória.', 'en-US': 'Password is required.' },
+  'Password is required.': { 'pt-BR': 'A senha é obrigatório.', 'en-US': 'Password is required.' },
   'Forgot your password?': { 'pt-BR': 'Esqueceu sua senha?', 'en-US': 'Forgot your password?' },
   'Or continue with': { 'pt-BR': 'Ou continue com', 'en-US': 'Or continue with' },
   'Login with Google': { 'pt-BR': 'Login com Google', 'en-US': 'Login with Google' },
@@ -219,9 +222,25 @@ const translations: Record<string, Record<Locale, string>> = {
   'Start writing...': { 'pt-BR': 'Comece a escrever...', 'en-US': 'Start writing...' },
   
   // Finances
-  'Financial Control': { 'pt-BR': 'Controle Financeiro', 'en-US': 'Financial Control' },
-  'This section is under construction.': { 'pt-BR': 'Esta seção está em construção.', 'en-US': 'This section is under construction.' },
-  'Soon you will be able to manage your finances here.': { 'pt-BR': 'Em breve você poderá gerenciar suas finanças aqui.', 'en-US': 'Soon you will be able to manage your finances here.' },
+  'Financial Summary': { 'pt-BR': 'Resumo Financeiro', 'en-US': 'Financial Summary' },
+  'Add Transaction': { 'pt-BR': 'Adicionar Transação', 'en-US': 'Add Transaction' },
+  'Total Income': { 'pt-BR': 'Receita Total', 'en-US': 'Total Income' },
+  'Total Expenses': { 'pt-BR': 'Despesa Total', 'en-US': 'Total Expenses' },
+  'Current Balance': { 'pt-BR': 'Saldo Atual', 'en-US': 'Current Balance' },
+  'Recent Transactions': { 'pt-BR': 'Transações Recentes', 'en-US': 'Recent Transactions' },
+  'Your last 10 financial movements.': { 'pt-BR': 'Suas últimas 10 movimentações financeiras.', 'en-US': 'Your last 10 financial movements.' },
+  'Income': { 'pt-BR': 'Receita', 'en-US': 'Income' },
+  'Expense': { 'pt-BR': 'Despesa', 'en-US': 'Expense' },
+  'No transactions recorded yet.': { 'pt-BR': 'Nenhuma transação registrada ainda.', 'en-US': 'No transactions recorded yet.' },
+  'Add New Transaction': { 'pt-BR': 'Adicionar Nova Transação', 'en-US': 'Add New Transaction' },
+  'Fill in the details for your new transaction.': { 'pt-BR': 'Preencha os detalhes da sua nova transação.', 'en-US': 'Fill in the details for your new transaction.' },
+  'Transaction Type': { 'pt-BR': 'Tipo de Transação', 'en-US': 'Transaction Type' },
+  'Select a type': { 'pt-BR': 'Selecione um tipo', 'en-US': 'Select a type' },
+  'Category': { 'pt-BR': 'Categoria', 'en-US': 'Category' },
+  'e.g., Salary, Food, Bills': { 'pt-BR': 'Ex: Salário, Comida, Contas', 'en-US': 'e.g., Salary, Food, Bills' },
+  'Save Transaction': { 'pt-BR': 'Salvar Transação', 'en-US': 'Save Transaction' },
+  'Monthly Overview': { 'pt-BR': 'Visão Geral Mensal', 'en-US': 'Monthly Overview' },
+  'Income vs. Expenses': { 'pt-BR': 'Receitas vs. Despesas', 'en-US': 'Income vs. Expenses' },
 };
 
 export const t = (key: string, locale: Locale, options?: Record<string, string | number>): string => {
