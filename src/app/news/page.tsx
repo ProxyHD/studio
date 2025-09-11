@@ -41,15 +41,6 @@ export default function NewsPage() {
               {selectedNews ? (
                 <div className="space-y-4">
                   <h2 className="text-2xl font-bold font-headline">{selectedNews.title}</h2>
-                  <div className="relative w-full h-64 rounded-lg overflow-hidden">
-                     <Image
-                        src={selectedNews.imageUrl}
-                        alt={selectedNews.title}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={selectedNews.imageHint}
-                      />
-                  </div>
                   <div className="prose prose-sm max-w-none text-muted-foreground">
                     <p>{selectedNews.content}</p>
                   </div>
