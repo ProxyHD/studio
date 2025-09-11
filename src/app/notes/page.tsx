@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Note } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { PlusCircle, Sparkles, Loader2, Trash2, Pencil } from 'lucide-react';
+import { PlusCircle, Sparkles, Loader2, Trash2, Pencil, Share2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -97,6 +97,39 @@ export default function NotesPage() {
     }
   };
 
+  const handleShare = async () => {
+    if (!selectedNote) return;
+
+    const shareData = {
+      title: selectedNote.title,
+      text: selectedNote.content,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback for browsers that do not support the Web Share API
+      try {
+        await navigator.clipboard.writeText(`${shareData.title}\n\n${shareData.text}`);
+        toast({
+          title: t('Copied to clipboard', locale),
+          description: t('Note content copied to clipboard.', locale),
+        });
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+        toast({
+          title: t('Error', locale),
+          description: t('Could not copy note to clipboard.', locale),
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col h-screen max-h-screen overflow-hidden">
@@ -140,8 +173,8 @@ export default function NotesPage() {
                          <p className="text-sm text-muted-foreground">{t('Created on {date}', locale, { date: new Date(selectedNote.createdAt).toLocaleDateString(locale) })}</p>
                     </div>
                     <div className="flex items-center">
-                        <Button variant="ghost" size="icon">
-                            <Pencil className="h-4 w-4" />
+                        <Button variant="ghost" size="icon" onClick={handleShare}>
+                            <Share2 className="h-4 w-4" />
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
