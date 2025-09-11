@@ -37,17 +37,25 @@ import { t } from '@/lib/translations';
 export default function NotesPage() {
   const { notes, setNotes, locale } = useContext(AppContext);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [summary, setSummary] = useState('');
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const { toast } = useToast();
   const isPro = true; // Mock value
 
+  const filteredNotes = notes.filter(note =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   useEffect(() => {
-    if (notes.length > 0 && !selectedNote) {
-      setSelectedNote(notes[0]);
+    if (filteredNotes.length > 0 && !selectedNote) {
+      setSelectedNote(filteredNotes[0]);
+    } else if (filteredNotes.length === 0) {
+      setSelectedNote(null);
     }
-  }, [notes, selectedNote]);
+  }, [notes, selectedNote, filteredNotes]);
 
   const handleNoteChange = (key: 'title' | 'content', value: string) => {
     if (selectedNote) {
@@ -147,14 +155,18 @@ export default function NotesPage() {
         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-0 overflow-hidden">
           <aside className="hidden md:flex flex-col border-r h-full">
             <div className="p-4 space-y-4">
-              <Input placeholder={t('Search notes...', locale)} />
+              <Input 
+                placeholder={t('Search notes...', locale)}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
               <Button className="w-full" onClick={handleAddNewNote}>
                 <PlusCircle className="mr-2 h-4 w-4" /> {t('New Note', locale)}
               </Button>
             </div>
             <ScrollArea className="flex-1">
               <div className="p-4 space-y-2">
-                {notes.map(note => (
+                {filteredNotes.map(note => (
                   <button
                     key={note.id}
                     onClick={() => setSelectedNote(note)}
