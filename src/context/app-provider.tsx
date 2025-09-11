@@ -4,7 +4,7 @@ import { createContext, useState, ReactNode, useEffect, useContext } from 'react
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit, ScheduleItem } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
@@ -16,6 +16,8 @@ export const AppContext = createContext<AppContextType>({
   setNotes: () => {},
   events: [],
   setEvents: () => {},
+  scheduleItems: [],
+  setScheduleItems: () => {},
   transactions: [],
   setTransactions: () => {},
   moodLogs: [],
@@ -38,6 +40,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
+  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [moodLogs, setMoodLogs] = useState<MoodLog[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
@@ -67,6 +70,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         tasks,
         notes,
         events,
+        scheduleItems,
         transactions,
         moodLogs,
         habits,
@@ -74,7 +78,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         locale,
       });
     }
-  }, [profile, tasks, notes, events, transactions, moodLogs, habits, completedHabits, locale, user, loading, debouncedSaveData]);
+  }, [profile, tasks, notes, events, scheduleItems, transactions, moodLogs, habits, completedHabits, locale, user, loading, debouncedSaveData]);
 
 
   // Effect to load data from Firestore on user login
@@ -93,6 +97,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setTasks(data.tasks || []);
           setNotes(data.notes || []);
           setEvents(data.events || []);
+          setScheduleItems(data.scheduleItems || []);
           setTransactions(data.transactions || []);
           setMoodLogs(data.moodLogs || []);
           setHabits(data.habits || []);
@@ -105,6 +110,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setTasks([]);
           setNotes([]);
           setEvents([]);
+          setScheduleItems([]);
           setTransactions([]);
           setMoodLogs([]);
           setHabits([]);
@@ -116,6 +122,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             tasks: [],
             notes: [],
             events: [],
+            scheduleItems: [],
             transactions: [],
             moodLogs: [],
             habits: [],
@@ -138,6 +145,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setTasks([]);
       setNotes([]);
       setEvents([]);
+      setScheduleItems([]);
       setTransactions([]);
       setMoodLogs([]);
       setHabits([]);
@@ -171,6 +179,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setNotes,
         events,
         setEvents,
+        scheduleItems,
+        setScheduleItems,
         transactions,
         setTransactions,
         moodLogs,

@@ -45,7 +45,16 @@ export type Event = {
   guests?: { email: string }[];
 };
 
-export type DayOfWeek = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
+export type DayOfWeek = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
+
+export type ScheduleItem = {
+  id: string;
+  dayOfWeek: DayOfWeek;
+  title: string;
+  startTime: string;
+  endTime: string;
+  location: string; // For room number, etc.
+};
 
 export type Habit = {
   id: string;
@@ -83,6 +92,8 @@ export interface AppContextType {
   setNotes: Dispatch<SetStateAction<Note[]>>;
   events: Event[];
   setEvents: Dispatch<SetStateAction<Event[]>>;
+  scheduleItems: ScheduleItem[];
+  setScheduleItems: Dispatch<SetStateAction<ScheduleItem[]>>;
   transactions: Transaction[];
   setTransactions: Dispatch<SetStateAction<Transaction[]>>;
   moodLogs: MoodLog[];
