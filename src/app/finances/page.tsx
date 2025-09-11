@@ -75,6 +75,10 @@ export default function FinancesPage() {
       balance: income - expenses,
     };
   }, [transactions]);
+  
+  const totalTransactions = totalIncome + totalExpenses;
+  const incomePercentage = totalTransactions > 0 ? (totalIncome / totalTransactions) * 100 : 0;
+  const expensePercentage = totalTransactions > 0 ? (totalExpenses / totalTransactions) * 100 : 0;
 
   const recentTransactions = [...transactions]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -94,8 +98,18 @@ export default function FinancesPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <SummaryCard title={t('Total Income', locale)} value={formatCurrency(totalIncome)} icon={TrendingUp} />
-            <SummaryCard title={t('Total Expenses', locale)} value={formatCurrency(totalExpenses)} icon={TrendingDown} />
+            <SummaryCard 
+                title={t('Total Income', locale)} 
+                value={formatCurrency(totalIncome)} 
+                icon={TrendingUp} 
+                description={`${incomePercentage.toFixed(1)}% of total`}
+            />
+            <SummaryCard 
+                title={t('Total Expenses', locale)} 
+                value={formatCurrency(totalExpenses)} 
+                icon={TrendingDown}
+                description={`${expensePercentage.toFixed(1)}% of total`}
+            />
             <SummaryCard title={t('Current Balance', locale)} value={formatCurrency(balance)} icon={Wallet} />
           </div>
 

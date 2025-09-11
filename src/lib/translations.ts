@@ -276,6 +276,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'Save Transaction': { 'pt-BR': 'Salvar Transação', 'en-US': 'Save Transaction' },
   'Monthly Overview': { 'pt-BR': 'Visão Geral Mensal', 'en-US': 'Monthly Overview' },
   'Income vs. Expenses': { 'pt-BR': 'Receitas vs. Despesas', 'en-US': 'Income vs. Expenses' },
+  '% of total': { 'pt-BR': '% do total', 'en-US': '% of total' },
 };
 
 export const t = (key: string, locale: Locale, options?: Record<string, string | number>): string => {
