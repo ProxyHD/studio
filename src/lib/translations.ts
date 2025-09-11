@@ -29,6 +29,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Type': { 'pt-BR': 'Tipo', 'en-US': 'Type' },
   'Amount': { 'pt-BR': 'Valor', 'en-US': 'Amount' },
   'Edit': { 'pt-BR': 'Editar', 'en-US': 'Edit' },
+  'Main': { 'pt-BR': 'Principal', 'en-US': 'Main' },
+  'Tools': { 'pt-BR': 'Ferramentas', 'en-US': 'Tools' },
 
 
   // Dashboard

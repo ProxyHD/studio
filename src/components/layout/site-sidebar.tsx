@@ -21,14 +21,24 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
   const { logout } = useAuth();
   const { locale, newItems, clearNewItemBadge } = useContext(AppContext);
 
-  const navItems = [
-    { href: '/dashboard', label: t('Dashboard', locale), icon: LayoutDashboard, badgeKey: 'dashboard' },
-    { href: '/tasks', label: t('Tasks', locale), icon: CheckSquare, badgeKey: 'tasks' },
-    { href: '/calendar', label: t('Calendar', locale), icon: Calendar, badgeKey: 'calendar' },
-    { href: '/wellbeing', label: t('Well-being', locale), icon: Smile, badgeKey: 'wellbeing' },
-    { href: '/notes', label: t('Notes', locale), icon: Notebook, badgeKey: 'notes' },
-    { href: '/finances', label: t('Finances', locale), icon: Wallet, badgeKey: 'finances' },
-    { href: '/news', label: t('News', locale), icon: Megaphone, badgeKey: 'news' },
+  const navGroups = [
+    {
+      title: t('Main', locale),
+      items: [
+        { href: '/dashboard', label: t('Dashboard', locale), icon: LayoutDashboard, badgeKey: 'dashboard' },
+        { href: '/tasks', label: t('Tasks', locale), icon: CheckSquare, badgeKey: 'tasks' },
+        { href: '/calendar', label: t('Calendar', locale), icon: Calendar, badgeKey: 'calendar' },
+      ]
+    },
+    {
+      title: t('Tools', locale),
+      items: [
+        { href: '/wellbeing', label: t('Well-being', locale), icon: Smile, badgeKey: 'wellbeing' },
+        { href: '/notes', label: t('Notes', locale), icon: Notebook, badgeKey: 'notes' },
+        { href: '/finances', label: t('Finances', locale), icon: Wallet, badgeKey: 'finances' },
+        { href: '/news', label: t('News', locale), icon: Megaphone, badgeKey: 'news' },
+      ]
+    }
   ];
 
   const proItem = { href: '/upgrade', label: t('Upgrade to Pro', locale), icon: Zap };
@@ -71,32 +81,41 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
           <h1 className="text-2xl font-bold font-headline">LifeHub</h1>
         </Link>
       </div>
-      <nav className="flex-1 px-4 space-y-2">
-        {navItems.map((item) => (
-          <Link key={item.href} href={item.href} passHref>
-            <Button
-              variant={pathname === item.href ? 'secondary' : 'ghost'}
-              className="w-full justify-start relative"
-              onClick={() => handleLinkClick(item.badgeKey as keyof typeof newItems)}
-            >
-              <item.icon className="mr-2 h-4 w-4" />
-              {item.label}
-              {newItems[item.badgeKey as keyof typeof newItems] && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-red-500"></span>
-              )}
-            </Button>
-          </Link>
+      <nav className="flex-1 px-4 space-y-4">
+        {navGroups.map((group) => (
+          <div key={group.title}>
+            <h2 className="px-2 mb-2 text-xs font-semibold tracking-wider text-muted-foreground uppercase">{group.title}</h2>
+            <div className="space-y-1">
+              {group.items.map((item) => (
+                <Link key={item.href} href={item.href} passHref>
+                  <Button
+                    variant={pathname === item.href ? 'secondary' : 'ghost'}
+                    className="w-full justify-start relative"
+                    onClick={() => handleLinkClick(item.badgeKey as keyof typeof newItems)}
+                  >
+                    <item.icon className="mr-2 h-4 w-4" />
+                    {item.label}
+                    {newItems[item.badgeKey as keyof typeof newItems] && (
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                    )}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </div>
         ))}
-        <Link href={proItem.href} passHref>
-            <Button
-              variant={pathname === proItem.href ? 'default' : 'ghost'}
-              className={cn("w-full justify-start", pathname !== proItem.href && "text-primary hover:bg-primary/10 hover:text-primary")}
-              onClick={() => handleLinkClick()}
-            >
-              <proItem.icon className="mr-2 h-4 w-4" />
-              {proItem.label}
-            </Button>
-          </Link>
+        <div>
+           <Link href={proItem.href} passHref>
+              <Button
+                variant={pathname === proItem.href ? 'default' : 'ghost'}
+                className={cn("w-full justify-start", pathname !== proItem.href && "text-primary hover:bg-primary/10 hover:text-primary")}
+                onClick={() => handleLinkClick()}
+              >
+                <proItem.icon className="mr-2 h-4 w-4" />
+                {proItem.label}
+              </Button>
+            </Link>
+        </div>
       </nav>
       <div className="p-4 mt-auto">
         <Separator className="my-2" />
