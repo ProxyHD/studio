@@ -3,4 +3,4 @@ config();
 
 import '@/ai/flows/organization-suggestions.ts';
 import '@/ai/flows/summarize-notes.ts';
-import '@/ai/flows/routine-suggestions.ts';
+import '@/ai/flows/smart-suggestions.ts';

@@ -57,6 +57,14 @@ const translations: Record<string, Record<Locale, string>> = {
   'View All Habits': { 'pt-BR': 'Ver Todos os Hábitos', 'en-US': 'View All Habits' },
   'A quick look at your finances.': { 'pt-BR': 'Uma rápida olhada nas suas finanças.', 'en-US': 'A quick look at your finances.' },
   'View Full Report': { 'pt-BR': 'Ver Relatório Completo', 'en-US': 'View Full Report' },
+  'Ask for suggestions or ask to create tasks, habits, and notes.': { 'pt-BR': 'Peça sugestões ou para criar tarefas, hábitos e notas.', 'en-US': 'Ask for suggestions or ask to create tasks, habits, and notes.' },
+  'ex: Create a high priority task to call the doctor tomorrow.': { 'pt-BR': 'ex: Criar uma tarefa de alta prioridade para ligar para o médico amanhã.', 'en-US': 'ex: Create a high priority task to call the doctor tomorrow.' },
+  'AI Response:': { 'pt-BR': 'Resposta da IA:', 'en-US': 'AI Response:' },
+  'Generate with AI': { 'pt-BR': 'Gerar com IA', 'en-US': 'Generate with AI' },
+  'Failed to generate suggestions. Please try again.': { 'pt-BR': 'Falha ao gerar sugestões. Por favor, tente novamente.', 'en-US': 'Failed to generate suggestions. Please try again.' },
+  'task(s) created': { 'pt-BR': 'tarefa(s) criada(s)', 'en-US': 'task(s) created' },
+  'habit(s) created': { 'pt-BR': 'hábito(s) criado(s)', 'en-US': 'habit(s) created' },
+  'note(s) created': { 'pt-BR': 'nota(s) criada(s)', 'en-US': 'note(s) created' },
 
 
   // Login / Register

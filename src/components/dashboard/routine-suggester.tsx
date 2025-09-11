@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useContext } from 'react';
-import { getRoutineSuggestions } from '@/ai/flows/routine-suggestions';
+import { getSmartSuggestions } from '@/ai/flows/smart-suggestions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,11 +10,12 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
+import type { Task, Habit, Note } from '@/lib/types';
 
 export function RoutineSuggester() {
-  const { locale } = useContext(AppContext);
+  const { locale, setTasks, setHabits, setNotes } = useContext(AppContext);
   const [userData, setUserData] = useState('');
-  const [suggestions, setSuggestions] = useState('');
+  const [suggestionText, setSuggestionText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -40,15 +41,54 @@ export function RoutineSuggester() {
     }
 
     setIsLoading(true);
-    setSuggestions('');
+    setSuggestionText('');
     try {
-      const result = await getRoutineSuggestions({ userData });
-      setSuggestions(result.routineSuggestions);
+      const result = await getSmartSuggestions({ userData });
+      setSuggestionText(result.suggestionText);
+      
+      let createdItemsMessage = '';
+
+      if (result.createdTasks && result.createdTasks.length > 0) {
+        const newTasks: Task[] = result.createdTasks.map(task => ({
+            id: crypto.randomUUID(),
+            status: 'todo',
+            ...task
+        }));
+        setTasks(prev => [...prev, ...newTasks]);
+        createdItemsMessage += `${newTasks.length} ${t('task(s) created', locale)}. `;
+      }
+
+      if (result.createdHabits && result.createdHabits.length > 0) {
+        const newHabits: Habit[] = result.createdHabits.map(habit => ({
+            id: crypto.randomUUID(),
+            ...habit
+        }));
+        setHabits(prev => [...prev, ...newHabits]);
+        createdItemsMessage += `${newHabits.length} ${t('habit(s) created', locale)}. `;
+      }
+      
+      if (result.createdNotes && result.createdNotes.length > 0) {
+        const newNotes: Note[] = result.createdNotes.map(note => ({
+            id: crypto.randomUUID(),
+            createdAt: new Date().toISOString(),
+            ...note
+        }));
+        setNotes(prev => [...prev, ...newNotes]);
+        createdItemsMessage += `${newNotes.length} ${t('note(s) created', locale)}. `;
+      }
+      
+      if(createdItemsMessage) {
+        toast({
+            title: t('Success', locale),
+            description: createdItemsMessage.trim(),
+        });
+      }
+
     } catch (error) {
       console.error(error);
       toast({
         title: t('Error', locale),
-        description: 'Failed to generate suggestions. Please try again.',
+        description: t('Failed to generate suggestions. Please try again.', locale),
         variant: 'destructive',
       });
     } finally {
@@ -66,20 +106,20 @@ export function RoutineSuggester() {
                 {t('Pro', locale)}
             </Badge>
         </div>
-        <CardDescription>{t('Describe your goals and current habits to get an AI-generated routine.', locale)}</CardDescription>
+        <CardDescription>{t('Ask for suggestions or ask to create tasks, habits, and notes.', locale)}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col gap-4">
         <Textarea
-          placeholder={t('ex: I want to wake up earlier, exercise 3 times a week, and read more books.', locale)}
+          placeholder={t('ex: Create a high priority task to call the doctor tomorrow.', locale)}
           value={userData}
           onChange={(e) => setUserData(e.target.value)}
           className="flex-grow"
           disabled={!isPro}
         />
-        {suggestions && (
+        {suggestionText && (
           <div className="p-4 bg-muted/50 rounded-md border text-sm prose prose-sm max-w-none">
-            <h4 className="font-semibold mb-2">{t('Suggested Routine:', locale)}</h4>
-            <p className="whitespace-pre-wrap">{suggestions}</p>
+            <h4 className="font-semibold mb-2">{t('AI Response:', locale)}</h4>
+            <p className="whitespace-pre-wrap">{suggestionText}</p>
           </div>
         )}
       </CardContent>
@@ -92,7 +132,7 @@ export function RoutineSuggester() {
           ) : (
             <Lock className="mr-2 h-4 w-4" />
           )}
-          {isPro ? (isLoading ? t('Generating...', locale) : t('Generate Routine', locale)) : t('Upgrade to Generate', locale)}
+          {isPro ? (isLoading ? t('Generating...', locale) : t('Generate with AI', locale)) : t('Upgrade to Generate', locale)}
         </Button>
       </CardFooter>
     </Card>
