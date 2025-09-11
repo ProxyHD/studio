@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useContext } from 'react';
-import { PlusCircle, ArrowDownCircle, ArrowUpCircle, DollarSign, Trash2, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
+import { PlusCircle, Trash2, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';

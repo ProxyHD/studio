@@ -66,8 +66,8 @@ export function FinancialChart({ transactions, locale }: FinancialChartProps) {
               formatter={(value: number) => formatCurrency(value)}
             />
             <Legend formatter={(value) => t(value.charAt(0).toUpperCase() + value.slice(1), locale)} />
-            <Bar dataKey="income" fill="var(--color-chart-2)" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="expense" fill="var(--color-chart-5)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="income" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="expense" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
