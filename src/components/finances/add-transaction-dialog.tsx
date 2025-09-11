@@ -63,6 +63,7 @@ interface AddTransactionDialogProps {
 export function AddTransactionDialog({ isOpen, onOpenChange, onAddTransaction }: AddTransactionDialogProps) {
   const { locale } = useContext(AppContext);
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
+  const currencySymbol = locale === 'pt-BR' ? '€' : '$';
 
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionSchema),
@@ -135,7 +136,12 @@ export function AddTransactionDialog({ isOpen, onOpenChange, onAddTransaction }:
                 <FormItem>
                   <FormLabel>{t('Amount', locale)}</FormLabel>
                   <FormControl>
-                    <Input type="number" step="0.01" {...field} />
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
+                        {currencySymbol}
+                      </span>
+                      <Input type="number" step="0.01" {...field} className="pl-7" />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
