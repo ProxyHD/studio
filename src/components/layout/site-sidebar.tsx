@@ -19,28 +19,31 @@ interface SiteSidebarProps {
 export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps) {
   const pathname = usePathname();
   const { logout } = useAuth();
-  const { locale } = useContext(AppContext);
+  const { locale, newItems, clearNewItemBadge } = useContext(AppContext);
 
   const navItems = [
-    { href: '/dashboard', label: t('Dashboard', locale), icon: LayoutDashboard },
-    { href: '/tasks', label: t('Tasks', locale), icon: CheckSquare },
-    { href: '/calendar', label: t('Calendar', locale), icon: Calendar },
-    { href: '/wellbeing', label: t('Well-being', locale), icon: Smile },
-    { href: '/notes', label: t('Notes', locale), icon: Notebook },
-    { href: '/finances', label: t('Finances', locale), icon: Wallet },
+    { href: '/dashboard', label: t('Dashboard', locale), icon: LayoutDashboard, badgeKey: 'dashboard' },
+    { href: '/tasks', label: t('Tasks', locale), icon: CheckSquare, badgeKey: 'tasks' },
+    { href: '/calendar', label: t('Calendar', locale), icon: Calendar, badgeKey: 'calendar' },
+    { href: '/wellbeing', label: t('Well-being', locale), icon: Smile, badgeKey: 'wellbeing' },
+    { href: '/notes', label: t('Notes', locale), icon: Notebook, badgeKey: 'notes' },
+    { href: '/finances', label: t('Finances', locale), icon: Wallet, badgeKey: 'finances' },
   ];
 
   const proItem = { href: '/upgrade', label: t('Upgrade to Pro', locale), icon: Zap };
   const settingsItem = { href: '/settings', label: t('Settings', locale), icon: Settings };
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (key?: keyof typeof newItems) => {
+    if (key) {
+      clearNewItemBadge(key);
+    }
     if (onLinkClick) {
       onLinkClick();
     }
   };
   
   const handleLogout = () => {
-    handleLinkClick();
+    if (onLinkClick) onLinkClick();
     logout();
   }
 
@@ -62,7 +65,7 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
   return (
     <aside className={cn(sidebarClasses, { [navContainerClasses]: !isMobile })}>
       <div className="p-6">
-        <Link href="/dashboard" className="flex items-center gap-2" onClick={handleLinkClick}>
+        <Link href="/dashboard" className="flex items-center gap-2" onClick={() => handleLinkClick('dashboard')}>
           <LifeBuoy className="h-8 w-8 text-primary" />
           <h1 className="text-2xl font-bold font-headline">LifeHub</h1>
         </Link>
@@ -72,11 +75,14 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
           <Link key={item.href} href={item.href} passHref>
             <Button
               variant={pathname === item.href ? 'secondary' : 'ghost'}
-              className="w-full justify-start"
-              onClick={handleLinkClick}
+              className="w-full justify-start relative"
+              onClick={() => handleLinkClick(item.badgeKey as keyof typeof newItems)}
             >
               <item.icon className="mr-2 h-4 w-4" />
               {item.label}
+              {newItems[item.badgeKey as keyof typeof newItems] && (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-red-500"></span>
+              )}
             </Button>
           </Link>
         ))}
@@ -84,7 +90,7 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
             <Button
               variant={pathname === proItem.href ? 'default' : 'ghost'}
               className={cn("w-full justify-start", pathname !== proItem.href && "text-primary hover:bg-primary/10 hover:text-primary")}
-              onClick={handleLinkClick}
+              onClick={() => handleLinkClick()}
             >
               <proItem.icon className="mr-2 h-4 w-4" />
               {proItem.label}
@@ -97,7 +103,7 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
             <Button 
                 variant={pathname === settingsItem.href ? 'secondary' : 'ghost'}
                 className="w-full justify-start"
-                onClick={handleLinkClick}
+                onClick={() => handleLinkClick()}
             >
                 <settingsItem.icon className="mr-2 h-4 w-4" />
                 {settingsItem.label}

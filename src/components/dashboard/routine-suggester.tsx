@@ -13,7 +13,7 @@ import { t } from '@/lib/translations';
 import type { Task, Habit, Note } from '@/lib/types';
 
 export function RoutineSuggester() {
-  const { locale, setTasks, setHabits, setNotes } = useContext(AppContext);
+  const { locale, setTasks, setHabits, setNotes, setNewItemBadge } = useContext(AppContext);
   const [userData, setUserData] = useState('');
   const [suggestionText, setSuggestionText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +55,7 @@ export function RoutineSuggester() {
             ...task
         }));
         setTasks(prev => [...prev, ...newTasks]);
+        setNewItemBadge('tasks');
         createdItemsMessage += `${newTasks.length} ${t('task(s) created', locale)}. `;
       }
 
@@ -64,6 +65,7 @@ export function RoutineSuggester() {
             ...habit
         }));
         setHabits(prev => [...prev, ...newHabits]);
+        setNewItemBadge('wellbeing');
         createdItemsMessage += `${newHabits.length} ${t('habit(s) created', locale)}. `;
       }
       
@@ -74,6 +76,7 @@ export function RoutineSuggester() {
             ...note
         }));
         setNotes(prev => [...prev, ...newNotes]);
+        setNewItemBadge('notes');
         createdItemsMessage += `${newNotes.length} ${t('note(s) created', locale)}. `;
       }
       

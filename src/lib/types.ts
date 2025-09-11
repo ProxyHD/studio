@@ -83,6 +83,12 @@ export type Transaction = {
 
 export type Locale = 'pt-BR' | 'en-US';
 
+export type NewItemBadges = {
+  tasks: boolean;
+  wellbeing: boolean;
+  notes: boolean;
+};
+
 export interface AppContextType {
   profile: UserProfile | null;
   setProfile: Dispatch<SetStateAction<UserProfile | null>>;
@@ -106,6 +112,9 @@ export interface AppContextType {
   locale: Locale;
   setLocale: Dispatch<SetStateAction<Locale>>;
   loading: boolean;
+  newItems: NewItemBadges;
+  setNewItemBadge: (key: keyof NewItemBadges) => void;
+  clearNewItemBadge: (key: keyof NewItemBadges) => void;
 }
 
 // Theme types
