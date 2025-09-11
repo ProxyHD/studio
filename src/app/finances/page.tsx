@@ -19,6 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { t } from '@/lib/translations';
 
 export default function FinancesPage() {
@@ -102,13 +103,13 @@ export default function FinancesPage() {
                 title={t('Total Income', locale)} 
                 value={formatCurrency(totalIncome)} 
                 icon={TrendingUp} 
-                description={`${incomePercentage.toFixed(1)}% of total`}
+                description={`${t('% of total', locale)}: ${incomePercentage.toFixed(1)}%`}
             />
             <SummaryCard 
                 title={t('Total Expenses', locale)} 
                 value={formatCurrency(totalExpenses)} 
                 icon={TrendingDown}
-                description={`${expensePercentage.toFixed(1)}% of total`}
+                description={`${t('% of total', locale)}: ${expensePercentage.toFixed(1)}%`}
             />
             <SummaryCard title={t('Current Balance', locale)} value={formatCurrency(balance)} icon={Wallet} />
           </div>
@@ -121,47 +122,52 @@ export default function FinancesPage() {
                 <CardDescription>{t('Your last 10 financial movements.', locale)}</CardDescription>
               </CardHeader>
               <CardContent>
-                 <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{t('Description', locale)}</TableHead>
-                        <TableHead>{t('Type', locale)}</TableHead>
-                        <TableHead className="text-right">{t('Amount', locale)}</TableHead>
-                        <TableHead className="text-right">{t('Action', locale)}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {recentTransactions.map(transaction => (
-                        <TableRow key={transaction.id}>
-                           <TableCell>
-                            <div className="font-medium">{transaction.description}</div>
-                            <div className="text-sm text-muted-foreground">
-                              {new Date(transaction.date).toLocaleDateString(locale)}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={transaction.type === 'income' ? 'secondary' : 'destructive'}>
-                              {t(transaction.type === 'income' ? 'Income' : 'Expense', locale)}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className={`text-right font-medium ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                            {formatCurrency(transaction.amount)}
-                          </TableCell>
-                           <TableCell className="text-right">
-                             <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(transaction)}>
-                               <Pencil className="h-4 w-4" />
-                             </Button>
-                             <Button variant="ghost" size="icon" onClick={() => deleteTransaction(transaction.id)}>
-                               <Trash2 className="h-4 w-4" />
-                             </Button>
-                          </TableCell>
+                {transactions.length > 0 ? (
+                  <ScrollArea className="h-[280px]">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>{t('Description', locale)}</TableHead>
+                          <TableHead>{t('Type', locale)}</TableHead>
+                          <TableHead className="text-right">{t('Amount', locale)}</TableHead>
+                          <TableHead className="text-right">{t('Action', locale)}</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  {transactions.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-8">{t('No transactions recorded yet.', locale)}</p>
-                  )}
+                      </TableHeader>
+                      <TableBody>
+                        {recentTransactions.map(transaction => (
+                          <TableRow key={transaction.id}>
+                            <TableCell>
+                              <div className="font-medium">{transaction.description}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {new Date(transaction.date).toLocaleDateString(locale)}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={transaction.type === 'income' ? 'secondary' : 'destructive'}>
+                                {t(transaction.type === 'income' ? 'Income' : 'Expense', locale)}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className={`text-right font-medium ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                              {formatCurrency(transaction.amount)}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(transaction)}>
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button variant="ghost" size="icon" onClick={() => deleteTransaction(transaction.id)}>
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                ) : (
+                  <div className="flex items-center justify-center h-[280px]">
+                    <p className="text-sm text-muted-foreground text-center">{t('No transactions recorded yet.', locale)}</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
