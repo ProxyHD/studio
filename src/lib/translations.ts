@@ -8,6 +8,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'Well-being': { 'pt-BR': 'Bem-estar', 'en-US': 'Well-being' },
   'Notes': { 'pt-BR': 'Notas', 'en-US': 'Notes' },
   'Finances': { 'pt-BR': 'Finanças', 'en-US': 'Finances' },
+  'News': { 'pt-BR': 'Novidades', 'en-US': 'News' },
   'Settings': { 'pt-BR': 'Configurações', 'en-US': 'Settings' },
   'Upgrade to Pro': { 'pt-BR': 'Upgrade para Pro', 'en-US': 'Upgrade to Pro' },
   'Logout': { 'pt-BR': 'Sair', 'en-US': 'Logout' },
@@ -285,6 +286,13 @@ const translations: Record<string, Record<Locale, string>> = {
   'Monthly Overview': { 'pt-BR': 'Visão Geral Mensal', 'en-US': 'Monthly Overview' },
   'Income vs. Expenses': { 'pt-BR': 'Receitas vs. Despesas', 'en-US': 'Income vs. Expenses' },
   '% of total': { 'pt-BR': '% do total', 'en-US': '% of total' },
+  
+  // News
+  'News & Updates': { 'pt-BR': 'Notícias e Novidades', 'en-US': 'News & Updates' },
+  'Latest Updates from LifeHub': { 'pt-BR': 'Últimas Atualizações do LifeHub', 'en-US': 'Latest Updates from LifeHub' },
+  'Click on a headline to read the full story.': { 'pt-BR': 'Clique em uma manchete para ler a história completa.', 'en-US': 'Click on a headline to read the full story.' },
+  'Select a news item to read.': { 'pt-BR': 'Selecione uma notícia para ler.', 'en-US': 'Select a news item to read.' },
+
 };
 
 export const t = (key: string, locale: Locale, options?: Record<string, string | number>): string => {

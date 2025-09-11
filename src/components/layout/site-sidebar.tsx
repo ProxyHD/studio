@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Settings, LogOut, Zap, LifeBuoy, Wallet } from 'lucide-react';
+import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Settings, LogOut, Zap, LifeBuoy, Wallet, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -28,6 +28,7 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
     { href: '/wellbeing', label: t('Well-being', locale), icon: Smile, badgeKey: 'wellbeing' },
     { href: '/notes', label: t('Notes', locale), icon: Notebook, badgeKey: 'notes' },
     { href: '/finances', label: t('Finances', locale), icon: Wallet, badgeKey: 'finances' },
+    { href: '/news', label: t('News', locale), icon: Megaphone, badgeKey: 'news' },
   ];
 
   const proItem = { href: '/upgrade', label: t('Upgrade to Pro', locale), icon: Zap };

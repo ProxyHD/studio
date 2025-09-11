@@ -30,7 +30,7 @@ export const AppContext = createContext<AppContextType>({
   locale: 'pt-BR',
   setLocale: () => {},
   loading: true,
-  newItems: { tasks: false, wellbeing: false, notes: false },
+  newItems: { tasks: false, wellbeing: false, notes: false, news: false },
   setNewItemBadge: () => {},
   clearNewItemBadge: () => {},
 });
@@ -49,7 +49,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completedHabits, setCompletedHabits] = useState<CompletedHabit[]>([]);
   const [locale, setLocale] = useState<Locale>('pt-BR');
-  const [newItems, setNewItems] = useState({ tasks: false, wellbeing: false, notes: false });
+  const [newItems, setNewItems] = useState({ tasks: false, wellbeing: false, notes: false, news: false });
   
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {

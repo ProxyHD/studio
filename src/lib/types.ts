@@ -81,12 +81,21 @@ export type Transaction = {
   date: string; // Stored as ISO string
 };
 
+export type NewsItem = {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl: string;
+  imageHint: string;
+};
+
 export type Locale = 'pt-BR' | 'en-US';
 
 export type NewItemBadges = {
   tasks: boolean;
   wellbeing: boolean;
   notes: boolean;
+  news: boolean;
 };
 
 export interface AppContextType {
