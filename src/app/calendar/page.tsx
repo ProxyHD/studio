@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Dot, MapPin, Users, Trash2 } from 'lucide-react';
+import { PlusCircle, Dot, MapPin, Users, Trash2, Pencil } from 'lucide-react';
 import { AddEventDialog } from '@/components/calendar/add-event-dialog';
 import { WeeklySchedule } from '@/components/calendar/weekly-schedule';
 import type { Event } from '@/lib/types';
@@ -18,6 +18,7 @@ export default function CalendarPage() {
   const { events, setEvents, scheduleItems, setScheduleItems, locale } = useContext(AppContext);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isAddEventDialogOpen, setIsAddEventDialogOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null);
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
 
   // Helper to safely parse dates, which are now stored as ISO strings from Firestore
@@ -35,14 +36,34 @@ export default function CalendarPage() {
       )
     : [];
 
-  const addEvent = (eventData: Omit<Event, 'id'>) => {
-    const newEvent: Event = {
-      id: crypto.randomUUID(),
-      ...eventData,
-      // Store date as ISO string for Firestore compatibility
-      date: (eventData.date as Date).toISOString(),
-    };
-    setEvents((prevEvents) => [...prevEvents, newEvent]);
+  const handleOpenAddDialog = () => {
+    setEditingEvent(null);
+    setIsAddEventDialogOpen(true);
+  };
+
+  const handleOpenEditDialog = (event: Event) => {
+    setEditingEvent(event);
+    setIsAddEventDialogOpen(true);
+  };
+
+  const handleSaveEvent = (eventData: Omit<Event, 'id'>) => {
+    if (editingEvent) {
+      const updatedEvent: Event = { 
+        ...editingEvent, 
+        ...eventData,
+        date: (eventData.date as Date).toISOString() 
+      };
+      setEvents(events.map(e => e.id === editingEvent.id ? updatedEvent : e));
+    } else {
+      const newEvent: Event = {
+        id: crypto.randomUUID(),
+        ...eventData,
+        // Store date as ISO string for Firestore compatibility
+        date: (eventData.date as Date).toISOString(),
+      };
+      setEvents((prevEvents) => [...prevEvents, newEvent]);
+    }
+    setEditingEvent(null);
   };
 
   const deleteEvent = (eventId: string) => {
@@ -102,7 +123,7 @@ export default function CalendarPage() {
                         {date ? format(date, "d 'de' MMMM", { locale: dateLocale }) : t('Select a day', locale)}
                       </CardTitle>
                     </div>
-                    <Button size="sm" onClick={() => setIsAddEventDialogOpen(true)}>
+                    <Button size="sm" onClick={handleOpenAddDialog}>
                       <PlusCircle className="mr-2 h-4 w-4" />
                       {t('Event', locale)}
                     </Button>
@@ -123,9 +144,14 @@ export default function CalendarPage() {
                                   : t('All day', locale)}
                               </p>
                           </div>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteEvent(event.id)}>
-                              <Trash2 className="h-4 w-4" />
-                          </Button>
+                           <div className="flex items-center">
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleOpenEditDialog(event)}>
+                                <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteEvent(event.id)}>
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                          {event.description && <p className="text-sm mt-1">{event.description}</p>}
                          {event.location && (
@@ -164,8 +190,9 @@ export default function CalendarPage() {
       <AddEventDialog
         isOpen={isAddEventDialogOpen}
         onOpenChange={setIsAddEventDialogOpen}
-        onAddEvent={addEvent}
+        onSaveEvent={handleSaveEvent}
         selectedDate={date}
+        event={editingEvent}
       />
     </>
   );

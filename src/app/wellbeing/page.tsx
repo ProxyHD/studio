@@ -4,7 +4,7 @@ import { useState, useMemo, useContext, useEffect } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, Flame, Laugh, Meh, Frown, Smile as SmileIcon, Angry, PlusCircle, Trash2 } from 'lucide-react';
+import { Check, Flame, Laugh, Meh, Frown, Smile as SmileIcon, Angry, PlusCircle, Trash2, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Habit, MoodLog } from '@/lib/types';
 import { AddHabitDialog } from '@/components/wellbeing/add-habit-dialog';
@@ -26,6 +26,7 @@ export default function WellbeingPage() {
   } = useContext(AppContext);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
 
   const todayISO = useMemo(() => new Date().toISOString().split('T')[0], []);
 
@@ -57,12 +58,28 @@ export default function WellbeingPage() {
   
   const todaysHabits = habits.filter(habit => habit.days.includes(today));
 
-  const addHabit = (habitData: Omit<Habit, 'id'>) => {
-    const newHabit: Habit = {
-      id: crypto.randomUUID(),
-      ...habitData,
-    };
-    setHabits(prev => [...prev, newHabit]);
+  const handleOpenAddDialog = () => {
+    setEditingHabit(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleOpenEditDialog = (habit: Habit) => {
+    setEditingHabit(habit);
+    setIsDialogOpen(true);
+  };
+  
+  const handleSaveHabit = (habitData: Omit<Habit, 'id'>) => {
+    if (editingHabit) {
+      const updatedHabit: Habit = { ...editingHabit, ...habitData };
+      setHabits(habits.map(h => h.id === editingHabit.id ? updatedHabit : h));
+    } else {
+      const newHabit: Habit = {
+        id: crypto.randomUUID(),
+        ...habitData,
+      };
+      setHabits(prev => [...prev, newHabit]);
+    }
+    setEditingHabit(null);
   };
 
   const deleteHabit = (habitId: string) => {
@@ -129,7 +146,7 @@ export default function WellbeingPage() {
                   <CardTitle>{t('Weekly Habits', locale)}</CardTitle>
                   <CardDescription>{t('Create and track your habits for each day of the week.', locale)}</CardDescription>
                 </div>
-                <Button onClick={() => setIsDialogOpen(true)}>
+                <Button onClick={handleOpenAddDialog}>
                   <PlusCircle className="mr-2 h-4 w-4" />
                   {t('Add Habit', locale)}
                 </Button>
@@ -180,9 +197,14 @@ export default function WellbeingPage() {
                           ))}
                         </div>
                       </div>
-                      <Button variant="ghost" size="icon" onClick={() => deleteHabit(habit.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                       <div className="flex items-center">
+                        <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(habit)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => deleteHabit(habit.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                   {habits.length === 0 && (
@@ -198,7 +220,8 @@ export default function WellbeingPage() {
       <AddHabitDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        onAddHabit={addHabit}
+        onSaveHabit={handleSaveHabit}
+        habit={editingHabit}
       />
     </>
   );

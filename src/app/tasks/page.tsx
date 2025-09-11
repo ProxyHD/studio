@@ -4,7 +4,7 @@ import { useState, useContext } from 'react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Folder, Trash2 } from 'lucide-react';
+import { PlusCircle, Folder, Trash2, Pencil } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
@@ -16,14 +16,31 @@ import { t } from '@/lib/translations';
 export default function TasksPage() {
   const { tasks, setTasks, locale } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
-  const addTask = (task: Omit<Task, 'id' | 'status'>) => {
-    const newTask: Task = {
-      id: crypto.randomUUID(),
-      status: 'todo',
-      ...task,
-    };
-    setTasks((prevTasks) => [...prevTasks, newTask]);
+  const handleOpenAddDialog = () => {
+    setEditingTask(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleOpenEditDialog = (task: Task) => {
+    setEditingTask(task);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveTask = (taskData: Omit<Task, 'id' | 'status'>) => {
+    if (editingTask) {
+      const updatedTask: Task = { ...editingTask, ...taskData };
+      setTasks(tasks.map(t => t.id === editingTask.id ? updatedTask : t));
+    } else {
+      const newTask: Task = {
+        id: crypto.randomUUID(),
+        status: 'todo',
+        ...taskData,
+      };
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    }
+    setEditingTask(null);
   };
   
   const toggleTask = (taskId: string) => {
@@ -65,22 +82,23 @@ export default function TasksPage() {
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight">{t('Task Board', locale)}</h2>
-            <Button onClick={() => setIsDialogOpen(true)}>
+            <Button onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
               {t('Add Task', locale)}
             </Button>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
-            <TaskColumn title={t('To Do', locale)} tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} locale={locale} />
-            <TaskColumn title={t('In Progress', locale)} tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} locale={locale} />
-            <TaskColumn title={t('Done', locale)} tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} locale={locale} />
+            <TaskColumn title={t('To Do', locale)} tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
+            <TaskColumn title={t('In Progress', locale)} tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
+            <TaskColumn title={t('Done', locale)} tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
           </div>
         </div>
       </div>
       <AddTaskDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        onAddTask={addTask}
+        onSaveTask={handleSaveTask}
+        task={editingTask}
       />
     </>
   );
@@ -92,10 +110,11 @@ interface TaskColumnProps {
   onToggleTask: (taskId: string) => void;
   onToggleSubtask: (taskId: string, subtaskId: string) => void;
   onDeleteTask: (taskId: string) => void;
+  onEditTask: (task: Task) => void;
   locale: 'pt-BR' | 'en-US';
 }
 
-function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask, locale }: TaskColumnProps) {
+function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask, onEditTask, locale }: TaskColumnProps) {
   const getPriorityText = (priority: 'low' | 'medium' | 'high') => {
     if (priority === 'high') return t('High', locale);
     if (priority === 'medium') return t('Medium', locale);
@@ -128,6 +147,9 @@ function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask,
                   <Badge variant={task.priority === 'high' ? 'destructive' : 'secondary'} className="capitalize">
                     {getPriorityText(task.priority)}
                   </Badge>
+                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEditTask(task)}>
+                      <Pencil className="h-4 w-4" />
+                   </Button>
                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onDeleteTask(task.id)}>
                       <Trash2 className="h-4 w-4" />
                    </Button>

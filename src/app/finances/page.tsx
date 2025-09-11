@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useContext } from 'react';
-import { PlusCircle, Trash2, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
+import { PlusCircle, Trash2, TrendingUp, TrendingDown, Wallet, Pencil } from 'lucide-react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -24,13 +24,30 @@ import { t } from '@/lib/translations';
 export default function FinancesPage() {
   const { transactions, setTransactions, locale } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
-  const addTransaction = (transaction: Omit<Transaction, 'id'>) => {
-    const newTransaction: Transaction = {
-      id: crypto.randomUUID(),
-      ...transaction,
-    };
-    setTransactions((prev) => [...prev, newTransaction]);
+  const handleOpenAddDialog = () => {
+    setEditingTransaction(null);
+    setIsDialogOpen(true);
+  };
+
+  const handleOpenEditDialog = (transaction: Transaction) => {
+    setEditingTransaction(transaction);
+    setIsDialogOpen(true);
+  };
+  
+  const handleSaveTransaction = (transactionData: Omit<Transaction, 'id'>) => {
+    if (editingTransaction) {
+      const updatedTransaction: Transaction = { ...editingTransaction, ...transactionData };
+      setTransactions(transactions.map(t => t.id === editingTransaction.id ? updatedTransaction : t));
+    } else {
+      const newTransaction: Transaction = {
+        id: crypto.randomUUID(),
+        ...transactionData,
+      };
+      setTransactions((prev) => [...prev, newTransaction]);
+    }
+    setEditingTransaction(null);
   };
 
   const deleteTransaction = (transactionId: string) => {
@@ -70,7 +87,7 @@ export default function FinancesPage() {
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold tracking-tight">{t('Financial Summary', locale)}</h2>
-            <Button onClick={() => setIsDialogOpen(true)}>
+            <Button onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
               {t('Add Transaction', locale)}
             </Button>
@@ -117,6 +134,9 @@ export default function FinancesPage() {
                             {formatCurrency(transaction.amount)}
                           </TableCell>
                            <TableCell className="text-right">
+                             <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(transaction)}>
+                               <Pencil className="h-4 w-4" />
+                             </Button>
                              <Button variant="ghost" size="icon" onClick={() => deleteTransaction(transaction.id)}>
                                <Trash2 className="h-4 w-4" />
                              </Button>
@@ -137,7 +157,8 @@ export default function FinancesPage() {
       <AddTransactionDialog 
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        onAddTransaction={addTransaction}
+        onSaveTransaction={handleSaveTransaction}
+        transaction={editingTransaction}
       />
     </>
   );

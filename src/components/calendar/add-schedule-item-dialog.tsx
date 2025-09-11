@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -51,11 +51,13 @@ type ScheduleItemFormValues = z.infer<typeof scheduleItemSchema>;
 interface AddScheduleItemDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddItem: (item: Omit<ScheduleItem, 'id'>) => void;
+  onSaveItem: (item: Omit<ScheduleItem, 'id'>) => void;
+  item?: ScheduleItem | null;
 }
 
-export function AddScheduleItemDialog({ isOpen, onOpenChange, onAddItem }: AddScheduleItemDialogProps) {
+export function AddScheduleItemDialog({ isOpen, onOpenChange, onSaveItem, item }: AddScheduleItemDialogProps) {
   const { locale } = useContext(AppContext);
+  const isEditing = !!item;
 
   const daysOfWeek = [
     { id: 'mon', name: t('Monday', locale) },
@@ -76,10 +78,23 @@ export function AddScheduleItemDialog({ isOpen, onOpenChange, onAddItem }: AddSc
       location: '',
     },
   });
+  
+  useEffect(() => {
+    if (item) {
+      form.reset(item);
+    } else {
+      form.reset({
+        title: '',
+        dayOfWeek: undefined,
+        startTime: '',
+        endTime: '',
+        location: '',
+      });
+    }
+  }, [item, isOpen, form]);
 
   const onSubmit = (data: ScheduleItemFormValues) => {
-    onAddItem(data as Omit<ScheduleItem, 'id'>);
-    form.reset();
+    onSaveItem(data as Omit<ScheduleItem, 'id'>);
     onOpenChange(false);
   };
 
@@ -87,9 +102,11 @@ export function AddScheduleItemDialog({ isOpen, onOpenChange, onAddItem }: AddSc
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('Add to Schedule', locale)}</DialogTitle>
+          <DialogTitle>{isEditing ? t('Edit Item', locale) : t('Add to Schedule', locale)}</DialogTitle>
           <DialogDescription>
-            {t('Fill in the details for your new schedule item.', locale)}
+             {isEditing 
+                ? t('Update the details for your schedule item.', locale)
+                : t('Fill in the details for your new schedule item.', locale)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -171,7 +188,7 @@ export function AddScheduleItemDialog({ isOpen, onOpenChange, onAddItem }: AddSc
               )}
             />
             <DialogFooter className="pt-4">
-              <Button type="submit">{t('Save Item', locale)}</Button>
+              <Button type="submit">{t('Save', locale)}</Button>
             </DialogFooter>
           </form>
         </Form>

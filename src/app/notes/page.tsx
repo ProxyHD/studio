@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Note } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { PlusCircle, Sparkles, Loader2, Trash2 } from 'lucide-react';
+import { PlusCircle, Sparkles, Loader2, Trash2, Pencil } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -139,25 +139,30 @@ export default function NotesPage() {
                         />
                          <p className="text-sm text-muted-foreground">{t('Created on {date}', locale, { date: new Date(selectedNote.createdAt).toLocaleDateString(locale) })}</p>
                     </div>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
+                    <div className="flex items-center">
                         <Button variant="ghost" size="icon">
-                          <Trash2 className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                         </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>{t('Are you sure?', locale)}</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            {t('This action cannot be undone. This will permanently delete your note.', locale)}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>{t('Cancel', locale)}</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDeleteNote(selectedNote.id)}>{t('Continue', locale)}</AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>{t('Are you sure?', locale)}</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                {t('This action cannot be undone. This will permanently delete your note.', locale)}
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>{t('Cancel', locale)}</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => handleDeleteNote(selectedNote.id)}>{t('Continue', locale)}</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
                 </div>
                 <div className="flex-1 p-4 overflow-y-auto">
                    <Textarea

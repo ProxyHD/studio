@@ -27,6 +27,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'Action': { 'pt-BR': 'Ação', 'en-US': 'Action' },
   'Type': { 'pt-BR': 'Tipo', 'en-US': 'Type' },
   'Amount': { 'pt-BR': 'Valor', 'en-US': 'Amount' },
+  'Edit': { 'pt-BR': 'Editar', 'en-US': 'Edit' },
 
 
   // Dashboard
@@ -136,6 +137,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Low': { 'pt-BR': 'Baixa', 'en-US': 'Low' },
   'No tasks here.': { 'pt-BR': 'Nenhuma tarefa aqui.', 'en-US': 'No tasks here.' },
   'Add New Task': { 'pt-BR': 'Adicionar Nova Tarefa', 'en-US': 'Add New Task' },
+  'Edit Task': { 'pt-BR': 'Editar Tarefa', 'en-US': 'Edit Task' },
+  'Update the details for your task.': { 'pt-BR': 'Atualize os detalhes da sua tarefa.', 'en-US': 'Update the details for your task.' },
   'Fill in the details of your new task. Click save when you\'re done.': { 'pt-BR': 'Preencha os detalhes da sua nova tarefa. Clique em salvar quando terminar.', 'en-US': 'Fill in the details of your new task. Click save when you\'re done.' },
   'Priority': { 'pt-BR': 'Prioridade', 'en-US': 'Priority' },
   'Select priority': { 'pt-BR': 'Selecione a prioridade', 'en-US': 'Select priority' },
@@ -156,6 +159,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'All day': { 'pt-BR': 'O dia todo', 'en-US': 'All day' },
   'At {time}': { 'pt-BR': 'Às {time}', 'en-US': 'At {time}' },
   'Add New Event': { 'pt-BR': 'Adicionar Novo Evento', 'en-US': 'Add New Event' },
+  'Edit Event': { 'pt-BR': 'Editar Evento', 'en-US': 'Edit Event' },
+  'Update the details for your event.': { 'pt-BR': 'Atualize os detalhes do seu evento.', 'en-US': 'Update the details for your event.' },
   'Fill in the details for your new event. Click save when you\'re done.': { 'pt-BR': 'Preencha os detalhes do seu novo evento. Clique em salvar quando terminar.', 'en-US': 'Fill in the details for your new event. Click save when you\'re done.' },
   'e.g., Meeting with the team': { 'pt-BR': 'Ex: Reunião com a equipe', 'en-US': 'e.g., Meeting with the team' },
   'Date': { 'pt-BR': 'Data', 'en-US': 'Date' },
@@ -179,6 +184,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Sub-name (e.g., Room)': { 'pt-BR': 'Sub-nome (Ex: Sala)', 'en-US': 'Sub-name (e.g., Room)' },
   'e.g., Room 1C': { 'pt-BR': 'Ex: Sala 1C', 'en-US': 'e.g., Room 1C' },
   'Save Item': { 'pt-BR': 'Salvar Item', 'en-US': 'Save Item' },
+  'Edit Item': { 'pt-BR': 'Editar Item', 'en-US': 'Edit Item' },
+  'Update the details for your schedule item.': { 'pt-BR': 'Atualize os detalhes do seu item de horário.', 'en-US': 'Update the details for your schedule item.' },
 
   // Wellbeing
   'How are you feeling today?': { 'pt-BR': 'Como você está se sentindo hoje?', 'en-US': 'How are you feeling today?' },
@@ -210,6 +217,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Sat': { 'pt-BR': 'Sáb', 'en-US': 'Sat' },
   'Sun': { 'pt-BR': 'Dom', 'en-US': 'Sun' },
   'Add New Habit': { 'pt-BR': 'Adicionar Novo Hábito', 'en-US': 'Add New Habit' },
+  'Edit Habit': { 'pt-BR': 'Editar Hábito', 'en-US': 'Edit Habit' },
+  'Update the details for your habit.': { 'pt-BR': 'Atualize os detalhes do seu hábito.', 'en-US': 'Update the details for your habit.' },
   'Define a new habit and choose the days to practice it.': { 'pt-BR': 'Defina um novo hábito e escolha os dias para praticá-lo.', 'en-US': 'Define a new habit and choose the days to practice it.' },
   'Habit Name': { 'pt-BR': 'Nome do Hábito', 'en-US': 'Habit Name' },
   'e.g., Read for 30 minutes': { 'pt-BR': 'Ex: Ler por 30 minutos', 'en-US': 'e.g., Read for 30 minutes' },
@@ -257,6 +266,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Expense': { 'pt-BR': 'Despesa', 'en-US': 'Expense' },
   'No transactions recorded yet.': { 'pt-BR': 'Nenhuma transação registrada ainda.', 'en-US': 'No transactions recorded yet.' },
   'Add New Transaction': { 'pt-BR': 'Adicionar Nova Transação', 'en-US': 'Add New Transaction' },
+  'Edit Transaction': { 'pt-BR': 'Editar Transação', 'en-US': 'Edit Transaction' },
+  'Update the details for your transaction.': { 'pt-BR': 'Atualize os detalhes da sua transação.', 'en-US': 'Update the details for your transaction.' },
   'Fill in the details for your new transaction.': { 'pt-BR': 'Preencha os detalhes da sua nova transação.', 'en-US': 'Fill in the details for your new transaction.' },
   'Transaction Type': { 'pt-BR': 'Tipo de Transação', 'en-US': 'Transaction Type' },
   'Select a type': { 'pt-BR': 'Selecione um tipo', 'en-US': 'Select a type' },

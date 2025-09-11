@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -39,11 +39,13 @@ type HabitFormValues = z.infer<typeof habitSchema>;
 interface AddHabitDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddHabit: (habit: Omit<Habit, 'id'>) => void;
+  onSaveHabit: (habit: Omit<Habit, 'id'>) => void;
+  habit?: Habit | null;
 }
 
-export function AddHabitDialog({ isOpen, onOpenChange, onAddHabit }: AddHabitDialogProps) {
+export function AddHabitDialog({ isOpen, onOpenChange, onSaveHabit, habit }: AddHabitDialogProps) {
   const { locale } = useContext(AppContext);
+  const isEditing = !!habit;
   
   const daysOfWeek = useMemo(() => [
     { id: 'sun', name: t('Su', locale) },
@@ -63,9 +65,16 @@ export function AddHabitDialog({ isOpen, onOpenChange, onAddHabit }: AddHabitDia
     },
   });
 
+  useEffect(() => {
+    if (habit) {
+      form.reset(habit);
+    } else {
+      form.reset({ name: '', days: [] });
+    }
+  }, [habit, isOpen, form]);
+
   const onSubmit = (data: HabitFormValues) => {
-    onAddHabit({ name: data.name, days: data.days as DayOfWeek[] });
-    form.reset({ name: '', days: [] });
+    onSaveHabit({ name: data.name, days: data.days as DayOfWeek[] });
     onOpenChange(false);
   };
 
@@ -73,9 +82,11 @@ export function AddHabitDialog({ isOpen, onOpenChange, onAddHabit }: AddHabitDia
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('Add New Habit', locale)}</DialogTitle>
+          <DialogTitle>{isEditing ? t('Edit Habit', locale) : t('Add New Habit', locale)}</DialogTitle>
           <DialogDescription>
-            {t('Define a new habit and choose the days to practice it.', locale)}
+            {isEditing 
+              ? t('Update the details for your habit.', locale)
+              : t('Define a new habit and choose the days to practice it.', locale)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -126,7 +137,7 @@ export function AddHabitDialog({ isOpen, onOpenChange, onAddHabit }: AddHabitDia
             />
 
             <DialogFooter className="pt-4">
-              <Button type="submit">{t('Save Habit', locale)}</Button>
+              <Button type="submit">{t('Save', locale)}</Button>
             </DialogFooter>
           </form>
         </Form>

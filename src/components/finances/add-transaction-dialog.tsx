@@ -1,10 +1,10 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
 import { Calendar as CalendarIcon } from 'lucide-react';
 
@@ -57,13 +57,15 @@ type TransactionFormValues = z.infer<typeof transactionSchema>;
 interface AddTransactionDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddTransaction: (task: Omit<Transaction, 'id'>) => void;
+  onSaveTransaction: (task: Omit<Transaction, 'id'>) => void;
+  transaction?: Transaction | null;
 }
 
-export function AddTransactionDialog({ isOpen, onOpenChange, onAddTransaction }: AddTransactionDialogProps) {
+export function AddTransactionDialog({ isOpen, onOpenChange, onSaveTransaction, transaction }: AddTransactionDialogProps) {
   const { locale } = useContext(AppContext);
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
   const currencySymbol = locale === 'pt-BR' ? '€' : '$';
+  const isEditing = !!transaction;
 
   const form = useForm<TransactionFormValues>({
     resolver: zodResolver(transactionSchema),
@@ -75,12 +77,29 @@ export function AddTransactionDialog({ isOpen, onOpenChange, onAddTransaction }:
     },
   });
 
+  useEffect(() => {
+    if (transaction) {
+      form.reset({
+        ...transaction,
+        date: parseISO(transaction.date),
+      });
+    } else {
+      form.reset({
+        type: undefined,
+        description: '',
+        amount: 0,
+        category: '',
+        date: new Date(),
+      });
+    }
+  }, [transaction, isOpen, form]);
+
+
   const onSubmit = (data: TransactionFormValues) => {
-    onAddTransaction({
+    onSaveTransaction({
       ...data,
       date: data.date.toISOString(),
     });
-    form.reset();
     onOpenChange(false);
   };
 
@@ -88,9 +107,11 @@ export function AddTransactionDialog({ isOpen, onOpenChange, onAddTransaction }:
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('Add New Transaction', locale)}</DialogTitle>
+          <DialogTitle>{isEditing ? t('Edit Transaction', locale) : t('Add New Transaction', locale)}</DialogTitle>
           <DialogDescription>
-            {t('Fill in the details for your new transaction.', locale)}
+             {isEditing 
+                ? t('Update the details for your transaction.', locale)
+                : t('Fill in the details for your new transaction.', locale)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -199,7 +220,7 @@ export function AddTransactionDialog({ isOpen, onOpenChange, onAddTransaction }:
               )}
             />
             <DialogFooter>
-              <Button type="submit">{t('Save Transaction', locale)}</Button>
+              <Button type="submit">{t('Save', locale)}</Button>
             </DialogFooter>
           </form>
         </Form>

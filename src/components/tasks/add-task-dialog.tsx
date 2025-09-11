@@ -1,10 +1,10 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
 import { Calendar as CalendarIcon, PlusCircle, Trash2, Zap } from 'lucide-react';
 
@@ -59,13 +59,15 @@ type TaskFormValues = z.infer<typeof taskSchema>;
 interface AddTaskDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddTask: (task: Omit<Task, 'id' | 'status'>) => void;
+  onSaveTask: (task: Omit<Task, 'id' | 'status'>) => void;
+  task?: Task | null;
 }
 
-export function AddTaskDialog({ isOpen, onOpenChange, onAddTask }: AddTaskDialogProps) {
+export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTaskDialogProps) {
   const { locale } = useContext(AppContext);
   const isPlusUser = true; // Mock value, would come from user session
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
+  const isEditing = !!task;
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -81,14 +83,31 @@ export function AddTaskDialog({ isOpen, onOpenChange, onAddTask }: AddTaskDialog
     control: form.control,
     name: "subtasks",
   });
+  
+  useEffect(() => {
+    if (task) {
+      form.reset({
+        ...task,
+        dueDate: task.dueDate ? parse(task.dueDate, 'dd/MM/yyyy', new Date()) : undefined,
+        subtasks: task.subtasks?.map(st => ({ title: st.title })) || [],
+      });
+    } else {
+      form.reset({
+        title: '',
+        priority: 'medium',
+        dueDate: undefined,
+        project: '',
+        subtasks: [],
+      });
+    }
+  }, [task, isOpen, form]);
 
   const onSubmit = (data: TaskFormValues) => {
-    onAddTask({
+    onSaveTask({
       ...data,
       dueDate: data.dueDate ? format(data.dueDate, 'dd/MM/yyyy') : undefined,
       subtasks: data.subtasks?.map(st => ({ id: crypto.randomUUID(), title: st.title, done: false })),
     });
-    form.reset();
     onOpenChange(false);
   };
 
@@ -96,9 +115,11 @@ export function AddTaskDialog({ isOpen, onOpenChange, onAddTask }: AddTaskDialog
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('Add New Task', locale)}</DialogTitle>
+          <DialogTitle>{isEditing ? t('Edit Task', locale) : t('Add New Task', locale)}</DialogTitle>
           <DialogDescription>
-            {t('Fill in the details of your new task. Click save when you\'re done.', locale)}
+             {isEditing 
+                ? t('Update the details for your task.', locale)
+                : t('Fill in the details of your new task. Click save when you\'re done.', locale)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -249,7 +270,7 @@ export function AddTaskDialog({ isOpen, onOpenChange, onAddTask }: AddTaskDialog
             </div>
 
             <DialogFooter>
-              <Button type="submit">{t('Save Task', locale)}</Button>
+              <Button type="submit">{t('Save', locale)}</Button>
             </DialogFooter>
           </form>
         </Form>

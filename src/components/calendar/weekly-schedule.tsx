@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Trash2, Clock, MapPin } from 'lucide-react';
+import { PlusCircle, Trash2, Clock, MapPin, Pencil } from 'lucide-react';
 import type { DayOfWeek, ScheduleItem } from '@/lib/types';
 import { AddScheduleItemDialog } from './add-schedule-item-dialog';
 import { t } from '@/lib/translations';
@@ -16,6 +16,7 @@ interface WeeklyScheduleProps {
 
 export function WeeklySchedule({ scheduleItems, setScheduleItems, locale }: WeeklyScheduleProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<ScheduleItem | null>(null);
 
   const daysOfWeek: DayOfWeek[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
 
@@ -43,12 +44,28 @@ export function WeeklySchedule({ scheduleItems, setScheduleItems, locale }: Week
     return group;
   }, [scheduleItems]);
 
-  const addScheduleItem = (itemData: Omit<ScheduleItem, 'id'>) => {
-    const newItem: ScheduleItem = {
-      id: crypto.randomUUID(),
-      ...itemData,
-    };
-    setScheduleItems(prev => [...prev, newItem]);
+  const handleOpenAddDialog = () => {
+    setEditingItem(null);
+    setIsDialogOpen(true);
+  };
+  
+  const handleOpenEditDialog = (item: ScheduleItem) => {
+    setEditingItem(item);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveScheduleItem = (itemData: Omit<ScheduleItem, 'id'>) => {
+    if (editingItem) {
+      const updatedItem: ScheduleItem = { ...editingItem, ...itemData };
+      setScheduleItems(prev => prev.map(item => item.id === editingItem.id ? updatedItem : item));
+    } else {
+      const newItem: ScheduleItem = {
+        id: crypto.randomUUID(),
+        ...itemData,
+      };
+      setScheduleItems(prev => [...prev, newItem]);
+    }
+    setEditingItem(null);
   };
 
   const deleteScheduleItem = (itemId: string) => {
@@ -64,7 +81,7 @@ export function WeeklySchedule({ scheduleItems, setScheduleItems, locale }: Week
               <CardTitle>{t('Weekly Schedule', locale)}</CardTitle>
               <CardDescription>{t('Your recurring weekly timetable.', locale)}</CardDescription>
             </div>
-            <Button size="sm" onClick={() => setIsDialogOpen(true)}>
+            <Button size="sm" onClick={handleOpenAddDialog}>
               <PlusCircle className="mr-2 h-4 w-4" />
               {t('Add to Schedule', locale)}
             </Button>
@@ -81,9 +98,14 @@ export function WeeklySchedule({ scheduleItems, setScheduleItems, locale }: Week
                       <div key={item.id} className="p-2 bg-card rounded-md shadow-sm text-sm">
                         <div className="flex justify-between items-start">
                           <p className="font-medium flex-1 truncate pr-2">{item.title}</p>
-                          <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => deleteScheduleItem(item.id)}>
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                          <div className="flex items-center">
+                            <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleOpenEditDialog(item)}>
+                              <Pencil className="h-3 w-3" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => deleteScheduleItem(item.id)}>
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                         <div className="text-muted-foreground mt-1 space-y-1">
                           <div className="flex items-center gap-1.5">
@@ -109,7 +131,8 @@ export function WeeklySchedule({ scheduleItems, setScheduleItems, locale }: Week
       <AddScheduleItemDialog
         isOpen={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        onAddItem={addScheduleItem}
+        onSaveItem={handleSaveScheduleItem}
+        item={editingItem}
       />
     </>
   );

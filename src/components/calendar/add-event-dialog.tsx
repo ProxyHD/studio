@@ -4,7 +4,7 @@ import { useEffect, useContext } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
 import { Calendar as CalendarIcon, Zap, PlusCircle, Trash2 } from 'lucide-react';
 
@@ -57,14 +57,16 @@ type EventFormValues = z.infer<typeof eventSchema>;
 interface AddEventDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddEvent: (event: Omit<Event, 'id'>) => void;
+  onSaveEvent: (event: Omit<Event, 'id'>) => void;
   selectedDate?: Date;
+  event?: Event | null;
 }
 
-export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate }: AddEventDialogProps) {
+export function AddEventDialog({ isOpen, onOpenChange, onSaveEvent, selectedDate, event }: AddEventDialogProps) {
   const { locale } = useContext(AppContext);
   const isProUser = true; // Mock value, would come from user session
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
+  const isEditing = !!event;
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -85,22 +87,27 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
   });
 
   useEffect(() => {
-    if (selectedDate) {
-      form.setValue('date', selectedDate);
+    if (event) {
+      form.reset({
+        ...event,
+        date: typeof event.date === 'string' ? parseISO(event.date) : event.date,
+      });
+    } else {
+      form.reset({
+        title: '',
+        date: selectedDate || new Date(),
+        startTime: '',
+        endTime: '',
+        description: '',
+        location: '',
+        guests: [],
+      });
     }
-  }, [selectedDate, form]);
+  }, [event, selectedDate, isOpen, form]);
+
 
   const onSubmit = (data: EventFormValues) => {
-    onAddEvent(data);
-    form.reset({
-      title: '',
-      date: selectedDate || new Date(),
-      startTime: '',
-      endTime: '',
-      description: '',
-      location: '',
-      guests: [],
-    });
+    onSaveEvent(data);
     onOpenChange(false);
   };
 
@@ -108,9 +115,11 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t('Add New Event', locale)}</DialogTitle>
+          <DialogTitle>{isEditing ? t('Edit Event', locale) : t('Add New Event', locale)}</DialogTitle>
           <DialogDescription>
-            {t('Fill in the details for your new event. Click save when you\'re done.', locale)}
+            {isEditing 
+              ? t('Update the details for your event.', locale)
+              : t('Fill in the details for your new event. Click save when you\'re done.', locale)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -279,7 +288,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onAddEvent, selectedDate 
             </div>
 
             <DialogFooter className="pt-4">
-              <Button type="submit">{t('Save Event', locale)}</Button>
+              <Button type="submit">{t('Save', locale)}</Button>
             </DialogFooter>
           </form>
         </Form>
