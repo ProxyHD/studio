@@ -24,8 +24,6 @@ export default function UpgradePage() {
   const { toast } = useToast();
   const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
 
-  // You need to replace these with your actual Price IDs from the .env file
-  // For now, we'll use placeholder logic.
   const planPriceIds: Record<string, string | undefined> = {
     plus: process.env.NEXT_PUBLIC_STRIPE_PLUS_PRICE_ID,
     pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
