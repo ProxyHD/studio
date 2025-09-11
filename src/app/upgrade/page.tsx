@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useContext, useState } from 'react';
@@ -25,9 +26,9 @@ export default function UpgradePage() {
   const { toast } = useToast();
   const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
 
-  const planPriceIds: Record<string, string> = {
-    plus: process.env.NEXT_PUBLIC_STRIPE_PLUS_PRICE_ID || '',
-    pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || '',
+  const planPriceIds: Record<string, string | undefined> = {
+    plus: process.env.NEXT_PUBLIC_STRIPE_PLUS_PRICE_ID,
+    pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
   };
 
   const plans = getPlans(locale);
@@ -43,11 +44,11 @@ export default function UpgradePage() {
     }
 
     const priceId = planPriceIds[planId];
-    if (!priceId) {
-      console.error(`Price ID for plan "${planId}" is not configured in your .env file.`);
+    // This check is crucial.
+    if (!priceId || !priceId.startsWith('price_')) {
       toast({
         title: t('Error', locale),
-        description: `Price ID for plan "${planId}" is not configured in your .env file.`,
+        description: `Configuration error for plan "${planId}". Please check the Price ID in the .env file.`,
         variant: 'destructive',
       });
       return;
@@ -65,7 +66,8 @@ export default function UpgradePage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create checkout session');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create checkout session');
       }
 
       const { sessionId } = await response.json();
@@ -99,7 +101,7 @@ export default function UpgradePage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {plans.map((plan) => {
-            const priceId = planPriceIds[plan.id];
+            const priceId = plan.id !== 'free' ? planPriceIds[plan.id] : undefined;
             const isConfigured = plan.id === 'free' || (priceId && priceId.startsWith('price_'));
             
             return (
@@ -133,7 +135,7 @@ export default function UpgradePage() {
                         <AlertTriangle className="h-4 w-4" />
                         <AlertTitle>Configuration needed</AlertTitle>
                         <AlertDescription>
-                          This plan's Price ID is missing from the .env file.
+                          This plan's Price ID is missing or incorrect in the .env file. It should start with "price_".
                         </AlertDescription>
                       </Alert>
                   )}
