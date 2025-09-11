@@ -38,7 +38,7 @@ export default function FinancesPage() {
   };
   
   const formatCurrency = (amount: number) => {
-    const currency = locale === 'pt-BR' ? 'BRL' : 'USD';
+    const currency = locale === 'pt-BR' ? 'EUR' : 'USD';
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currency,

@@ -20,7 +20,7 @@ const plansData: Record<Locale, Plan[]> = {
     {
       id: 'plus',
       name: 'Plus',
-      price: '€3.99',
+      price: '€4.99',
       priceFrequency: '/mês',
       features: [
         'Tudo do plano Grátis',
@@ -34,7 +34,7 @@ const plansData: Record<Locale, Plan[]> = {
     {
       id: 'pro',
       name: 'Pro',
-      price: '€7.99',
+      price: '€9.99',
       priceFrequency: '/mês',
       features: [
         'Tudo do plano Plus',
@@ -66,7 +66,7 @@ const plansData: Record<Locale, Plan[]> = {
     {
       id: 'plus',
       name: 'Plus',
-      price: '$4.99',
+      price: '$5.99',
       priceFrequency: '/month',
       features: [
         'Everything in Free',
@@ -80,7 +80,7 @@ const plansData: Record<Locale, Plan[]> = {
     {
       id: 'pro',
       name: 'Pro',
-      price: '$9.99',
+      price: '$11.99',
       priceFrequency: '/month',
       features: [
         'Everything in Plus',

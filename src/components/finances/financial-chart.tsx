@@ -37,7 +37,7 @@ export function FinancialChart({ transactions, locale }: FinancialChartProps) {
   }, [transactions, locale]);
 
   const formatCurrency = (value: number) => {
-    const currency = locale === 'pt-BR' ? 'BRL' : 'USD';
+    const currency = locale === 'pt-BR' ? 'EUR' : 'USD';
     return new Intl.NumberFormat(locale, {
       style: 'currency',
       currency: currency,
