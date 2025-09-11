@@ -43,7 +43,7 @@ export function RoutineSuggester() {
     setIsLoading(true);
     setSuggestionText('');
     try {
-      const result = await getSmartSuggestions({ userData });
+      const result = await getSmartSuggestions({ userData, locale });
       setSuggestionText(result.suggestionText);
       
       let createdItemsMessage = '';

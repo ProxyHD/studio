@@ -15,6 +15,7 @@ import type { Task, Habit, Note, DayOfWeek } from '@/lib/types';
 
 const SmartSuggestionsInputSchema = z.object({
   userData: z.string().describe('A description of the user, their current habits, and their goals.'),
+  locale: z.enum(['pt-BR', 'en-US']).describe('The language to generate the response in.'),
 });
 export type SmartSuggestionsInput = z.infer<typeof SmartSuggestionsInputSchema>;
 
@@ -50,6 +51,8 @@ const smartSuggestionsPrompt = ai.definePrompt({
   input: {schema: SmartSuggestionsInputSchema},
   output: {schema: SmartSuggestionsOutputSchema},
   prompt: `You are an AI assistant that provides personalized suggestions and helps create tasks, habits, and notes.
+
+  IMPORTANT: You must generate all text in the following language: {{{locale}}}.
 
   User Data: {{{userData}}}
 
