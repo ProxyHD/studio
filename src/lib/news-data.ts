@@ -18,7 +18,7 @@ const newsData: Record<Locale, NewsItem[]> = {
     },
     {
       id: 'custom-themes-plus',
-      title: 'Temas Personalizados para Usuários Plus',
+      title: 'Temas Personalizados',
       content: 'Expresse-se com novas paletas de cores e temas! Usuários Plus agora podem personalizar a aparência do aplicativo para combinar com seu estilo. Vá para Configurações -> Aparência para experimentar as novas opções. Queremos que o LifeHub pareça realmente seu.',
       imageUrl: 'https://picsum.photos/seed/3/600/400',
       imageHint: 'color palette',
@@ -41,7 +41,7 @@ const newsData: Record<Locale, NewsItem[]> = {
     },
     {
       id: 'custom-themes-plus',
-      title: 'Custom Themes for Plus Users',
+      title: 'Custom Themes',
       content: 'Express yourself with new color palettes and themes! Plus users can now customize the look and feel of the app to match their style. Head over to Settings -> Appearance to try out the new options. We want LifeHub to feel like it\'s truly yours.',
       imageUrl: 'https://picsum.photos/seed/3/600/400',
       imageHint: 'color palette',
