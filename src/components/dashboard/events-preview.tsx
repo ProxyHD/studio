@@ -8,6 +8,7 @@ import { ArrowRight, Calendar } from 'lucide-react';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 import { format, isToday, parseISO } from 'date-fns';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function EventsPreview() {
   const { events, locale } = useContext(AppContext);
@@ -24,29 +25,31 @@ export function EventsPreview() {
         <CardDescription>{t('Your schedule for the day.', locale)}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
-        <div className="space-y-3">
-          {todayEvents.length > 0 ? (
-            todayEvents.map(event => (
-              <div key={event.id} className="flex items-start gap-3">
-                <Calendar className="h-5 w-5 text-primary mt-0.5" />
-                <div>
-                  <p className="font-medium">{event.title}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {event.startTime && event.endTime
-                      ? `${event.startTime} - ${event.endTime}`
-                      : event.startTime
-                      ? t('At {time}', locale, { time: event.startTime })
-                      : t('All day', locale)}
-                  </p>
+        <ScrollArea className="h-[220px]">
+          <div className="space-y-3 pr-4">
+            {todayEvents.length > 0 ? (
+              todayEvents.map(event => (
+                <div key={event.id} className="flex items-start gap-3">
+                  <Calendar className="h-5 w-5 text-primary mt-0.5" />
+                  <div>
+                    <p className="font-medium">{event.title}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {event.startTime && event.endTime
+                        ? `${event.startTime} - ${event.endTime}`
+                        : event.startTime
+                        ? t('At {time}', locale, { time: event.startTime })
+                        : t('All day', locale)}
+                    </p>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div className="flex items-center justify-center h-full py-8">
+                <p className="text-sm text-muted-foreground">{t('No events for today.', locale)}</p>
               </div>
-            ))
-          ) : (
-            <div className="flex items-center justify-center h-full py-8">
-              <p className="text-sm text-muted-foreground">{t('No events for today.', locale)}</p>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </ScrollArea>
       </CardContent>
       <CardFooter>
         <Button variant="outline" className="w-full" asChild>

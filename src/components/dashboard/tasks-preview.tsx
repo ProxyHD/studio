@@ -39,33 +39,35 @@ export function TasksPreview() {
         <CardDescription>{t('You have {count} pending {task, plural, one {task} other {tasks}}.', locale, { count: pendingTasks.length, task: 'task' })}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
-        <div className="space-y-4">
-          {recentTasks.map((task) => (
-            <div key={task.id} className="flex items-center space-x-4 p-2 rounded-md hover:bg-muted">
-              <Checkbox 
-                id={`task-preview-${task.id}`} 
-                checked={task.status === 'done'} 
-                onCheckedChange={() => handleToggle(task.id)}
-              />
-              <div className="flex-1 flex justify-between items-center">
-                <label
-                  htmlFor={`task-preview-${task.id}`}
-                  className={cn("font-medium", task.status === 'done' && 'line-through text-muted-foreground')}
-                >
-                  {task.title}
-                </label>
-                <Badge variant={task.priority === 'high' ? 'destructive' : task.priority === 'medium' ? 'secondary' : 'outline'} className="capitalize">
-                  {getPriorityText(task.priority)}
-                </Badge>
+        <ScrollArea className="h-[220px]">
+          <div className="space-y-4 pr-4">
+            {recentTasks.map((task) => (
+              <div key={task.id} className="flex items-center space-x-4 p-2 rounded-md hover:bg-muted">
+                <Checkbox 
+                  id={`task-preview-${task.id}`} 
+                  checked={task.status === 'done'} 
+                  onCheckedChange={() => handleToggle(task.id)}
+                />
+                <div className="flex-1 flex justify-between items-center">
+                  <label
+                    htmlFor={`task-preview-${task.id}`}
+                    className={cn("font-medium", task.status === 'done' && 'line-through text-muted-foreground')}
+                  >
+                    {task.title}
+                  </label>
+                  <Badge variant={task.priority === 'high' ? 'destructive' : task.priority === 'medium' ? 'secondary' : 'outline'} className="capitalize">
+                    {getPriorityText(task.priority)}
+                  </Badge>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
             {tasks.length === 0 && (
-            <div className="flex items-center justify-center h-full py-8">
-              <p className="text-sm text-muted-foreground">{t('No tasks for today.', locale)}</p>
-            </div>
-          )}
-        </div>
+              <div className="flex items-center justify-center h-full py-8">
+                <p className="text-sm text-muted-foreground">{t('No tasks for today.', locale)}</p>
+              </div>
+            )}
+          </div>
+        </ScrollArea>
       </CardContent>
       <CardFooter>
         <Button variant="outline" className="w-full" asChild>
