@@ -24,9 +24,9 @@ export default function UpgradePage() {
   const { toast } = useToast();
   const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
 
-  const planPriceIds: Record<string, string | undefined> = {
-    plus: process.env.NEXT_PUBLIC_STRIPE_PLUS_PRICE_ID,
-    pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
+  const planPriceIds: Record<string, string> = {
+    plus: process.env.NEXT_PUBLIC_STRIPE_PLUS_PRICE_ID || '',
+    pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || '',
   };
 
   const plans = getPlans(locale);
@@ -46,7 +46,7 @@ export default function UpgradePage() {
       console.error(`Price ID for plan "${planId}" is not configured in your .env file.`);
       toast({
         title: t('Error', locale),
-        description: 'This plan is not available for purchase at the moment.',
+        description: `Price ID for plan "${planId}" is not configured in your .env file.`,
         variant: 'destructive',
       });
       return;
