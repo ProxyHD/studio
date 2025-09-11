@@ -35,8 +35,10 @@ interface SiteHeaderProps {
 export function SiteHeader({ title }: SiteHeaderProps) {
   const { locale } = useContext(AppContext);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const userAvatar = PlaceHolderImages.find((img) => img.id === 'user-avatar');
-  const { logout } = useAuth();
+  const userAvatarPlaceholder = PlaceHolderImages.find((img) => img.id === 'user-avatar');
+  const { user, logout } = useAuth();
+  
+  const userAvatar = user?.photoURL || userAvatarPlaceholder?.imageUrl;
 
   return (
     <header className="flex items-center justify-between h-20 px-4 md:px-8 border-b bg-card">
@@ -77,11 +79,11 @@ export function SiteHeader({ title }: SiteHeaderProps) {
             <Button variant="ghost" size="icon" className="rounded-full">
               {userAvatar && (
                 <Image
-                  src={userAvatar.imageUrl}
+                  src={userAvatar}
                   width={36}
                   height={36}
                   alt="Avatar do Usuário"
-                  data-ai-hint={userAvatar.imageHint}
+                  data-ai-hint={userAvatarPlaceholder?.imageHint}
                   className="rounded-full"
                 />
               )}
@@ -93,7 +95,9 @@ export function SiteHeader({ title }: SiteHeaderProps) {
             <DropdownMenuItem asChild>
               <Link href="/settings">{t('Settings', locale)}</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>{t('Support', locale)}</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <a href="mailto:support@lifehub.com">{t('Support', locale)}</a>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout}>{t('Logout', locale)}</DropdownMenuItem>
           </DropdownMenuContent>
