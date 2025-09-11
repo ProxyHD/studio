@@ -1,7 +1,7 @@
 'use client';
 
 import { useContext } from 'react';
-import { Activity, CheckCircle, DollarSign, Heart } from 'lucide-react';
+import { Activity, CheckCircle, Heart } from 'lucide-react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SummaryCard } from '@/components/dashboard/summary-card';
 import { TasksPreview } from '@/components/dashboard/tasks-preview';
@@ -18,13 +18,11 @@ export default function DashboardPage() {
   // Placeholder for habit streak logic
   const habitStreak = 0;
 
-  const currency = locale === 'pt-BR' ? '€' : '$';
-
   return (
     <div className="flex flex-col h-full">
       <SiteHeader title={t('Dashboard', locale)} />
       <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <SummaryCard 
             title={t('Completed Tasks', locale)} 
             value={`${completedTasks} / ${totalTasks}`} 
@@ -35,7 +33,6 @@ export default function DashboardPage() {
             value={selectedMood || t('N/A', locale)}
             icon={Heart} 
           />
-          <SummaryCard title={t('Expenses', locale)} value={`${currency}0`} icon={DollarSign} />
           <SummaryCard 
             title={t('Habit Streak', locale)} 
             value={`${habitStreak} ${t('days', locale)}`}
