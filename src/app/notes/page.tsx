@@ -105,28 +105,38 @@ export default function NotesPage() {
       text: selectedNote.content,
     };
 
-    if (navigator.share) {
+    const isSecure = window.isSecureContext;
+
+    // Web Share API is preferred, but only works in secure contexts (HTTPS)
+    if (isSecure && navigator.share) {
       try {
         await navigator.share(shareData);
       } catch (error) {
-        console.error('Error sharing:', error);
+        // Fallback to clipboard if sharing is cancelled or fails
+        console.error('Error sharing, falling back to clipboard:', error);
+        copyToClipboard();
       }
     } else {
-      // Fallback for browsers that do not support the Web Share API
-      try {
-        await navigator.clipboard.writeText(`${shareData.title}\n\n${shareData.text}`);
-        toast({
-          title: t('Copied to clipboard', locale),
-          description: t('Note content copied to clipboard.', locale),
-        });
-      } catch (error) {
-        console.error('Error copying to clipboard:', error);
-        toast({
-          title: t('Error', locale),
-          description: t('Could not copy note to clipboard.', locale),
-          variant: 'destructive',
-        });
-      }
+      // Fallback for non-secure contexts (like http://localhost) or unsupported browsers
+      copyToClipboard();
+    }
+  };
+
+  const copyToClipboard = async () => {
+    if (!selectedNote) return;
+    try {
+      await navigator.clipboard.writeText(`${selectedNote.title}\n\n${selectedNote.content}`);
+      toast({
+        title: t('Copied to clipboard', locale),
+        description: t('Note content copied to clipboard.', locale),
+      });
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+      toast({
+        title: t('Error', locale),
+        description: t('Could not copy note to clipboard.', locale),
+        variant: 'destructive',
+      });
     }
   };
 
