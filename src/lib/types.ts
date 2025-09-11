@@ -91,6 +91,7 @@ export interface AppContextType {
   setHabits: Dispatch<SetStateAction<Habit[]>>;
   completedHabits: CompletedHabit[];
   setCompletedHabits: Dispatch<SetStateAction<CompletedHabit[]>>;
+  handleHabitToggle: (habitId: string) => void;
   locale: Locale;
   setLocale: Dispatch<SetStateAction<Locale>>;
   loading: boolean;

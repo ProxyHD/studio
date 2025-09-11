@@ -47,6 +47,15 @@ const translations: Record<string, Record<Locale, string>> = {
   'Generate Routine': { 'pt-BR': 'Gerar Rotina', 'en-US': 'Generate Routine' },
   'Upgrade to Generate': { 'pt-BR': 'Faça Upgrade para Gerar', 'en-US': 'Upgrade to Generate' },
   'Pro': { 'pt-BR': 'Pro', 'en-US': 'Pro' },
+  'View All Tasks': { 'pt-BR': 'Ver Todas as Tarefas', 'en-US': 'View All Tasks' },
+  'Today\'s Events': { 'pt-BR': 'Eventos de Hoje', 'en-US': 'Today\'s Events' },
+  'Your schedule for the day.': { 'pt-BR': 'Sua agenda para o dia.', 'en-US': 'Your schedule for the day.' },
+  'Go to Calendar': { 'pt-BR': 'Ir para o Calendário', 'en-US': 'Go to Calendar' },
+  'Today\'s Habits': { 'pt-BR': 'Hábitos de Hoje', 'en-US': 'Today\'s Habits' },
+  'Your habits for today.': { 'pt-BR': 'Seus hábitos para hoje.', 'en-US': 'Your habits for today.' },
+  'View All Habits': { 'pt-BR': 'Ver Todos os Hábitos', 'en-US': 'View All Habits' },
+  'A quick look at your finances.': { 'pt-BR': 'Uma rápida olhada nas suas finanças.', 'en-US': 'A quick look at your finances.' },
+  'View Full Report': { 'pt-BR': 'Ver Relatório Completo', 'en-US': 'View Full Report' },
 
 
   // Login / Register

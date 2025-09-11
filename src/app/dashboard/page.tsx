@@ -8,6 +8,9 @@ import { TasksPreview } from '@/components/dashboard/tasks-preview';
 import { RoutineSuggester } from '@/components/dashboard/routine-suggester';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
+import { EventsPreview } from '@/components/dashboard/events-preview';
+import { HabitsPreview } from '@/components/dashboard/habits-preview';
+import { FinancePreview } from '@/components/dashboard/finance-preview';
 
 export default function DashboardPage() {
   const { tasks, moodLogs, transactions, locale } = useContext(AppContext);
@@ -68,14 +71,19 @@ export default function DashboardPage() {
             icon={Wallet} 
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <TasksPreview />
+        
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+             <TasksPreview />
+             <EventsPreview />
+             <HabitsPreview />
+             <FinancePreview />
           </div>
-          <div className="lg:col-span-1">
+          <div className="xl:col-span-1">
             <RoutineSuggester />
           </div>
         </div>
+
       </div>
     </div>
   );

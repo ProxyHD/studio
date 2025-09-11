@@ -21,6 +21,7 @@ export default function WellbeingPage() {
     setHabits,
     completedHabits,
     setCompletedHabits,
+    handleHabitToggle,
     locale,
   } = useContext(AppContext);
 
@@ -83,17 +84,6 @@ export default function WellbeingPage() {
         return updatedLogs;
       } else {
         return [...prevLogs, newLog];
-      }
-    });
-  };
-
-  const handleHabitToggle = (habitId: string) => {
-    setCompletedHabits(prev => {
-      const existingIndex = prev.findIndex(ch => ch.date === todayISO && ch.habitId === habitId);
-      if (existingIndex > -1) {
-        return prev.filter((_, index) => index !== existingIndex);
-      } else {
-        return [...prev, { date: todayISO, habitId }];
       }
     });
   };

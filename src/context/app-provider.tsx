@@ -24,6 +24,7 @@ export const AppContext = createContext<AppContextType>({
   setHabits: () => {},
   completedHabits: [],
   setCompletedHabits: () => {},
+  handleHabitToggle: () => {},
   locale: 'pt-BR',
   setLocale: () => {},
   loading: true,
@@ -146,6 +147,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
     
     return () => unsubscribe(); // Cleanup snapshot listener on component unmount or user change
   }, [user]);
+
+  const handleHabitToggle = (habitId: string) => {
+    const todayISO = new Date().toISOString().split('T')[0];
+    setCompletedHabits(prev => {
+      const existingIndex = prev.findIndex(ch => ch.date === todayISO && ch.habitId === habitId);
+      if (existingIndex > -1) {
+        return prev.filter((_, index) => index !== existingIndex);
+      } else {
+        return [...prev, { date: todayISO, habitId }];
+      }
+    });
+  };
   
   return (
     <AppContext.Provider
@@ -166,6 +179,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setHabits,
         completedHabits,
         setCompletedHabits,
+        handleHabitToggle,
         locale,
         setLocale,
         loading,
