@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Note } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { PlusCircle, Sparkles, Loader2, Trash2, Pencil, Share2 } from 'lucide-react';
+import { PlusCircle, Sparkles, Loader2, Trash2, Pencil, Share2, ArrowLeft } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -51,7 +51,10 @@ export default function NotesPage() {
 
   useEffect(() => {
     if (filteredNotes.length > 0 && !selectedNote) {
-      setSelectedNote(filteredNotes[0]);
+      // On desktop, select the first note by default
+      if (window.innerWidth >= 768) {
+        setSelectedNote(filteredNotes[0]);
+      }
     } else if (filteredNotes.length === 0) {
       setSelectedNote(null);
     }
@@ -153,7 +156,10 @@ export default function NotesPage() {
       <div className="flex flex-col h-screen max-h-screen overflow-hidden">
         <SiteHeader title={t('Notes', locale)} />
         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-0 overflow-hidden">
-          <aside className="hidden md:flex flex-col border-r h-full">
+          <aside className={cn(
+            "flex flex-col border-r h-full",
+            selectedNote ? 'hidden md:flex' : 'flex'
+          )}>
             <div className="p-4 space-y-4">
               <Input 
                 placeholder={t('Search notes...', locale)}
@@ -182,17 +188,25 @@ export default function NotesPage() {
               </div>
             </ScrollArea>
           </aside>
-          <main className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col h-full">
+          <main className={cn(
+              "col-span-1 md:col-span-2 lg:col-span-3 flex-col h-full",
+              selectedNote ? 'flex' : 'hidden md:flex'
+          )}>
             {selectedNote ? (
               <div className="flex flex-col h-full">
                 <div className="p-4 border-b flex items-center justify-between">
-                    <div>
-                        <Input
-                            value={selectedNote.title}
-                            onChange={(e) => handleNoteChange('title', e.target.value)}
-                            className="text-2xl font-bold border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
-                        />
-                         <p className="text-sm text-muted-foreground">{t('Created on {date}', locale, { date: new Date(selectedNote.createdAt).toLocaleDateString(locale) })}</p>
+                    <div className="flex items-center gap-2">
+                         <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSelectedNote(null)}>
+                            <ArrowLeft className="h-4 w-4" />
+                         </Button>
+                        <div>
+                            <Input
+                                value={selectedNote.title}
+                                onChange={(e) => handleNoteChange('title', e.target.value)}
+                                className="text-xl sm:text-2xl font-bold border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 h-auto"
+                            />
+                             <p className="text-sm text-muted-foreground">{t('Created on {date}', locale, { date: new Date(selectedNote.createdAt).toLocaleDateString(locale) })}</p>
+                        </div>
                     </div>
                     <div className="flex items-center">
                         <Button variant="ghost" size="icon" onClick={handleShare}>

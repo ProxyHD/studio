@@ -87,7 +87,7 @@ export default function TasksPage() {
               {t('Add Task', locale)}
             </Button>
           </div>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <TaskColumn title={t('To Do', locale)} tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
             <TaskColumn title={t('In Progress', locale)} tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
             <TaskColumn title={t('Done', locale)} tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
@@ -150,7 +150,7 @@ function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask,
                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEditTask(task)}>
                       <Pencil className="h-4 w-4" />
                    </Button>
-                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onDeleteTask(task.id)}>
+                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteTask(task.id)}>
                       <Trash2 className="h-4 w-4" />
                    </Button>
                 </div>

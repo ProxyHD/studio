@@ -13,6 +13,7 @@ import { format, parseISO } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function CalendarPage() {
   const { events, setEvents, scheduleItems, setScheduleItems, locale } = useContext(AppContext);
@@ -78,7 +79,7 @@ export default function CalendarPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <Card>
-                <CardContent className="p-2 md:p-4">
+                <CardContent className="p-0 sm:p-4">
                   <Calendar
                     mode="single"
                     selected={date}
@@ -89,11 +90,11 @@ export default function CalendarPage() {
                       months: 'flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0 w-full',
                       month: 'space-y-4 w-full',
                       table: 'w-full border-collapse space-y-1',
-                      head_row: 'flex w-full',
+                      head_row: 'flex w-full mt-2',
                       head_cell: 'text-muted-foreground rounded-md w-full font-normal text-[0.8rem]',
                       row: 'flex w-full mt-2',
-                      cell: 'h-16 w-full text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
-                      day: 'h-16 w-full p-1 font-normal aria-selected:opacity-100',
+                      cell: 'h-10 sm:h-16 w-full text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20',
+                      day: 'h-10 sm:h-16 w-full p-1 font-normal aria-selected:opacity-100',
                     }}
                     components={{
                       DayContent: ({ date }) => {
@@ -104,7 +105,7 @@ export default function CalendarPage() {
                           <div className="relative h-full w-full flex items-center justify-center">
                             <span>{date.getDate()}</span>
                             {hasEvent && (
-                              <Dot className="absolute bottom-1 right-1 h-6 w-6 text-primary" />
+                              <Dot className="absolute bottom-0 right-0 h-6 w-6 text-primary" />
                             )}
                           </div>
                         );
@@ -129,53 +130,57 @@ export default function CalendarPage() {
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {selectedDayEvents.length > 0 ? (
-                    selectedDayEvents.map(event => (
-                      <div key={event.id} className="p-3 bg-secondary/50 rounded-lg space-y-2">
-                        <div className="flex justify-between items-start">
-                          <div>
-                              <p className="font-semibold">{event.title}</p>
-                              <p className="text-sm text-muted-foreground">
-                              {event.startTime && event.endTime
-                                  ? `${event.startTime} - ${event.endTime}`
-                                  : event.startTime
-                                  ? t('At {time}', locale, { time: event.startTime })
-                                  : t('All day', locale)}
-                              </p>
-                          </div>
-                           <div className="flex items-center">
-                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleOpenEditDialog(event)}>
-                                <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteEvent(event.id)}>
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                         {event.description && <p className="text-sm mt-1">{event.description}</p>}
-                         {event.location && (
-                           <div className="flex items-center gap-2 text-sm">
-                             <MapPin className="h-4 w-4 text-muted-foreground" />
-                             <span>{event.location}</span>
-                           </div>
-                         )}
-                         {event.guests && event.guests.length > 0 && (
-                            <div className="flex items-start gap-2 text-sm">
-                              <Users className="h-4 w-4 text-muted-foreground mt-0.5" />
+                <CardContent>
+                  <ScrollArea className="h-[300px] lg:h-auto">
+                    <div className="space-y-4 pr-4">
+                      {selectedDayEvents.length > 0 ? (
+                        selectedDayEvents.map(event => (
+                          <div key={event.id} className="p-3 bg-secondary/50 rounded-lg space-y-2">
+                            <div className="flex justify-between items-start">
                               <div>
-                                <p className="font-medium">{t('Guests:', locale)}</p>
-                                <ul className="list-disc list-inside">
-                                  {event.guests.map(guest => <li key={guest.email}>{guest.email}</li>)}
-                                </ul>
+                                  <p className="font-semibold">{event.title}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                  {event.startTime && event.endTime
+                                      ? `${event.startTime} - ${event.endTime}`
+                                      : event.startTime
+                                      ? t('At {time}', locale, { time: event.startTime })
+                                      : t('All day', locale)}
+                                  </p>
+                              </div>
+                               <div className="flex items-center">
+                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleOpenEditDialog(event)}>
+                                    <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteEvent(event.id)}>
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
                             </div>
-                         )}
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-muted-foreground">{t('No events for this day.', locale)}</p>
-                  )}
+                             {event.description && <p className="text-sm mt-1">{event.description}</p>}
+                             {event.location && (
+                               <div className="flex items-center gap-2 text-sm">
+                                 <MapPin className="h-4 w-4 text-muted-foreground" />
+                                 <span>{event.location}</span>
+                               </div>
+                             )}
+                             {event.guests && event.guests.length > 0 && (
+                                <div className="flex items-start gap-2 text-sm">
+                                  <Users className="h-4 w-4 text-muted-foreground mt-0.5" />
+                                  <div>
+                                    <p className="font-medium">{t('Guests:', locale)}</p>
+                                    <ul className="list-disc list-inside">
+                                      {event.guests.map(guest => <li key={guest.email}>{guest.email}</li>)}
+                                    </ul>
+                                  </div>
+                                </div>
+                             )}
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground h-[200px] flex items-center justify-center">{t('No events for this day.', locale)}</p>
+                      )}
+                    </div>
+                  </ScrollArea>
                 </CardContent>
               </Card>
             </aside>

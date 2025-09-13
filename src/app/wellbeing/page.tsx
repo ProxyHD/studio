@@ -121,17 +121,17 @@ export default function WellbeingPage() {
                 <CardTitle>{t('How are you feeling today?', locale)}</CardTitle>
                 <CardDescription>{t('Log your mood to track your well-being over time.', locale)}</CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-wrap gap-4">
+              <CardContent className="flex flex-wrap gap-2 sm:gap-4 justify-center">
                 {moods.map(mood => (
                   <Button
                     key={mood.key}
                     variant={selectedMood === mood.key ? 'secondary' : 'outline'}
                     size="lg"
-                    className="flex-col h-24 w-24 gap-2"
+                    className="flex-col h-20 w-20 sm:h-24 sm:w-24 gap-2"
                     onClick={() => setSelectedMood(mood.key)}
                   >
-                    <mood.icon className="h-8 w-8" />
-                    <span>{mood.name}</span>
+                    <mood.icon className="h-6 w-6 sm:h-8 sm:w-8" />
+                    <span className="text-xs sm:text-base">{mood.name}</span>
                   </Button>
                 ))}
               </CardContent>
@@ -141,12 +141,12 @@ export default function WellbeingPage() {
 
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
                 <div>
                   <CardTitle>{t('Weekly Habits', locale)}</CardTitle>
                   <CardDescription>{t('Create and track your habits for each day of the week.', locale)}</CardDescription>
                 </div>
-                <Button onClick={handleOpenAddDialog}>
+                <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
                   <PlusCircle className="mr-2 h-4 w-4" />
                   {t('Add Habit', locale)}
                 </Button>
@@ -186,7 +186,7 @@ export default function WellbeingPage() {
                     <div key={habit.id} className="p-3 border rounded-lg flex justify-between items-center">
                       <div>
                         <p className="font-medium">{habit.name}</p>
-                        <div className="flex gap-2 mt-2">
+                        <div className="flex gap-1 sm:gap-2 mt-2 flex-wrap">
                           {daysOfWeek.map(day => (
                             <span key={day.id} className={cn(
                               "text-xs px-2 py-1 rounded-full",
