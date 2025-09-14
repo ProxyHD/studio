@@ -1,0 +1,20 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Regra para a coleção 'users':
+    // Permite que um utilizador leia e escreva apenas no seu próprio documento.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Regra para a coleção 'feedbacks':
+    // Permite que qualquer utilizador autenticado crie (escreva) um novo feedback.
+    // Ninguém pode ler, atualizar ou apagar feedbacks existentes através do aplicativo.
+    match /feedbacks/{feedbackId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if false;
+    }
+  }
+}

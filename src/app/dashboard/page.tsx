@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useContext, useMemo, useEffect, useState } from 'react';
@@ -79,7 +80,7 @@ export default function DashboardPage() {
        console.error("Error saving feedback to public collection:", error);
        toast({
         title: t('Error', locale),
-        description: "Could not save feedback. Please try again.",
+        description: t('Could not save feedback. Please try again.', locale),
         variant: 'destructive',
        });
     }

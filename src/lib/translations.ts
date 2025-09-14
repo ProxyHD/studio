@@ -1,3 +1,4 @@
+
 import type { Locale } from './types';
 
 const translations: Record<string, Record<Locale, string>> = {
@@ -316,6 +317,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'Please select a rating before submitting.': { 'pt-BR': 'Por favor, selecione uma classificação antes de enviar.', 'en-US': 'Please select a rating before submitting.' },
   'Thank you!': { 'pt-BR': 'Obrigado!', 'en-US': 'Thank you!' },
   'Your feedback has been submitted successfully.': { 'pt-BR': 'O seu feedback foi enviado com sucesso.', 'en-US': 'Your feedback has been submitted successfully.' },
+  'Could not save feedback. Please try again.': { 'pt-BR': 'Não foi possível guardar o feedback. Por favor, tente novamente.', 'en-US': 'Could not save feedback. Please try again.' },
 
 };
 
