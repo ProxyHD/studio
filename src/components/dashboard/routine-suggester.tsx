@@ -5,7 +5,7 @@ import { getSmartSuggestions } from '@/ai/flows/smart-suggestions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
@@ -14,6 +14,7 @@ import type { Task, Habit, Note, Event, ScheduleItem, Transaction } from '@/lib/
 export function RoutineSuggester() {
   const { 
     locale, 
+    profile,
     setTasks, 
     setHabits, 
     setNotes, 
@@ -26,6 +27,7 @@ export function RoutineSuggester() {
   const [suggestionText, setSuggestionText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const isProUser = profile?.plan === 'pro';
 
   const handleGenerate = async () => {
     if (!userData.trim()) {
@@ -127,35 +129,46 @@ export function RoutineSuggester() {
   };
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col relative">
       <CardHeader>
         <CardTitle>{t('Smart Suggestions', locale)}</CardTitle>
         <CardDescription>{t('Ask for suggestions or ask to create tasks, habits, and notes.', locale)}</CardDescription>
       </CardHeader>
-      <CardContent className="flex-grow flex flex-col gap-4">
-        <Textarea
-          placeholder={t('ex: Create a high priority task to call the doctor tomorrow.', locale)}
-          value={userData}
-          onChange={(e) => setUserData(e.target.value)}
-          className="flex-grow"
-        />
-        {suggestionText && (
-          <div className="p-4 bg-muted/50 rounded-md border text-sm prose prose-sm max-w-none">
-            <h4 className="font-semibold mb-2">{t('AI Response:', locale)}</h4>
-            <p className="whitespace-pre-wrap">{suggestionText}</p>
-          </div>
-        )}
-      </CardContent>
-      <CardFooter>
-        <Button onClick={handleGenerate} className="w-full" disabled={isLoading}>
-          {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Sparkles className="mr-2 h-4 w-4" />
+      <fieldset disabled={!isProUser} className="group flex-grow flex flex-col gap-4">
+        <CardContent className="flex-grow flex flex-col gap-4">
+          <Textarea
+            placeholder={t('ex: Create a high priority task to call the doctor tomorrow.', locale)}
+            value={userData}
+            onChange={(e) => setUserData(e.target.value)}
+            className="flex-grow"
+          />
+          {suggestionText && (
+            <div className="p-4 bg-muted/50 rounded-md border text-sm prose prose-sm max-w-none">
+              <h4 className="font-semibold mb-2">{t('AI Response:', locale)}</h4>
+              <p className="whitespace-pre-wrap">{suggestionText}</p>
+            </div>
           )}
-          {isLoading ? t('Generating...', locale) : t('Generate with AI', locale)}
-        </Button>
-      </CardFooter>
+        </CardContent>
+        <CardFooter>
+          <Button onClick={handleGenerate} className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Sparkles className="mr-2 h-4 w-4" />
+            )}
+            {isLoading ? t('Generating...', locale) : t('Generate with AI', locale)}
+          </Button>
+        </CardFooter>
+      </fieldset>
+      {!isProUser && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg cursor-not-allowed">
+            <div className="text-center p-4">
+                <Zap className="h-8 w-8 text-primary mx-auto mb-2" />
+                <p className="font-semibold">{t('Upgrade to Pro', locale)}</p>
+                <p className="text-sm text-muted-foreground">{t('Unlock AI-powered suggestions!', locale)}</p>
+            </div>
+        </div>
+      )}
     </Card>
   );
 }

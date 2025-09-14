@@ -79,6 +79,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'event(s) created': { 'pt-BR': 'evento(s) criado(s)', 'en-US': 'event(s) created' },
   'schedule item(s) created': { 'pt-BR': 'item(ns) de horário criado(s)', 'en-US': 'schedule item(s) created' },
   'transaction(s) created': { 'pt-BR': 'transação(ões) criada(s)', 'en-US': 'transaction(s) created' },
+  'Unlock AI-powered suggestions!': { 'pt-BR': 'Desbloqueie sugestões com IA!', 'en-US': 'Unlock AI-powered suggestions!' },
 
 
   // Login / Register / Reset Password
