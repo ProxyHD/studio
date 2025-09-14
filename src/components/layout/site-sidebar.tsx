@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Settings, LogOut, LifeBuoy, Wallet, Megaphone } from 'lucide-react';
+import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Settings, LogOut, LifeBuoy, Wallet, Megaphone, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -42,6 +42,7 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
   ];
 
   const settingsItem = { href: '/settings', label: t('Settings', locale), icon: Settings };
+  const upgradeItem = { href: '/upgrade', label: t('Upgrade to Pro', locale), icon: Zap };
 
   const handleLinkClick = (key?: keyof typeof newItems) => {
     if (key) {
@@ -105,6 +106,16 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
         ))}
       </nav>
       <div className="p-4 mt-auto">
+        <Link href={upgradeItem.href} passHref>
+          <Button
+            variant="outline"
+            className="w-full justify-center mb-2"
+            onClick={() => handleLinkClick()}
+          >
+            <upgradeItem.icon className="mr-2 h-4 w-4 text-yellow-500" />
+            {upgradeItem.label}
+          </Button>
+        </Link>
         <Separator className="my-2" />
         <Link href={settingsItem.href} passHref>
             <Button 

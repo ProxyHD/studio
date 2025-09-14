@@ -35,14 +35,14 @@ import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
 export default function NotesPage() {
-  const { notes, setNotes, locale } = useContext(AppContext);
+  const { notes, setNotes, locale, profile } = useContext(AppContext);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [summary, setSummary] = useState('');
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const { toast } = useToast();
-  const isPro = true; // Mock value
+  const isPro = profile?.plan === 'pro';
 
   const filteredNotes = notes.filter(note =>
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

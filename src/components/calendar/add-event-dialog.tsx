@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
 import { format, parseISO } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
-import { Calendar as CalendarIcon, PlusCircle, Trash2 } from 'lucide-react';
+import { Calendar as CalendarIcon, PlusCircle, Trash2, Zap } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -63,9 +63,10 @@ interface AddEventDialogProps {
 }
 
 export function AddEventDialog({ isOpen, onOpenChange, onSaveEvent, selectedDate, event }: AddEventDialogProps) {
-  const { locale } = useContext(AppContext);
+  const { locale, profile } = useContext(AppContext);
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
   const isEditing = !!event;
+  const isPro = profile?.plan === 'pro';
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -222,11 +223,13 @@ export function AddEventDialog({ isOpen, onOpenChange, onSaveEvent, selectedDate
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     {t('Location', locale)}
+                    {!isPro && <Zap className="h-4 w-4 text-accent" />}
                   </FormLabel>
                   <FormControl>
                     <Input 
                       placeholder={t('e.g., Office', locale)} 
                       {...field}
+                      disabled={!isPro}
                     />
                   </FormControl>
                   <FormMessage />
@@ -236,6 +239,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onSaveEvent, selectedDate
             <div>
               <FormLabel className="flex items-center gap-2 mb-2">
                 {t('Guests', locale)}
+                 {!isPro && <Zap className="h-4 w-4 text-accent" />}
               </FormLabel>
               <div className="space-y-2">
                 {fields.map((field, index) => (
@@ -249,6 +253,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onSaveEvent, selectedDate
                            <Input 
                             {...guestField}
                             placeholder={t('email@example.com', locale)}
+                            disabled={!isPro}
                           />
                         </FormControl>
                         <Button
@@ -256,6 +261,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onSaveEvent, selectedDate
                           variant="ghost"
                           size="icon"
                           onClick={() => remove(index)}
+                          disabled={!isPro}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -269,6 +275,7 @@ export function AddEventDialog({ isOpen, onOpenChange, onSaveEvent, selectedDate
                   size="sm"
                   onClick={() => append({ email: "" })}
                   className="w-full"
+                  disabled={!isPro}
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
                   {t('Add Guest', locale)}

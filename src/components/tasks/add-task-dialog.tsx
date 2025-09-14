@@ -6,7 +6,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
 import { format, parse } from 'date-fns';
 import { ptBR, enUS } from 'date-fns/locale';
-import { Calendar as CalendarIcon, PlusCircle, Trash2 } from 'lucide-react';
+import { Calendar as CalendarIcon, PlusCircle, Trash2, Zap } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -64,9 +64,10 @@ interface AddTaskDialogProps {
 }
 
 export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTaskDialogProps) {
-  const { locale } = useContext(AppContext);
+  const { locale, profile } = useContext(AppContext);
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
   const isEditing = !!task;
+  const isPlusUser = profile?.plan === 'plus' || profile?.plan === 'pro';
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -205,11 +206,13 @@ export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTas
                 <FormItem>
                   <FormLabel className="flex items-center gap-2">
                     {t('Project', locale)}
+                    {!isPlusUser && <Zap className="h-4 w-4 text-accent" />}
                   </FormLabel>
                   <FormControl>
                     <Input 
                       placeholder={t('e.g., Work, Personal', locale)}
                       {...field}
+                      disabled={!isPlusUser}
                     />
                   </FormControl>
                   <FormMessage />
@@ -219,6 +222,7 @@ export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTas
             <div>
               <FormLabel className="flex items-center gap-2 mb-2">
                 {t('Sub-tasks', locale)}
+                 {!isPlusUser && <Zap className="h-4 w-4 text-accent" />}
               </FormLabel>
               <div className="space-y-2">
                 {fields.map((field, index) => (
@@ -232,6 +236,7 @@ export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTas
                            <Input 
                             {...subtaskField}
                             placeholder={t('e.g., Research the topic', locale)}
+                            disabled={!isPlusUser}
                           />
                         </FormControl>
                         <Button
@@ -239,6 +244,7 @@ export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTas
                           variant="ghost"
                           size="icon"
                           onClick={() => remove(index)}
+                          disabled={!isPlusUser}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -252,6 +258,7 @@ export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTas
                   size="sm"
                   onClick={() => append({ title: "" })}
                   className="w-full"
+                  disabled={!isPlusUser}
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
                   {t('Add Sub-task', locale)}

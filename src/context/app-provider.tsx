@@ -109,7 +109,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (docSnap.exists()) {
           const data = docSnap.data();
           // Ensure profile is at least an empty object if it doesn't exist, to stop loading state
-          setProfile(data.profile || { firstName: '', lastName: '', email: user.email || '' });
+          const userProfile: UserProfile = {
+             firstName: data.profile?.firstName || '',
+             lastName: data.profile?.lastName || '',
+             email: data.profile?.email || user.email || '',
+             plan: data.profile?.plan || 'free',
+          };
+          setProfile(userProfile);
           setTasks(data.tasks || []);
           setNotes(data.notes || []);
           setEvents(data.events || []);
@@ -122,7 +128,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setLocale(data.locale || 'pt-BR');
         } else {
           // New user, document doesn't exist yet, but we can set up a default profile
-          const initialProfile = { firstName: '', lastName: '', email: user.email || '' };
+          const initialProfile: UserProfile = {
+            firstName: user.displayName?.split(' ')[0] || '',
+            lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
+            email: user.email || '',
+            plan: 'free',
+          };
           setProfile(initialProfile);
           setTasks([]);
           setNotes([]);

@@ -19,7 +19,8 @@ import { t } from '@/lib/translations';
 
 export function ColorForm() {
   const { palette, setPalette, palettes, setCustomColor, resetPalette } = useTheme();
-  const { locale } = useContext(AppContext);
+  const { locale, profile } = useContext(AppContext);
+  const isPlusUser = profile?.plan === 'plus' || profile?.plan === 'pro';
 
   // Helper to convert HSL string to HEX color for the color input
   const hslToHex = (hsl: string) => {
@@ -102,9 +103,11 @@ export function ColorForm() {
               <button
                 key={p.name}
                 onClick={() => setPalette(p.name)}
+                disabled={!isPlusUser}
                 className={cn(
                   'h-24 w-full rounded-lg flex flex-col items-center justify-center text-center p-2 relative',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background'
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background',
+                  !isPlusUser && 'cursor-not-allowed opacity-50'
                 )}
                 style={{
                   backgroundColor: `hsl(${p.background})`,
@@ -152,19 +155,20 @@ export function ColorForm() {
             <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={resetPalette} 
+                onClick={resetPalette}
+                disabled={!isPlusUser}
             >
                 <RotateCcw className="mr-2 h-4 w-4" />
                 {t('Reset', locale)}
             </Button>
           </div>
-          <fieldset className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <fieldset className="grid grid-cols-2 md:grid-cols-4 gap-4" disabled={!isPlusUser}>
             <div className="space-y-2">
                 <Label htmlFor="primaryColor">{t('Primary', locale)}</Label>
                 <Input 
                     id="primaryColor"
                     type="color"
-                    className="p-1 h-10 w-full" 
+                    className="p-1 h-10 w-full disabled:opacity-50" 
                     value={hslToHex(palette.primary)}
                     onChange={(e) => setCustomColor('primary', hexToHsl(e.target.value))}
                 />
@@ -174,7 +178,7 @@ export function ColorForm() {
                 <Input 
                     id="secondaryColor"
                     type="color"
-                    className="p-1 h-10 w-full" 
+                    className="p-1 h-10 w-full disabled:opacity-50" 
                     value={hslToHex(palette.secondary)}
                     onChange={(e) => setCustomColor('secondary', hexToHsl(e.target.value))}
                 />
@@ -184,7 +188,7 @@ export function ColorForm() {
                 <Input 
                     id="accentColor"
                     type="color"
-                    className="p-1 h-10 w-full" 
+                    className="p-1 h-10 w-full disabled:opacity-50" 
                     value={hslToHex(palette.accent)}
                     onChange={(e) => setCustomColor('accent', hexToHsl(e.target.value))}
                 />

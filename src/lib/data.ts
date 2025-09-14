@@ -14,7 +14,6 @@ const plansData: Record<Locale, Plan[]> = {
         'Finanças básicas',
         'Armazenamento limitado',
       ],
-      isCurrent: true,
       cta: 'Seu Plano Atual',
     },
     {
@@ -24,10 +23,9 @@ const plansData: Record<Locale, Plan[]> = {
       priceFrequency: '/mês',
       features: [
         'Tudo do plano Grátis',
-        'Exportar para CSV/PDF',
+        'Projetos e sub-tarefas',
+        'Temas e cores personalizadas',
         'Backups automáticos',
-        'Temas premium',
-        'Notificações avançadas',
         'Armazenamento aumentado',
       ],
       cta: 'Upgrade para Plus',
@@ -40,8 +38,8 @@ const plansData: Record<Locale, Plan[]> = {
       features: [
         'Tudo do plano Plus',
         'Assistente de IA',
-        'Chat e colaboração',
-        'Multi-dispositivo ilimitado',
+        'Localização e convidados em eventos',
+        'Suporte prioritário',
         '10 GB de armazenamento',
       ],
       cta: 'Upgrade para Pro',
@@ -61,7 +59,6 @@ const plansData: Record<Locale, Plan[]> = {
         'Basic finances',
         'Limited storage',
       ],
-      isCurrent: true,
       cta: 'Current Plan',
     },
     {
@@ -71,10 +68,9 @@ const plansData: Record<Locale, Plan[]> = {
       priceFrequency: '/month',
       features: [
         'Everything in Free',
-        'Export to CSV/PDF',
+        'Projects and sub-tasks',
+        'Custom themes and colors',
         'Automatic backups',
-        'Premium themes',
-        'Advanced notifications',
         'Increased storage',
       ],
       cta: 'Upgrade to Plus',
@@ -87,8 +83,8 @@ const plansData: Record<Locale, Plan[]> = {
       features: [
         'Everything in Plus',
         'AI assistant',
-        'Chat and collaboration',
-        'Unlimited multi-device',
+        'Event location and guests',
+        'Priority support',
         '10 GB storage',
       ],
       cta: 'Upgrade to Pro',
