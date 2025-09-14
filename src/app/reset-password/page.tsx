@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useContext, Suspense } from 'react';
@@ -88,7 +89,7 @@ function ResetPasswordForm() {
   }
 
   if (loading) {
-    return <p>{t('Verifying reset link...', locale)}</p>;
+    return <p className="text-muted-foreground">{t('Verifying reset link...', locale)}</p>;
   }
 
   if (error) {
