@@ -15,7 +15,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Price ID and User Email are required' }, { status: 400 });
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002';
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (!appUrl) {
+      // Throw a specific error if the app URL is not configured
+      throw new Error('NEXT_PUBLIC_APP_URL is not set in the environment variables. This is required for Stripe redirects.');
+    }
 
     // Create a Checkout Session
     const session = await stripe.checkout.sessions.create({
