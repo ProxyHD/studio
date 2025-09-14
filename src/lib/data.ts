@@ -15,12 +15,12 @@ const plansData: Record<Locale, Plan[]> = {
         'Armazenamento limitado',
       ],
       isCurrent: true,
-      cta: 'Plano Atual',
+      cta: 'Seu Plano Atual',
     },
     {
       id: 'plus',
       name: 'Plus',
-      price: '€4.99',
+      price: '€4,99',
       priceFrequency: '/mês',
       features: [
         'Tudo do plano Grátis',
