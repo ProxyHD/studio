@@ -5,7 +5,7 @@ import { useState, useContext, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Bell, Menu, Search, CheckSquare, Notebook, Calendar as CalendarIcon, X } from 'lucide-react';
+import { Bell, Menu, Search, CheckSquare, Notebook, Calendar as CalendarIcon, X, Loader2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -31,10 +31,42 @@ import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 import { SiteSidebar } from './site-sidebar';
 import { useDebounce } from 'use-debounce';
+import { cn } from '@/lib/utils';
 
 interface SiteHeaderProps {
   title: string;
 }
+
+function SaveStatusIndicator() {
+    const { saveStatus, locale } = useContext(AppContext);
+
+    if (saveStatus === 'idle') {
+        return null;
+    }
+
+    const statusMap = {
+        saving: {
+            icon: <Loader2 className="h-4 w-4 animate-spin" />,
+            text: t('Saving...', locale),
+            color: 'text-muted-foreground'
+        },
+        saved: {
+            icon: <Check className="h-4 w-4" />,
+            text: t('Saved!', locale),
+            color: 'text-green-600'
+        }
+    };
+
+    const currentStatus = statusMap[saveStatus];
+
+    return (
+        <div className={cn("flex items-center gap-2 text-sm transition-colors duration-300", currentStatus.color)}>
+            {currentStatus.icon}
+            <span>{currentStatus.text}</span>
+        </div>
+    );
+}
+
 
 export function SiteHeader({ title }: SiteHeaderProps) {
   const { locale, tasks, notes, events } = useContext(AppContext);
@@ -116,6 +148,7 @@ export function SiteHeader({ title }: SiteHeaderProps) {
         <h1 className="text-2xl md:text-3xl font-bold text-foreground font-headline">{title}</h1>
       </div>
       <div className="flex items-center gap-4">
+        <SaveStatusIndicator />
         <DropdownMenu open={isSearchOpen} onOpenChange={setIsSearchOpen}>
           <DropdownMenuTrigger asChild>
             <div className="relative hidden md:block">

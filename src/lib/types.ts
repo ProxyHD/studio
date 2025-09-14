@@ -1,3 +1,4 @@
+
 import type { Dispatch, SetStateAction } from 'react';
 
 export type UserProfile = {
@@ -97,6 +98,8 @@ export type Feedback = {
 
 export type Locale = 'pt-BR' | 'en-US';
 
+export type SaveStatus = 'idle' | 'saving' | 'saved';
+
 export type NewItemBadges = {
   dashboard: boolean;
   tasks: boolean;
@@ -136,6 +139,7 @@ export interface AppContextType {
   newItems: NewItemBadges;
   setNewItemBadge: (key: keyof NewItemBadges) => void;
   clearNewItemBadge: (key: keyof NewItemBadges) => void;
+  saveStatus: SaveStatus;
 }
 
 // Theme types

@@ -36,6 +36,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Title is required': { 'pt-BR': 'O título é obrigatório.', 'en-US': 'Title is required.' },
   'Date is required': { 'pt-BR': 'A data é obrigatória.', 'en-US': 'Date is required.' },
   'Subtask title is required': { 'pt-BR': 'O título da sub-tarefa é obrigatório.', 'en-US': 'Subtask title is required.' },
+  'Saving...': { 'pt-BR': 'A guardar...', 'en-US': 'Saving...' },
+  'Saved!': { 'pt-BR': 'Guardado!', 'en-US': 'Saved!' },
 
 
   // Dashboard

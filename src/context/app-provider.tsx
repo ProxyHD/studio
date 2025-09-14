@@ -1,10 +1,11 @@
+
 'use client';
 
-import { createContext, useState, ReactNode, useEffect, useContext, useCallback } from 'react';
+import { createContext, useState, ReactNode, useEffect, useContext, useCallback, Dispatch, SetStateAction } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit, ScheduleItem, Feedback, NewItemBadges } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit, ScheduleItem, Feedback, NewItemBadges, SaveStatus } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
@@ -36,6 +37,7 @@ export const AppContext = createContext<AppContextType>({
   newItems: { dashboard: false, tasks: false, calendar: false, wellbeing: false, notes: false, finances: false, news: false },
   setNewItemBadge: () => {},
   clearNewItemBadge: () => {},
+  saveStatus: 'idle',
 });
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -54,20 +56,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [feedback, setFeedback] = useState<Feedback | null | undefined>(undefined);
   const [locale, setLocale] = useState<Locale>('pt-BR');
   const [newItems, setNewItems] = useState<NewItemBadges>({ dashboard: false, tasks: false, calendar: false, wellbeing: false, notes: false, finances: false, news: false });
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+
   
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {
       try {
-        // We only save if the profile is not null, to avoid overwriting good data with empty data during hydration
         if (data.profile) {
+          setSaveStatus('saving');
           const docRef = doc(db, 'users', userId);
           await setDoc(docRef, data, { merge: true });
+          setSaveStatus('saved');
+          setTimeout(() => setSaveStatus('idle'), 2000); // Reset after 2 seconds
         }
       } catch (error) {
         console.error("Error saving user data:", error);
+        setSaveStatus('idle'); // Reset on error
       }
     },
-    1000 // 1 second debounce delay
+    1500 // 1.5 second debounce delay
   );
 
   // Effect to save all data to Firestore when it changes
@@ -150,7 +157,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     } else {
       // No user, clear all data and don't show loading screen
-      if (window.location.pathname === '/' || window.location.pathname === '/register') {
+      if (window.location.pathname === '/' || window.location.pathname === '/register' || window.location.pathname === '/reset-password') {
         setLoading(false);
       }
       setProfile(null);
@@ -228,6 +235,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         newItems,
         setNewItemBadge,
         clearNewItemBadge,
+        saveStatus,
       }}
     >
       {children}
