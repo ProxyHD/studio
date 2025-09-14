@@ -49,7 +49,7 @@ const translations: Record<string, Record<Locale, string>> = {
   },
   'No tasks for today.': { 'pt-BR': 'Nenhuma tarefa para hoje.', 'en-US': 'No tasks for today.' },
   'Smart Suggestions': { 'pt-BR': 'Sugestões Inteligentes', 'en-US': 'Smart Suggestions' },
-  'Describe your goals and current habits to get an AI-generated routine.': { 'pt-BR': 'Descreva seus objetivos e hábitos atuais para obter uma rotina gerada por IA.', 'en-US': 'Describe your goals and current habits to get an AI-generated routine.' },
+  'Describe your goals and current habits to get an AI-generated routine.': { 'pt-BR': 'Descreva os seus objetivos e hábitos atuais para obter uma rotina gerada por IA.', 'en-US': 'Describe your goals and current habits to get an AI-generated routine.' },
   'ex: I want to wake up earlier, exercise 3 times a week, and read more books.': { 'pt-BR': 'ex: Eu quero acordar mais cedo, me exercitar 3 vezes por semana e ler mais livros.', 'en-US': 'ex: I want to wake up earlier, exercise 3 times a week, and read more books.' },
   'Suggested Routine:': { 'pt-BR': 'Rotina Sugerida:', 'en-US': 'Suggested Routine:' },
   'Generating...': { 'pt-BR': 'Gerando...', 'en-US': 'Generating...' },
