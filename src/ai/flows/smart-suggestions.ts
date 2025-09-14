@@ -11,7 +11,6 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import type { Task, Habit, Note, DayOfWeek, Event, ScheduleItem, Transaction } from '@/lib/types';
 
 const SmartSuggestionsInputSchema = z.object({
   userData: z.string().describe('A description of the user, their current habits, and their goals.'),
