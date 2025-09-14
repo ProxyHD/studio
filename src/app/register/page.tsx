@@ -17,11 +17,19 @@ import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { useAppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
+import { useAuth } from '@/context/auth-provider';
 
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { locale } = useAppContext();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
   
   const getRegisterSchema = (locale: 'pt-BR' | 'en-US') => z.object({
     firstName: z.string().min(3, t('First name must be at least 3 characters.', locale)),
@@ -58,14 +66,12 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
 
-      // Save user profile information to Firestore
       await setDoc(doc(db, 'users', user.uid), {
         profile: {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
         },
-        // Initialize other data arrays
         tasks: [],
         notes: [],
         events: [],
@@ -94,6 +100,11 @@ export default function RegisterPage() {
         variant: 'destructive',
       });
     }
+  }
+  
+  // Do not render the registration form if the user is already logged in and redirection is imminent
+  if (loading || user) {
+    return null; // Or a loading spinner
   }
 
   return (

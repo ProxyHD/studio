@@ -17,11 +17,19 @@ import { auth, db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { useAppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
+import { useAuth } from '@/context/auth-provider';
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { locale } = useAppContext();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
 
   const getLoginSchema = (locale: 'pt-BR' | 'en-US') => z.object({
     email: z.string().email(t('Please enter a valid email.', locale)).min(1, t('Email is required.', locale)),
@@ -74,11 +82,9 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       
-      // Check if this is a new user
       const additionalUserInfo = getAdditionalUserInfo(result);
 
       if (additionalUserInfo?.isNewUser) {
-        // If it's a new user, create their document in Firestore
         const userDocRef = doc(db, 'users', user.uid);
         const displayName = user.displayName || 'New User';
         const [firstName, ...lastNameParts] = displayName.split(' ');
@@ -115,6 +121,11 @@ export default function LoginPage() {
       });
     }
   };
+  
+  // Do not render the login form if the user is already logged in and redirection is imminent
+  if (loading || user) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
