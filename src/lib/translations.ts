@@ -168,6 +168,8 @@ const translations: Record<string, Record<Locale, string>> = {
     'pt-BR': 'Não foi possível iniciar o processo de pagamento. Por favor, tente novamente.',
     'en-US': 'Could not initiate the payment process. Please try again.'
   },
+  'You are now on the {planName} plan.': { 'pt-BR': 'Agora você está no plano {planName}.', 'en-US': 'You are now on the {planName} plan.' },
+  'Current Plan': { 'pt-BR': 'Plano Atual', 'en-US': 'Current Plan' },
 
 
   // Settings
@@ -366,11 +368,14 @@ const translations: Record<string, Record<Locale, string>> = {
 
 };
 
-export const t = (key: string, locale: Locale, options?: Record<string, string | number>): string => {
+export const t = (key: string, locale: Locale, options?: Record<string, string | number | undefined>): string => {
   let translation = translations[key]?.[locale] || key;
   
   if (options) {
     Object.keys(options).forEach(optionKey => {
+      const value = options[optionKey];
+      if (value === undefined) return;
+
       const regex = new RegExp(`{${optionKey}(, [a-zA-Z]+, (one|other) {[^}]+})?}`, 'g');
       
       // Basic pluralization for tasks
@@ -381,7 +386,7 @@ export const t = (key: string, locale: Locale, options?: Record<string, string |
         translation = translation.replace('{task, plural, one {tarefa pendente} other {tarefas pendentes}}', pluralString)
                                  .replace('{task, plural, one {task} other {tasks}}', pluralString);
       } else {
-        translation = translation.replace(`{${optionKey}}`, String(options[optionKey]));
+        translation = translation.replace(`{${optionKey}}`, String(value));
       }
     });
   }

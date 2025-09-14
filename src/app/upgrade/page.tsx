@@ -26,19 +26,22 @@ export default function UpgradePage() {
 
     setLoadingPlanId(plan.id);
 
-    // Simulate a network request
+    // Simulate a network request to update the plan in Firestore
     setTimeout(() => {
-      setProfile({
-        ...profile,
-        plan: plan.id as 'free' | 'plus' | 'pro',
-      });
+      if (setProfile) {
+        setProfile({
+          ...profile,
+          plan: plan.id as 'free' | 'plus' | 'pro',
+        });
+      }
       toast({
-        title: 'Upgrade Successful!',
-        description: `You are now on the ${plan.name} plan.`,
+        title: t('Success', locale),
+        description: `${t('You are now on the {planName} plan.', locale, { planName: plan.name })}`,
       });
       setLoadingPlanId(null);
     }, 1000);
   };
+  
 
   return (
     <div className="flex flex-col h-full">
