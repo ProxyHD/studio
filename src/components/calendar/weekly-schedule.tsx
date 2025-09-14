@@ -7,7 +7,6 @@ import { PlusCircle, Trash2, Clock, MapPin, Pencil } from 'lucide-react';
 import type { DayOfWeek, ScheduleItem } from '@/lib/types';
 import { AddScheduleItemDialog } from './add-schedule-item-dialog';
 import { t } from '@/lib/translations';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 interface WeeklyScheduleProps {
   scheduleItems: ScheduleItem[];
@@ -89,49 +88,48 @@ export function WeeklySchedule({ scheduleItems, setScheduleItems, locale }: Week
           </div>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="w-full whitespace-nowrap">
-            <div className="flex w-max space-x-4 pb-4">
-              {daysOfWeek.map(day => (
-                <div key={day} className="w-60 sm:w-72 flex-shrink-0">
-                  <div className="p-3 bg-muted/50 rounded-lg space-y-3 h-full">
-                    <h3 className="font-semibold text-center">{dayNames[day]}</h3>
-                    <div className="space-y-2">
-                      {groupedItems[day].length > 0 ? (
-                        groupedItems[day].map(item => (
-                          <div key={item.id} className="p-2 bg-card rounded-md shadow-sm text-sm whitespace-normal">
-                            <div className="flex justify-between items-start">
-                              <p className="font-medium flex-1 truncate pr-2">{item.title}</p>
-                              <div className="flex items-center">
-                                <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleOpenEditDialog(item)}>
-                                  <Pencil className="h-3 w-3" />
-                                </Button>
-                                <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => deleteScheduleItem(item.id)}>
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            </div>
-                            <div className="text-muted-foreground mt-1 space-y-1">
-                              <div className="flex items-center gap-1.5">
-                                <Clock className="h-3 w-3" />
-                                <span>{item.startTime} - {item.endTime}</span>
-                              </div>
-                              <div className="flex items-center gap-1.5">
-                                <MapPin className="h-3 w-3" />
-                                <span>{item.location}</span>
-                              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {daysOfWeek.map(day => (
+              <div key={day}>
+                <div className="p-3 bg-muted/50 rounded-lg space-y-3 h-full min-h-[150px]">
+                  <h3 className="font-semibold text-center">{dayNames[day]}</h3>
+                  <div className="space-y-2">
+                    {groupedItems[day].length > 0 ? (
+                      groupedItems[day].map(item => (
+                        <div key={item.id} className="p-2 bg-card rounded-md shadow-sm text-sm">
+                          <div className="flex justify-between items-start">
+                            <p className="font-medium flex-1 truncate pr-2">{item.title}</p>
+                            <div className="flex items-center">
+                              <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleOpenEditDialog(item)}>
+                                <Pencil className="h-3 w-3" />
+                              </Button>
+                              <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => deleteScheduleItem(item.id)}>
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <p className="text-xs text-muted-foreground text-center pt-4">{t('No items scheduled.', locale)}</p>
-                      )}
-                    </div>
+                          <div className="text-muted-foreground mt-1 space-y-1">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-3 w-3" />
+                              <span>{item.startTime} - {item.endTime}</span>
+                            </div>
+                            {item.location && (
+                                <div className="flex items-center gap-1.5">
+                                    <MapPin className="h-3 w-3" />
+                                    <span>{item.location}</span>
+                                </div>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-muted-foreground text-center pt-4">{t('No items scheduled.', locale)}</p>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
       <AddScheduleItemDialog
