@@ -1,0 +1,28 @@
+{
+  "placeholderImages": [
+    {
+      "id": "user-avatar",
+      "description": "User avatar",
+      "imageUrl": "https://picsum.photos/seed/avatar/100/100",
+      "imageHint": "profile picture"
+    },
+    {
+      "id": "news-ai-assistant",
+      "description": "AI Assistant launch news",
+      "imageUrl": "https://picsum.photos/seed/ai-assistant/600/400",
+      "imageHint": "artificial intelligence"
+    },
+    {
+      "id": "news-wellbeing",
+      "description": "Wellbeing features news",
+      "imageUrl": "https://picsum.photos/seed/wellbeing/600/400",
+      "imageHint": "meditation yoga"
+    },
+    {
+      "id": "news-themes",
+      "description": "Custom themes news",
+      "imageUrl": "https://picsum.photos/seed/themes/600/400",
+      "imageHint": "color palette"
+    }
+  ]
+}
