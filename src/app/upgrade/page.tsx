@@ -66,13 +66,15 @@ export default function UpgradePage() {
         body: JSON.stringify({ priceId, userEmail: user.email }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create checkout session');
-      }
+      const responseBody = await response.json();
 
-      const { sessionId } = await response.json();
+      if (!response.ok || !responseBody.sessionId) {
+        throw new Error(responseBody.error || 'Failed to retrieve a valid session from the server.');
+      }
+      
+      const { sessionId } = responseBody;
       const stripe = await stripePromise;
+
       if (stripe) {
         const { error } = await stripe.redirectToCheckout({ sessionId });
         if (error) {
