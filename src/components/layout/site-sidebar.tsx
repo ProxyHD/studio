@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Settings, LogOut, Zap, LifeBuoy, Wallet, Megaphone } from 'lucide-react';
+import { CheckSquare, LayoutDashboard, Notebook, Calendar, Smile, Settings, LogOut, LifeBuoy, Wallet, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -41,7 +41,6 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
     }
   ];
 
-  const proItem = { href: '/upgrade', label: t('Upgrade to Pro', locale), icon: Zap };
   const settingsItem = { href: '/settings', label: t('Settings', locale), icon: Settings };
 
   const handleLinkClick = (key?: keyof typeof newItems) => {
@@ -104,18 +103,6 @@ export function SiteSidebar({ isMobile = false, onLinkClick }: SiteSidebarProps)
             </div>
           </div>
         ))}
-        <div>
-           <Link href={proItem.href} passHref>
-              <Button
-                variant={pathname === proItem.href ? 'default' : 'ghost'}
-                className={cn("w-full justify-start", pathname !== proItem.href && "text-primary hover:bg-primary/10 hover:text-primary")}
-                onClick={() => handleLinkClick()}
-              >
-                <proItem.icon className="mr-2 h-4 w-4" />
-                {proItem.label}
-              </Button>
-            </Link>
-        </div>
       </nav>
       <div className="p-4 mt-auto">
         <Separator className="my-2" />

@@ -11,15 +11,14 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Zap, Check, Palette, RotateCcw } from 'lucide-react';
-import Link from 'next/link';
+import { Check, Palette, RotateCcw } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
 export function ColorForm() {
-  const { palette, setPalette, palettes, isPlusUser, setCustomColor, resetPalette } = useTheme();
+  const { palette, setPalette, palettes, setCustomColor, resetPalette } = useTheme();
   const { locale } = useContext(AppContext);
 
   // Helper to convert HSL string to HEX color for the color input
@@ -88,19 +87,9 @@ export function ColorForm() {
 
 
   return (
-    <Card className={cn(!isPlusUser && 'bg-muted/30 border-dashed')}>
+    <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>{t('Color Palette', locale)}</CardTitle>
-          {!isPlusUser && (
-            <Button size="sm" asChild>
-              <Link href="/upgrade">
-                <Zap className="mr-2 h-4 w-4" />
-                {t('Upgrade to Plus', locale)}
-              </Link>
-            </Button>
-          )}
-        </div>
+        <CardTitle>{t('Color Palette', locale)}</CardTitle>
         <CardDescription>
           {t('Customize the application\'s appearance. Requires Plus plan.', locale)}
         </CardDescription>
@@ -113,11 +102,9 @@ export function ColorForm() {
               <button
                 key={p.name}
                 onClick={() => setPalette(p.name)}
-                disabled={!isPlusUser}
                 className={cn(
                   'h-24 w-full rounded-lg flex flex-col items-center justify-center text-center p-2 relative',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background',
-                  !isPlusUser && 'cursor-not-allowed opacity-50'
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background'
                 )}
                 style={{
                   backgroundColor: `hsl(${p.background})`,
@@ -166,13 +153,12 @@ export function ColorForm() {
                 variant="ghost" 
                 size="sm" 
                 onClick={resetPalette} 
-                disabled={!isPlusUser}
             >
                 <RotateCcw className="mr-2 h-4 w-4" />
                 {t('Reset', locale)}
             </Button>
           </div>
-          <fieldset disabled={!isPlusUser} className="grid grid-cols-2 md:grid-cols-4 gap-4 disabled:opacity-50 disabled:cursor-not-allowed">
+          <fieldset className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-2">
                 <Label htmlFor="primaryColor">{t('Primary', locale)}</Label>
                 <Input 

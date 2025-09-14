@@ -5,9 +5,8 @@ import { getSmartSuggestions } from '@/ai/flows/smart-suggestions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Lock, Zap, Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Badge } from '@/components/ui/badge';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 import type { Task, Habit, Note, Event, ScheduleItem, Transaction } from '@/lib/types';
@@ -28,18 +27,7 @@ export function RoutineSuggester() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const isPro = true; // Mock value, would come from user session
-
   const handleGenerate = async () => {
-    if (!isPro) {
-      toast({
-        title: t('Upgrade to Pro', locale),
-        description: t('Describe your goals and current habits to get an AI-generated routine.', locale),
-        variant: 'destructive',
-      });
-      return;
-    }
-
     if (!userData.trim()) {
       toast({
         title: t('Description', locale),
@@ -141,13 +129,7 @@ export function RoutineSuggester() {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <div className="flex items-center justify-between">
-            <CardTitle>{t('Smart Suggestions', locale)}</CardTitle>
-            <Badge variant="outline" className="border-accent text-accent">
-                <Zap className="mr-2 h-4 w-4"/>
-                {t('Pro', locale)}
-            </Badge>
-        </div>
+        <CardTitle>{t('Smart Suggestions', locale)}</CardTitle>
         <CardDescription>{t('Ask for suggestions or ask to create tasks, habits, and notes.', locale)}</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col gap-4">
@@ -156,7 +138,6 @@ export function RoutineSuggester() {
           value={userData}
           onChange={(e) => setUserData(e.target.value)}
           className="flex-grow"
-          disabled={!isPro}
         />
         {suggestionText && (
           <div className="p-4 bg-muted/50 rounded-md border text-sm prose prose-sm max-w-none">
@@ -166,15 +147,13 @@ export function RoutineSuggester() {
         )}
       </CardContent>
       <CardFooter>
-        <Button onClick={handleGenerate} className="w-full" disabled={isLoading || !isPro}>
+        <Button onClick={handleGenerate} className="w-full" disabled={isLoading}>
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : isPro ? (
-            <Sparkles className="mr-2 h-4 w-4" />
           ) : (
-            <Lock className="mr-2 h-4 w-4" />
+            <Sparkles className="mr-2 h-4 w-4" />
           )}
-          {isPro ? (isLoading ? t('Generating...', locale) : t('Generate with AI', locale)) : t('Upgrade to Generate', locale)}
+          {isLoading ? t('Generating...', locale) : t('Generate with AI', locale)}
         </Button>
       </CardFooter>
     </Card>

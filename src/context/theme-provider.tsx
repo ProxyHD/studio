@@ -55,7 +55,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme: nextTheme, setTheme: setNextTheme } = useNextTheme();
   const [palette, setPalette] = useState<ColorPalette>(defaultPalette);
-  const isPlusUser = false; // Mock value - in a real app, this would come from user session/context
+  const isPlusUser = true; // All features are now free
 
   const applyColors = useCallback((selectedPalette: ColorPalette) => {
     const root = document.documentElement;
@@ -99,7 +99,6 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setColorPalette = (paletteName: string) => {
-    if (!isPlusUser) return;
     const newPalette = palettes.find(p => p.name === paletteName) || defaultPalette;
     setPalette(newPalette);
     localStorage.setItem('color-palette', paletteName);
@@ -108,7 +107,6 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const setCustomColor = (colorName: 'primary' | 'secondary' | 'accent', value: string) => {
-    if (!isPlusUser) return;
     const newPalette = {
         ...palette,
         name: 'custom',
@@ -121,7 +119,6 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   };
 
   const resetPalette = () => {
-    if (!isPlusUser) return;
     setColorPalette('default');
   };
 
