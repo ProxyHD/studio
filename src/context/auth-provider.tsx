@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
       if (!user) {
         // Se não houver usuário e não estiver na página de login/registro/reset, redireciona
-        const publicPaths = ['/', '/register', '/reset-password', '/verify-email'];
+        const publicPaths = ['/', '/register', '/reset-password'];
         if (!publicPaths.includes(window.location.pathname)) {
            router.push('/');
         }
