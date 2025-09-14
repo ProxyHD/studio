@@ -24,7 +24,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { t } from '@/lib/translations';
 
 export default function FinancesPage() {
-  const { transactions, setTransactions, locale } = useContext(AppContext);
+  const { transactions, setTransactions, locale, formatCurrency } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
@@ -56,14 +56,6 @@ export default function FinancesPage() {
     setTransactions(transactions.filter(t => t.id !== transactionId));
   };
   
-  const formatCurrency = (amount: number) => {
-    const currency = locale === 'pt-BR' ? 'EUR' : 'USD';
-    return new Intl.NumberFormat(locale, {
-      style: 'currency',
-      currency: currency,
-    }).format(amount);
-  };
-
   const { totalIncome, totalExpenses, balance } = useMemo(() => {
     const income = transactions
       .filter(t => t.type === 'income')
