@@ -218,6 +218,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'Pick a date': { 'pt-BR': 'Escolha uma data', 'en-US': 'Pick a date' },
   'Project': { 'pt-BR': 'Projeto', 'en-US': 'Project' },
   'e.g., Work, Personal': { 'pt-BR': 'Ex: Trabalho, Pessoal', 'en-US': 'e.g., Work, Personal' },
+  'e.g., Buy groceries': { 'pt-BR': 'Ex: Comprar mantimentos', 'en-US': 'e.g., Buy groceries' },
   'Sub-tasks': { 'pt-BR': 'Sub-tarefas', 'en-US': 'Sub-tasks' },
   'e.g., Research the topic': { 'pt-BR': 'Ex: Pesquisar sobre o tópico', 'en-US': 'e.g., Research the topic' },
   'Add Sub-task': { 'pt-BR': 'Adicionar Sub-tarefa', 'en-US': 'Add Sub-task' },
