@@ -113,6 +113,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
              firstName: data.profile?.firstName || '',
              lastName: data.profile?.lastName || '',
              email: data.profile?.email || user.email || '',
+             plan: data.profile?.plan || 'free',
           };
           setProfile(userProfile);
           setTasks(data.tasks || []);
@@ -131,6 +132,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             firstName: user.displayName?.split(' ')[0] || '',
             lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
             email: user.email || '',
+            plan: 'free',
           };
           setProfile(initialProfile);
           setTasks([]);

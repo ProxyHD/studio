@@ -1,4 +1,5 @@
 
+
 import type { Locale } from './types';
 
 const translations: Record<string, Record<Locale, string>> = {
@@ -184,8 +185,10 @@ const translations: Record<string, Record<Locale, string>> = {
   'Light': { 'pt-BR': 'Claro', 'en-US': 'Light' },
   'Dark': { 'pt-BR': 'Escuro', 'en-US': 'Dark' },
   'Color Palette': { 'pt-BR': 'Paleta de Cores', 'en-US': 'Color Palette' },
+  'Customize the application\'s appearance.': { 'pt-BR': 'Personalize a aparência do aplicativo.', 'en-US': 'Customize the application\'s appearance.' },
   'Customize the application\'s appearance. Requires Plus plan.': { 'pt-BR': 'Personalize a aparência do aplicativo. Requer o plano Plus.', 'en-US': 'Customize the application\'s appearance. Requires Plus plan.' },
   'Upgrade to Plus': { 'pt-BR': 'Upgrade para Plus', 'en-US': 'Upgrade to Plus' },
+  'Unlock custom themes and more!': { 'pt-BR': 'Desbloqueie temas personalizados e mais!', 'en-US': 'Unlock custom themes and more!' },
   'Presets': { 'pt-BR': 'Predefinições', 'en-US': 'Presets' },
   'Default': { 'pt-BR': 'Padrão', 'en-US': 'Default' },
   'Custom Colors': { 'pt-BR': 'Cores Personalizadas', 'en-US': 'Custom Colors' },

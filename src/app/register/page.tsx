@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
@@ -71,6 +72,7 @@ export default function RegisterPage() {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
+          plan: 'free',
         },
         tasks: [],
         notes: [],

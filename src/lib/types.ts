@@ -1,10 +1,12 @@
 
+
 import type { Dispatch, SetStateAction } from 'react';
 
 export type UserProfile = {
   firstName: string;
   lastName: string;
   email: string;
+  plan?: 'free' | 'plus' | 'pro';
 };
 
 export type Task = {

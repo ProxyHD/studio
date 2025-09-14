@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useContext } from 'react';
@@ -11,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Check, Palette, RotateCcw } from 'lucide-react';
+import { Check, Palette, RotateCcw, Zap } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { AppContext } from '@/context/app-provider';
@@ -19,7 +20,9 @@ import { t } from '@/lib/translations';
 
 export function ColorForm() {
   const { palette, setPalette, palettes, setCustomColor, resetPalette } = useTheme();
-  const { locale } = useContext(AppContext);
+  const { locale, profile } = useContext(AppContext);
+  const isPlusUser = profile?.plan === 'plus' || profile?.plan === 'pro';
+
 
   // Helper to convert HSL string to HEX color for the color input
   const hslToHex = (hsl: string) => {
@@ -91,106 +94,120 @@ export function ColorForm() {
       <CardHeader>
         <CardTitle>{t('Color Palette', locale)}</CardTitle>
         <CardDescription>
-          {t('Customize the application\'s appearance.', locale)}
+            {isPlusUser 
+                ? t('Customize the application\'s appearance.', locale)
+                : t('Customize the application\'s appearance. Requires Plus plan.', locale)
+            }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
-        <div>
-          <h4 className="font-medium mb-4 text-sm text-muted-foreground">{t('Presets', locale)}</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {palettes.map((p) => (
-              <button
-                key={p.name}
-                onClick={() => setPalette(p.name)}
-                className={cn(
-                  'h-24 w-full rounded-lg flex flex-col items-center justify-center text-center p-2 relative',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background'
-                )}
-                style={{
-                  backgroundColor: `hsl(${p.background})`,
-                  color: `hsl(${p.primary})`,
-                }}
-              >
-                <div className="flex gap-2 mb-2">
-                  <div
-                    className="h-5 w-5 rounded-full"
-                    style={{ backgroundColor: `hsl(${p.primary})` }}
-                  ></div>
-                  <div
-                    className="h-5 w-5 rounded-full"
-                    style={{ backgroundColor: `hsl(${p.secondary})` }}
-                  ></div>
-                  <div
-                    className="h-5 w-5 rounded-full"
-                    style={{ backgroundColor: `hsl(${p.accent})` }}
-                  ></div>
+        <fieldset disabled={!isPlusUser} className="space-y-8 group">
+            <div className="relative">
+                <h4 className="font-medium mb-4 text-sm text-muted-foreground">{t('Presets', locale)}</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 group-disabled:opacity-50 group-disabled:pointer-events-none">
+                    {palettes.map((p) => (
+                    <button
+                        key={p.name}
+                        onClick={() => setPalette(p.name)}
+                        className={cn(
+                        'h-24 w-full rounded-lg flex flex-col items-center justify-center text-center p-2 relative',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background'
+                        )}
+                        style={{
+                        backgroundColor: `hsl(${p.background})`,
+                        color: `hsl(${p.primary})`,
+                        }}
+                    >
+                        <div className="flex gap-2 mb-2">
+                        <div
+                            className="h-5 w-5 rounded-full"
+                            style={{ backgroundColor: `hsl(${p.primary})` }}
+                        ></div>
+                        <div
+                            className="h-5 w-5 rounded-full"
+                            style={{ backgroundColor: `hsl(${p.secondary})` }}
+                        ></div>
+                        <div
+                            className="h-5 w-5 rounded-full"
+                            style={{ backgroundColor: `hsl(${p.accent})` }}
+                        ></div>
+                        </div>
+                        <span className="text-sm font-medium capitalize">
+                        {p.name === 'default' ? t('Default', locale) : p.name}
+                        </span>
+                        {palette.name === p.name && (
+                        <div
+                            className="absolute top-2 right-2 h-6 w-6 rounded-full flex items-center justify-center"
+                            style={{
+                            backgroundColor: `hsl(${p.primary})`,
+                            color: `hsl(${p.background})`,
+                            }}
+                        >
+                            <Check className="h-4 w-4" />
+                        </div>
+                        )}
+                    </button>
+                    ))}
                 </div>
-                <span className="text-sm font-medium capitalize">
-                  {p.name === 'default' ? t('Default', locale) : p.name}
-                </span>
-                {palette.name === p.name && (
-                  <div
-                    className="absolute top-2 right-2 h-6 w-6 rounded-full flex items-center justify-center"
-                    style={{
-                      backgroundColor: `hsl(${p.primary})`,
-                      color: `hsl(${p.background})`,
-                    }}
-                  >
-                    <Check className="h-4 w-4" />
-                  </div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
-                <Palette className="h-4 w-4" />
-                {t('Custom Colors', locale)}
-            </h4>
-            <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={resetPalette}
-            >
-                <RotateCcw className="mr-2 h-4 w-4" />
-                {t('Reset', locale)}
-            </Button>
-          </div>
-          <fieldset className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="space-y-2">
-                <Label htmlFor="primaryColor">{t('Primary', locale)}</Label>
-                <Input 
-                    id="primaryColor"
-                    type="color"
-                    className="p-1 h-10 w-full" 
-                    value={hslToHex(palette.primary)}
-                    onChange={(e) => setCustomColor('primary', hexToHsl(e.target.value))}
-                />
             </div>
-             <div className="space-y-2">
-                <Label htmlFor="secondaryColor">{t('Secondary', locale)}</Label>
-                <Input 
-                    id="secondaryColor"
-                    type="color"
-                    className="p-1 h-10 w-full" 
-                    value={hslToHex(palette.secondary)}
-                    onChange={(e) => setCustomColor('secondary', hexToHsl(e.target.value))}
-                />
+            <div>
+            <div className="flex items-center justify-between mb-4">
+                <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                    <Palette className="h-4 w-4" />
+                    {t('Custom Colors', locale)}
+                </h4>
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={resetPalette}
+                >
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    {t('Reset', locale)}
+                </Button>
             </div>
-             <div className="space-y-2">
-                <Label htmlFor="accentColor">{t('Accent', locale)}</Label>
-                <Input 
-                    id="accentColor"
-                    type="color"
-                    className="p-1 h-10 w-full" 
-                    value={hslToHex(palette.accent)}
-                    onChange={(e) => setCustomColor('accent', hexToHsl(e.target.value))}
-                />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 group-disabled:opacity-50 group-disabled:pointer-events-none">
+                <div className="space-y-2">
+                    <Label htmlFor="primaryColor">{t('Primary', locale)}</Label>
+                    <Input 
+                        id="primaryColor"
+                        type="color"
+                        className="p-1 h-10 w-full" 
+                        value={hslToHex(palette.primary)}
+                        onChange={(e) => setCustomColor('primary', hexToHsl(e.target.value))}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="secondaryColor">{t('Secondary', locale)}</Label>
+                    <Input 
+                        id="secondaryColor"
+                        type="color"
+                        className="p-1 h-10 w-full" 
+                        value={hslToHex(palette.secondary)}
+                        onChange={(e) => setCustomColor('secondary', hexToHsl(e.target.value))}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="accentColor">{t('Accent', locale)}</Label>
+                    <Input 
+                        id="accentColor"
+                        type="color"
+                        className="p-1 h-10 w-full" 
+                        value={hslToHex(palette.accent)}
+                        onChange={(e) => setCustomColor('accent', hexToHsl(e.target.value))}
+                    />
+                </div>
             </div>
-          </fieldset>
-        </div>
+            </div>
+            {!isPlusUser && (
+                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg">
+                    <div className="text-center p-4">
+                        <Zap className="h-8 w-8 text-accent mx-auto mb-2" />
+                        <p className="font-semibold">{t('Upgrade to Plus', locale)}</p>
+                        <p className="text-sm text-muted-foreground">{t('Unlock custom themes and more!', locale)}</p>
+                    </div>
+                </div>
+            )}
+        </fieldset>
       </CardContent>
     </Card>
   );

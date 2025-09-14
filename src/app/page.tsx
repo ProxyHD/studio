@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useContext, useEffect } from 'react';
@@ -97,6 +98,7 @@ export default function LoginPage() {
             firstName: firstName || '',
             lastName: lastName || '',
             email: user.email,
+            plan: 'free',
           },
           tasks: [],
           notes: [],
