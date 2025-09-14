@@ -49,14 +49,24 @@ export function SiteHeader({ title }: SiteHeaderProps) {
   
   const userAvatar = user?.photoURL || userAvatarPlaceholder?.imageUrl;
 
+  // Helper function to normalize strings (lowercase and remove accents)
+  const normalizeString = (str: string) => {
+    return str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  };
+
   const searchResults = useMemo(() => {
     if (!debouncedSearchQuery) {
       return { tasks: [], notes: [], events: [] };
     }
-    const lowercasedQuery = debouncedSearchQuery.toLowerCase();
-    const filteredTasks = tasks.filter(task => task.title.toLowerCase().includes(lowercasedQuery));
-    const filteredNotes = notes.filter(note => note.title.toLowerCase().includes(lowercasedQuery) || note.content.toLowerCase().includes(lowercasedQuery));
-    const filteredEvents = events.filter(event => event.title.toLowerCase().includes(lowercasedQuery));
+    const normalizedQuery = normalizeString(debouncedSearchQuery);
+    
+    const filteredTasks = tasks.filter(task => normalizeString(task.title).includes(normalizedQuery));
+    const filteredNotes = notes.filter(note => normalizeString(note.title).includes(normalizedQuery) || normalizeString(note.content).includes(normalizedQuery));
+    const filteredEvents = events.filter(event => normalizeString(event.title).includes(normalizedQuery));
+    
     return { tasks: filteredTasks, notes: filteredNotes, events: filteredEvents };
   }, [debouncedSearchQuery, tasks, notes, events]);
   
@@ -66,7 +76,10 @@ export function SiteHeader({ title }: SiteHeaderProps) {
     if (debouncedSearchQuery && hasResults) {
       setIsSearchOpen(true);
     } else {
-      setIsSearchOpen(false);
+      // Don't close if the user is still typing in the input
+      if (document.activeElement?.id !== 'search-input') {
+         setIsSearchOpen(false);
+      }
     }
   }, [debouncedSearchQuery, hasResults]);
 
@@ -108,6 +121,7 @@ export function SiteHeader({ title }: SiteHeaderProps) {
             <div className="relative hidden md:block">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
+                id="search-input"
                 type="search"
                 placeholder={t('Search...', locale)}
                 className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-background"
@@ -132,7 +146,7 @@ export function SiteHeader({ title }: SiteHeaderProps) {
               {searchResults.tasks.length > 0 && (
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className="flex items-center gap-2"><CheckSquare className="h-4 w-4" /> {t('Tasks', locale)}</DropdownMenuLabel>
-                  {searchResults.tasks.map(task => (
+                  {searchResults.tasks.slice(0, 5).map(task => (
                     <DropdownMenuItem key={task.id} onSelect={() => handleResultClick('/tasks')}>
                       {task.title}
                     </DropdownMenuItem>
@@ -142,7 +156,7 @@ export function SiteHeader({ title }: SiteHeaderProps) {
               {searchResults.notes.length > 0 && (
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className="flex items-center gap-2"><Notebook className="h-4 w-4" /> {t('Notes', locale)}</DropdownMenuLabel>
-                  {searchResults.notes.map(note => (
+                  {searchResults.notes.slice(0, 5).map(note => (
                     <DropdownMenuItem key={note.id} onSelect={() => handleResultClick('/notes')}>
                       {note.title}
                     </DropdownMenuItem>
@@ -152,7 +166,7 @@ export function SiteHeader({ title }: SiteHeaderProps) {
                {searchResults.events.length > 0 && (
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className="flex items-center gap-2"><CalendarIcon className="h-4 w-4" /> {t('Events', locale)}</DropdownMenuLabel>
-                  {searchResults.events.map(event => (
+                  {searchResults.events.slice(0, 5).map(event => (
                     <DropdownMenuItem key={event.id} onSelect={() => handleResultClick('/calendar')}>
                       {event.title}
                     </DropdownMenuItem>
