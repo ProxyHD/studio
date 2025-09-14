@@ -69,18 +69,27 @@ export function ResetPasswordDialog({ isOpen, onOpenChange, initialEmail }: Rese
 
   const onSubmit = async (data: ResetFormValues) => {
     try {
-      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002';
+      // Ensure the app URL is defined, otherwise the link will be incorrect
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+      if (!appUrl) {
+          throw new Error("NEXT_PUBLIC_APP_URL is not set. Cannot generate password reset link.");
+      }
+
+      // Action code settings tell Firebase where to redirect the user back to
       const actionCodeSettings = {
-        url: `${appUrl}/reset-password`,
+        url: `${appUrl}/`, // Redirect to login page after successful reset from the Firebase-hosted page
         handleCodeInApp: true,
       };
+
       await sendPasswordResetEmail(auth, data.email, actionCodeSettings);
+
       toast({
         title: t('Password reset email sent', locale),
         description: t('Please check your inbox to reset your password.', locale),
       });
       onOpenChange(false);
     } catch (error: any) {
+      console.error("Password reset error:", error);
       let description = t('Could not send reset email. Please try again.', locale);
       if (error.code === 'auth/user-not-found') {
         description = t('No account found with this email address.', locale);
