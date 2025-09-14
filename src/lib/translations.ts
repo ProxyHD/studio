@@ -75,7 +75,7 @@ const translations: Record<string, Record<Locale, string>> = {
   'note(s) created': { 'pt-BR': 'nota(s) criada(s)', 'en-US': 'note(s) created' },
 
 
-  // Login / Register
+  // Login / Register / Reset Password
   'Login': { 'pt-BR': 'Login', 'en-US': 'Login' },
   'Enter your email below to login to your LifeHub account': { 'pt-BR': 'Digite seu e-mail abaixo para fazer login na sua conta LifeHub', 'en-US': 'Enter your email below to login to your LifeHub account' },
   'Email': { 'pt-BR': 'E-mail', 'en-US': 'Email' },
@@ -116,6 +116,22 @@ const translations: Record<string, Record<Locale, string>> = {
   'Could not complete registration. Try again.': { 'pt-BR': 'Não foi possível concluir o cadastro. Tente novamente.', 'en-US': 'Could not complete registration. Try again.' },
   'This email is already in use.': { 'pt-BR': 'Este e-mail já está em uso.', 'en-US': 'This email is already in use.' },
 
+  'Reset Password': { 'pt-BR': 'Redefinir Senha', 'en-US': 'Reset Password' },
+  'Enter your email address and we will send you a link to reset your password.': { 'pt-BR': 'Insira o seu endereço de e-mail e enviaremos um link para redefinir a sua senha.', 'en-US': 'Enter your email address and we will send you a link to reset your password.' },
+  'Send Reset Link': { 'pt-BR': 'Enviar Link de Redefinição', 'en-US': 'Send Reset Link' },
+  'Create New Password': { 'pt-BR': 'Criar Nova Senha', 'en-US': 'Create New Password' },
+  'Please enter your new password below.': { 'pt-BR': 'Por favor, insira a sua nova senha abaixo.', 'en-US': 'Please enter your new password below.' },
+  'New Password': { 'pt-BR': 'Nova Senha', 'en-US': 'New Password' },
+  'Confirm New Password': { 'pt-BR': 'Confirmar Nova Senha', 'en-US': 'Confirm New Password' },
+  'Passwords do not match.': { 'pt-BR': 'As senhas não coincidem.', 'en-US': 'Passwords do not match.' },
+  'Save New Password': { 'pt-BR': 'Guardar Nova Senha', 'en-US': 'Save New Password' },
+  'Password Reset Successful': { 'pt-BR': 'Senha Redefinida com Sucesso', 'en-US': 'Password Reset Successful' },
+  'You can now log in with your new password.': { 'pt-BR': 'Agora pode fazer login com a sua nova senha.', 'en-US': 'You can now log in with your new password.' },
+  'Error Reseting Password': { 'pt-BR': 'Erro ao Redefinir a Senha', 'en-US': 'Error Reseting Password' },
+  'An error occurred. Please try again.': { 'pt-BR': 'Ocorreu um erro. Por favor, tente novamente.', 'en-US': 'An error occurred. Please try again.' },
+  'Verifying reset link...': { 'pt-BR': 'A verificar o link de redefinição...', 'en-US': 'Verifying reset link...' },
+  'Invalid or missing password reset code.': { 'pt-BR': 'Código de redefinição de senha inválido ou em falta.', 'en-US': 'Invalid or missing password reset code.' },
+  'The password reset link is invalid or has expired.': { 'pt-BR': 'O link de redefinição de senha é inválido ou expirou.', 'en-US': 'The password reset link is invalid or has expired.' },
 
   // Upgrade Page
   'Plans & Pricing': { 'pt-BR': 'Planos e Preços', 'en-US': 'Plans & Pricing' },
