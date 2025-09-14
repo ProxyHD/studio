@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useState, useMemo, useContext } from 'react';
-import { PlusCircle, Trash2, TrendingUp, TrendingDown, Wallet, Pencil } from 'lucide-react';
+import { useState, useMemo, useContext, useRef } from 'react';
+import { PlusCircle, Trash2, TrendingUp, TrendingDown, Wallet, Pencil, FileUp, Loader2, Sparkles } from 'lucide-react';
 import { SiteHeader } from '@/components/layout/site-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -22,11 +22,18 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { t } from '@/lib/translations';
+import { processFinancialPdf } from '@/ai/flows/process-financial-pdf';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 export default function FinancesPage() {
-  const { transactions, setTransactions, locale, formatCurrency } = useContext(AppContext);
+  const { transactions, setTransactions, locale, formatCurrency, profile, setNewItemBadge } = useContext(AppContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [isProcessingPdf, setIsProcessingPdf] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+  const isProUser = profile?.plan === 'pro';
 
   const handleOpenAddDialog = () => {
     setEditingTransaction(null);
@@ -78,18 +85,96 @@ export default function FinancesPage() {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 10);
 
+  const handlePdfUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const pdfDataUri = e.target?.result as string;
+        setIsProcessingPdf(true);
+        try {
+          const result = await processFinancialPdf({ pdfDataUri });
+          if (result.transactions && result.transactions.length > 0) {
+            const newTransactions: Transaction[] = result.transactions.map(t => ({
+              ...t,
+              id: crypto.randomUUID(),
+            }));
+            setTransactions(prev => [...prev, ...newTransactions]);
+            setNewItemBadge('finances');
+            toast({
+              title: t('Success', locale),
+              description: `${newTransactions.length} ${t('transaction(s) created', locale)}.`,
+            });
+          } else {
+             toast({
+              title: t('No Transactions Found', locale),
+              description: t('The AI could not find any transactions in the PDF.', locale),
+              variant: 'destructive',
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: t('Error', locale),
+            description: t('Failed to process PDF. Please try again.', locale),
+            variant: 'destructive',
+          });
+        } finally {
+          setIsProcessingPdf(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+    // Reset file input to allow uploading the same file again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+
   return (
     <>
       <div className="flex flex-col h-full">
         <SiteHeader title={t('Finances', locale)} />
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
           <div className="max-w-7xl mx-auto space-y-8">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <h2 className="text-2xl font-bold tracking-tight">{t('Financial Summary', locale)}</h2>
-              <Button onClick={handleOpenAddDialog}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                {t('Add Transaction', locale)}
-              </Button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <div className="relative w-full sm:w-auto">
+                   <Button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full"
+                    disabled={!isProUser || isProcessingPdf}
+                  >
+                    {isProcessingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                    {isProcessingPdf ? t('Processing...', locale) : t('Process PDF with AI', locale)}
+                  </Button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handlePdfUpload}
+                    accept="application/pdf"
+                    className="hidden"
+                    disabled={!isProUser || isProcessingPdf}
+                  />
+                  {!isProUser && (
+                     <div className={cn(
+                        "absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center rounded-lg cursor-not-allowed",
+                      )}>
+                        <div className="text-center p-2">
+                           <Sparkles className="h-6 w-6 text-primary mx-auto mb-1" />
+                           <p className="text-xs font-semibold">{t('Upgrade to Pro', locale)}</p>
+                        </div>
+                    </div>
+                  )}
+                </div>
+
+                <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  {t('Add Transaction', locale)}
+                </Button>
+              </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

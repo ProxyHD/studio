@@ -352,7 +352,13 @@ const translations: Record<string, Record<Locale, string>> = {
   'Monthly Overview': { 'pt-BR': 'Visão Geral Mensal', 'en-US': 'Monthly Overview' },
   'Income vs. Expenses': { 'pt-BR': 'Receitas vs. Despesas', 'en-US': 'Income vs. Expenses' },
   '% of total': { 'pt-BR': '% do total', 'en-US': '% of total' },
-  
+  'Process PDF with AI': { 'pt-BR': 'Processar PDF com IA', 'en-US': 'Process PDF with AI' },
+  'Processing...': { 'pt-BR': 'Processando...', 'en-US': 'Processing...' },
+  'No Transactions Found': { 'pt-BR': 'Nenhuma transação encontrada', 'en-US': 'No Transactions Found' },
+  'The AI could not find any transactions in the PDF.': { 'pt-BR': 'A IA não conseguiu encontrar nenhuma transação no PDF.', 'en-US': 'The AI could not find any transactions in the PDF.' },
+  'Failed to process PDF. Please try again.': { 'pt-BR': 'Falha ao processar o PDF. Por favor, tente novamente.', 'en-US': 'Failed to process PDF. Please try again.' },
+
+
   // News
   'News & Updates': { 'pt-BR': 'Notícias e Novidades', 'en-US': 'News & Updates' },
   'Latest Updates from LifeHub': { 'pt-BR': 'Últimas Atualizações do LifeHub', 'en-US': 'Latest Updates from LifeHub' },
