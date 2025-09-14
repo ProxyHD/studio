@@ -13,9 +13,16 @@ import { HabitsPreview } from '@/components/dashboard/habits-preview';
 import { FinancePreview } from '@/components/dashboard/finance-preview';
 import { FeedbackDialog } from '@/components/dashboard/feedback-dialog';
 import type { Feedback } from '@/lib/types';
+import { useAuth } from '@/context/auth-provider';
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
+
 
 export default function DashboardPage() {
   const { tasks, moodLogs, transactions, locale, formatCurrency, feedback, setFeedback } = useContext(AppContext);
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
   const completedTasks = tasks.filter(t => t.status === 'done').length;
@@ -51,12 +58,32 @@ export default function DashboardPage() {
     }
   }, [feedback]);
 
-  const handleFeedbackSubmit = (newFeedback: Omit<Feedback, 'submittedAt'>) => {
+  const handleFeedbackSubmit = async (newFeedback: Omit<Feedback, 'submittedAt'>) => {
+    if (!user) return;
+
     const feedbackToSave: Feedback = {
       ...newFeedback,
       submittedAt: new Date().toISOString(),
     };
+    
+    // 1. Save to the user's document so we don't ask them again
     setFeedback(feedbackToSave);
+    
+    try {
+      // 2. Add a new document to the top-level 'feedbacks' collection
+      await addDoc(collection(db, "feedbacks"), {
+        ...feedbackToSave,
+        userId: user.uid, // Add user ID to know who sent it
+      });
+    } catch (error) {
+       console.error("Error saving feedback to public collection:", error);
+       toast({
+        title: t('Error', locale),
+        description: "Could not save feedback. Please try again.",
+        variant: 'destructive',
+       });
+    }
+
     setIsFeedbackDialogOpen(false);
   };
 
