@@ -11,8 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, getAdditionalUserInfo } from 'firebase/auth';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { useAppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
@@ -70,10 +71,38 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      // Check if this is a new user
+      const additionalUserInfo = getAdditionalUserInfo(result);
+
+      if (additionalUserInfo?.isNewUser) {
+        // If it's a new user, create their document in Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        const displayName = user.displayName || 'New User';
+        const [firstName, ...lastNameParts] = displayName.split(' ');
+        const lastName = lastNameParts.join(' ');
+        
+        await setDoc(userDocRef, {
+          profile: {
+            firstName: firstName || '',
+            lastName: lastName || '',
+            email: user.email,
+          },
+          tasks: [],
+          notes: [],
+          events: [],
+          transactions: [],
+          habits: [],
+          completedHabits: [],
+          moodLogs: [],
+        });
+      }
+      
       router.push('/dashboard');
     } catch (error: any) {
-      let description = 'Could not log in with Google. Try again.';
+      let description = t('An error occurred while logging in. Try again.', locale);
        if (error.code === 'auth/popup-blocked') {
         description = t('Login popup was blocked by the browser.', locale);
       } else if (error.code === 'auth/configuration-not-found') {
