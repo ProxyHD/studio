@@ -61,7 +61,19 @@ export default function LoginPage() {
 
   async function onSubmit(data: LoginFormValues) {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      
+      if (!userCredential.user.emailVerified) {
+        // Sign out the user if their email is not verified
+        await auth.signOut();
+        toast({
+          title: t('Email Not Verified', locale),
+          description: t('Please verify your email before logging in. Check your inbox.', locale),
+          variant: 'destructive',
+        });
+        return;
+      }
+
       router.push('/dashboard');
     } catch (error: any) {
       let description = t('An error occurred while logging in. Try again.', locale);

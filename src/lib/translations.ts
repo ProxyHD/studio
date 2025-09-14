@@ -106,6 +106,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Please check your inbox to reset your password.': { 'pt-BR': 'Por favor, verifique a sua caixa de entrada para redefinir a sua senha.', 'en-US': 'Please check your inbox to reset your password.' },
   'Could not send reset email. Please try again.': { 'pt-BR': 'Não foi possível enviar o e-mail de redefinição. Por favor, tente novamente.', 'en-US': 'Could not send reset email. Please try again.' },
   'No account found with this email address.': { 'pt-BR': 'Nenhuma conta encontrada com este endereço de e-mail.', 'en-US': 'No account found with this email address.' },
+  'Email Not Verified': { 'pt-BR': 'E-mail Não Verificado', 'en-US': 'Email Not Verified' },
+  'Please verify your email before logging in. Check your inbox.': { 'pt-BR': 'Por favor, verifique o seu e-mail antes de fazer login. Verifique a sua caixa de entrada.', 'en-US': 'Please verify your email before logging in. Check your inbox.' },
   
   'Register': { 'pt-BR': 'Cadastro', 'en-US': 'Register' },
   'Create your LifeHub account to start organizing your life': { 'pt-BR': 'Crie sua conta LifeHub para começar a organizar sua vida', 'en-US': 'Create your LifeHub account to start organizing your life' },
@@ -117,6 +119,8 @@ const translations: Record<string, Record<Locale, string>> = {
   'Create account': { 'pt-BR': 'Criar conta', 'en-US': 'Create account' },
   'Already have an account?': { 'pt-BR': 'Já tem uma conta?', 'en-US': 'Already have an account?' },
   'Registration successful. You can now log in.': { 'pt-BR': 'Cadastro realizado com sucesso. Agora você pode fazer login.', 'en-US': 'Registration successful. You can now log in.' },
+  'Registration successful!': { 'pt-BR': 'Registo bem-sucedido!', 'en-US': 'Registration successful!' },
+  'A verification email has been sent. Please check your inbox.': { 'pt-BR': 'Foi enviado um e-mail de verificação. Por favor, verifique a sua caixa de entrada.', 'en-US': 'A verification email has been sent. Please check your inbox.' },
   'Registration Error': { 'pt-BR': 'Erro de Cadastro', 'en-US': 'Registration Error' },
   'Could not complete registration. Try again.': { 'pt-BR': 'Não foi possível concluir o cadastro. Tente novamente.', 'en-US': 'Could not complete registration. Try again.' },
   'This email is already in use.': { 'pt-BR': 'Este e-mail já está em uso.', 'en-US': 'This email is already in use.' },
@@ -137,6 +141,11 @@ const translations: Record<string, Record<Locale, string>> = {
   'Verifying reset link...': { 'pt-BR': 'A verificar o link de redefinição...', 'en-US': 'Verifying reset link...' },
   'Invalid or missing password reset code.': { 'pt-BR': 'Código de redefinição de senha inválido ou em falta.', 'en-US': 'Invalid or missing password reset code.' },
   'The password reset link is invalid or has expired.': { 'pt-BR': 'O link de redefinição de senha é inválido ou expirou.', 'en-US': 'The password reset link is invalid or has expired.' },
+
+  'Verify Your Email': { 'pt-BR': 'Verifique o seu e-mail', 'en-US': 'Verify Your Email' },
+  'A verification link has been sent to your email address. Please check your inbox (and spam folder) to complete your registration.': { 'pt-BR': 'Foi enviado um link de verificação para o seu endereço de e-mail. Por favor, verifique a sua caixa de entrada (e a pasta de spam) para concluir o seu registo.', 'en-US': 'A verification link has been sent to your email address. Please check your inbox (and spam folder) to complete your registration.' },
+  'After verifying, you can log in to your account.': { 'pt-BR': 'Depois de verificar, pode iniciar sessão na sua conta.', 'en-US': 'After verifying, you can log in to your account.' },
+  'Back to Login': { 'pt-BR': 'Voltar ao Login', 'en-US': 'Back to Login' },
 
   // Upgrade Page
   'Plans & Pricing': { 'pt-BR': 'Planos e Preços', 'en-US': 'Plans & Pricing' },

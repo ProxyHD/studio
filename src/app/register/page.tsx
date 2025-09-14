@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { useAppContext } from '@/context/app-provider';
@@ -66,6 +66,9 @@ export default function RegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const user = userCredential.user;
 
+      // Send verification email
+      await sendEmailVerification(user);
+
       await setDoc(doc(db, 'users', user.uid), {
         profile: {
           firstName: data.firstName,
@@ -82,10 +85,14 @@ export default function RegisterPage() {
       });
 
       toast({
-        title: t('Success', locale),
-        description: t('Registration successful. You can now log in.', locale),
+        title: t('Registration successful!', locale),
+        description: t('A verification email has been sent. Please check your inbox.', locale),
       });
-      router.push('/');
+
+      // Sign out the user immediately after registration so they have to verify
+      await auth.signOut();
+      
+      router.push('/verify-email');
     } catch (error: any) {
       console.error('Registration error:', error);
       let description = t('Could not complete registration. Try again.', locale);
