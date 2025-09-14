@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useContext, useEffect } from 'react';
@@ -115,106 +116,108 @@ export default function WellbeingPage() {
       <div className="flex flex-col h-full">
         <SiteHeader title={t('Well-being', locale)} />
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('How are you feeling today?', locale)}</CardTitle>
+                  <CardDescription>{t('Log your mood to track your well-being over time.', locale)}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-wrap gap-2 sm:gap-4 justify-center">
+                  {moods.map(mood => (
+                    <Button
+                      key={mood.key}
+                      variant={selectedMood === mood.key ? 'secondary' : 'outline'}
+                      size="lg"
+                      className="flex-col h-20 w-20 sm:h-24 sm:w-24 gap-2"
+                      onClick={() => setSelectedMood(mood.key)}
+                    >
+                      <mood.icon className="h-6 w-6 sm:h-8 sm:w-8" />
+                      <span className="text-xs sm:text-base">{mood.name}</span>
+                    </Button>
+                  ))}
+                </CardContent>
+              </Card>
+              <WellbeingChart />
+            </div>
+
             <Card>
               <CardHeader>
-                <CardTitle>{t('How are you feeling today?', locale)}</CardTitle>
-                <CardDescription>{t('Log your mood to track your well-being over time.', locale)}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-2 sm:gap-4 justify-center">
-                {moods.map(mood => (
-                  <Button
-                    key={mood.key}
-                    variant={selectedMood === mood.key ? 'secondary' : 'outline'}
-                    size="lg"
-                    className="flex-col h-20 w-20 sm:h-24 sm:w-24 gap-2"
-                    onClick={() => setSelectedMood(mood.key)}
-                  >
-                    <mood.icon className="h-6 w-6 sm:h-8 sm:w-8" />
-                    <span className="text-xs sm:text-base">{mood.name}</span>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
+                  <div>
+                    <CardTitle>{t('Weekly Habits', locale)}</CardTitle>
+                    <CardDescription>{t('Create and track your habits for each day of the week.', locale)}</CardDescription>
+                  </div>
+                  <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    {t('Add Habit', locale)}
                   </Button>
-                ))}
-              </CardContent>
-            </Card>
-            <WellbeingChart />
-          </div>
-
-          <Card>
-            <CardHeader>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-4">
-                <div>
-                  <CardTitle>{t('Weekly Habits', locale)}</CardTitle>
-                  <CardDescription>{t('Create and track your habits for each day of the week.', locale)}</CardDescription>
                 </div>
-                <Button onClick={handleOpenAddDialog} className="w-full sm:w-auto">
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  {t('Add Habit', locale)}
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <h3 className="font-semibold text-lg">{t('Today\'s Habits ({day})', locale, { day: daysOfWeek.find(d => d.id === today)?.name || '' })}</h3>
-              {todaysHabits.length > 0 ? (
-                todaysHabits.map(habit => {
-                  const isDone = completedHabitsToday.has(habit.id);
-                  return (
-                    <div key={habit.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
-                      <div className={cn("flex items-center gap-3", isDone && "text-muted-foreground line-through")}>
-                        <Flame className={cn("h-5 w-5", isDone ? "text-muted-foreground" : "text-primary")} />
-                        <span className="font-medium">{habit.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <Button
-                          variant={isDone ? "secondary" : "outline"}
-                          size="icon"
-                          onClick={() => handleHabitToggle(habit.id)}
-                        >
-                          <Check className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                 <p className="text-sm text-muted-foreground">{t('No habits for today. Add a new one!', locale)}</p>
-              )}
-
-              <div className="mt-8">
-                <h3 className="font-semibold text-lg mb-4">{t('All Habits', locale)}</h3>
-                <div className="space-y-2">
-                  {habits.map(habit => (
-                    <div key={habit.id} className="p-3 border rounded-lg flex justify-between items-center">
-                      <div>
-                        <p className="font-medium">{habit.name}</p>
-                        <div className="flex gap-1 sm:gap-2 mt-2 flex-wrap">
-                          {daysOfWeek.map(day => (
-                            <span key={day.id} className={cn(
-                              "text-xs px-2 py-1 rounded-full",
-                              habit.days.includes(day.id) ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"
-                            )}>
-                              {day.short}
-                            </span>
-                          ))}
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <h3 className="font-semibold text-lg">{t('Today\'s Habits ({day})', locale, { day: daysOfWeek.find(d => d.id === today)?.name || '' })}</h3>
+                {todaysHabits.length > 0 ? (
+                  todaysHabits.map(habit => {
+                    const isDone = completedHabitsToday.has(habit.id);
+                    return (
+                      <div key={habit.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                        <div className={cn("flex items-center gap-3", isDone && "text-muted-foreground line-through")}>
+                          <Flame className={cn("h-5 w-5", isDone ? "text-muted-foreground" : "text-primary")} />
+                          <span className="font-medium">{habit.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant={isDone ? "secondary" : "outline"}
+                            size="icon"
+                            onClick={() => handleHabitToggle(habit.id)}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                       <div className="flex items-center">
-                        <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(habit)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => deleteHabit(habit.id)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  {habits.length === 0 && (
-                    <p className="text-sm text-muted-foreground">{t('You haven\'t created any habits yet.', locale)}</p>
-                  )}
-                </div>
-              </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-sm text-muted-foreground">{t('No habits for today. Add a new one!', locale)}</p>
+                )}
 
-            </CardContent>
-          </Card>
+                <div className="mt-8">
+                  <h3 className="font-semibold text-lg mb-4">{t('All Habits', locale)}</h3>
+                  <div className="space-y-2">
+                    {habits.map(habit => (
+                      <div key={habit.id} className="p-3 border rounded-lg flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">{habit.name}</p>
+                          <div className="flex gap-1 sm:gap-2 mt-2 flex-wrap">
+                            {daysOfWeek.map(day => (
+                              <span key={day.id} className={cn(
+                                "text-xs px-2 py-1 rounded-full",
+                                habit.days.includes(day.id) ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"
+                              )}>
+                                {day.short}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center">
+                          <Button variant="ghost" size="icon" onClick={() => handleOpenEditDialog(habit)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => deleteHabit(habit.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                    {habits.length === 0 && (
+                      <p className="text-sm text-muted-foreground">{t('You haven\'t created any habits yet.', locale)}</p>
+                    )}
+                  </div>
+                </div>
+
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
       <AddHabitDialog

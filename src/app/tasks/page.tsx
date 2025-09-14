@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useContext } from 'react';
@@ -80,17 +81,19 @@ export default function TasksPage() {
       <div className="flex flex-col h-full">
         <SiteHeader title={t('Tasks', locale)} />
         <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold tracking-tight">{t('Task Board', locale)}</h2>
-            <Button onClick={handleOpenAddDialog}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              {t('Add Task', locale)}
-            </Button>
-          </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <TaskColumn title={t('To Do', locale)} tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
-            <TaskColumn title={t('In Progress', locale)} tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
-            <TaskColumn title={t('Done', locale)} tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold tracking-tight">{t('Task Board', locale)}</h2>
+              <Button onClick={handleOpenAddDialog}>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                {t('Add Task', locale)}
+              </Button>
+            </div>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <TaskColumn title={t('To Do', locale)} tasks={todoTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
+              <TaskColumn title={t('In Progress', locale)} tasks={inProgressTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
+              <TaskColumn title={t('Done', locale)} tasks={doneTasks} onToggleTask={toggleTask} onToggleSubtask={toggleSubtask} onDeleteTask={deleteTask} onEditTask={handleOpenEditDialog} locale={locale} />
+            </div>
           </div>
         </div>
       </div>

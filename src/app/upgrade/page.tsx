@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useContext, useState } from 'react';
@@ -93,73 +94,75 @@ export default function UpgradePage() {
     <div className="flex flex-col h-full">
       <SiteHeader title={t('Plans & Pricing', locale)} />
       <div className="flex-1 p-4 pt-6 md:p-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold font-headline">{t('Find the Perfect Plan', locale)}</h2>
-          <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
-            {t('Unlock your potential with LifeHub. Choose the plan that best suits your life and goals.', locale)}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {plans.map((plan) => {
-            const priceId = plan.id !== 'free' ? planPriceIds[plan.id] : undefined;
-            const isConfigured = plan.id === 'free' || (priceId && priceId.startsWith('price_'));
-            
-            return (
-              <Card
-                key={plan.id}
-                className={cn("flex flex-col", plan.accent && "border-primary ring-2 ring-primary shadow-lg")}
-              >
-                {plan.accent && (
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground">{t('Most Popular', locale)}</Badge>
-                )}
-                <CardHeader>
-                  <CardTitle className="font-headline text-2xl">{plan.name}</CardTitle>
-                  <CardDescription>
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-muted-foreground">{plan.priceFrequency}</span>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <ul className="space-y-4">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <Check className="h-5 w-5 text-primary mr-2 mt-0.5 shrink-0" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardFooter className="flex flex-col items-start gap-4">
-                  {!isConfigured && plan.id !== 'free' && (
-                     <Alert variant="destructive" className="text-xs">
-                        <AlertTriangle className="h-4 w-4" />
-                        <AlertTitle>Configuration needed</AlertTitle>
-                        <AlertDescription>
-                          This plan's Price ID is missing or incorrect in the .env file. It should start with "price_".
-                        </AlertDescription>
-                      </Alert>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold font-headline">{t('Find the Perfect Plan', locale)}</h2>
+            <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">
+              {t('Unlock your potential with LifeHub. Choose the plan that best suits your life and goals.', locale)}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {plans.map((plan) => {
+              const priceId = plan.id !== 'free' ? planPriceIds[plan.id] : undefined;
+              const isConfigured = plan.id === 'free' || (priceId && priceId.startsWith('price_'));
+              
+              return (
+                <Card
+                  key={plan.id}
+                  className={cn("flex flex-col", plan.accent && "border-primary ring-2 ring-primary shadow-lg")}
+                >
+                  {plan.accent && (
+                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground">{t('Most Popular', locale)}</Badge>
                   )}
-                  {plan.id === 'free' ? (
-                    <Button className="w-full" variant="outline" disabled>{plan.cta}</Button>
-                  ) : (
-                    <Button
-                      className="w-full"
-                      variant={plan.accent ? 'default' : 'outline'}
-                      onClick={() => handleUpgradeClick(plan.id as 'plus' | 'pro')}
-                      disabled={loadingPlanId === plan.id || !isConfigured}
-                    >
-                      {loadingPlanId === plan.id ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                         <Zap className="mr-2 h-4 w-4" />
-                      )}
-                      {plan.cta}
-                    </Button>
-                  )}
-                </CardFooter>
-              </Card>
-            )
-          })}
+                  <CardHeader>
+                    <CardTitle className="font-headline text-2xl">{plan.name}</CardTitle>
+                    <CardDescription>
+                      <span className="text-4xl font-bold">{plan.price}</span>
+                      <span className="text-muted-foreground">{plan.priceFrequency}</span>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <ul className="space-y-4">
+                      {plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-start">
+                          <Check className="h-5 w-5 text-primary mr-2 mt-0.5 shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                  <CardFooter className="flex flex-col items-start gap-4">
+                    {!isConfigured && plan.id !== 'free' && (
+                      <Alert variant="destructive" className="text-xs">
+                          <AlertTriangle className="h-4 w-4" />
+                          <AlertTitle>Configuration needed</AlertTitle>
+                          <AlertDescription>
+                            This plan's Price ID is missing or incorrect in the .env file. It should start with "price_".
+                          </AlertDescription>
+                        </Alert>
+                    )}
+                    {plan.id === 'free' ? (
+                      <Button className="w-full" variant="outline" disabled>{plan.cta}</Button>
+                    ) : (
+                      <Button
+                        className="w-full"
+                        variant={plan.accent ? 'default' : 'outline'}
+                        onClick={() => handleUpgradeClick(plan.id as 'plus' | 'pro')}
+                        disabled={loadingPlanId === plan.id || !isConfigured}
+                      >
+                        {loadingPlanId === plan.id ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Zap className="mr-2 h-4 w-4" />
+                        )}
+                        {plan.cta}
+                      </Button>
+                    )}
+                  </CardFooter>
+                </Card>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>
