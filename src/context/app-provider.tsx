@@ -4,7 +4,7 @@ import { createContext, useState, ReactNode, useEffect, useContext, useCallback 
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit, ScheduleItem, Feedback } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit, ScheduleItem, Feedback, NewItemBadges } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
@@ -33,7 +33,7 @@ export const AppContext = createContext<AppContextType>({
   setLocale: () => {},
   formatCurrency: () => '',
   loading: true,
-  newItems: { tasks: false, wellbeing: false, notes: false, news: false },
+  newItems: { dashboard: false, tasks: false, calendar: false, wellbeing: false, notes: false, finances: false, news: false },
   setNewItemBadge: () => {},
   clearNewItemBadge: () => {},
 });
@@ -53,7 +53,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [completedHabits, setCompletedHabits] = useState<CompletedHabit[]>([]);
   const [feedback, setFeedback] = useState<Feedback | null | undefined>(undefined);
   const [locale, setLocale] = useState<Locale>('pt-BR');
-  const [newItems, setNewItems] = useState({ tasks: false, wellbeing: false, notes: false, news: false });
+  const [newItems, setNewItems] = useState<NewItemBadges>({ dashboard: false, tasks: false, calendar: false, wellbeing: false, notes: false, finances: false, news: false });
   
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {
@@ -111,7 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setMoodLogs(data.moodLogs || []);
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
-          setFeedback(data.feedback || null);
+          setFeedback(data.feedback === undefined ? null : data.feedback); // Handle undefined case
           setLocale(data.locale || 'pt-BR');
         } else {
           // New user, document doesn't exist yet, but we can set up a default profile
@@ -181,11 +181,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const setNewItemBadge = (key: keyof typeof newItems) => {
+  const setNewItemBadge = (key: keyof NewItemBadges) => {
     setNewItems(prev => ({ ...prev, [key]: true }));
   };
 
-  const clearNewItemBadge = (key: keyof typeof newItems) => {
+  const clearNewItemBadge = (key: keyof NewItemBadges) => {
     setNewItems(prev => ({ ...prev, [key]: false }));
   };
   

@@ -53,7 +53,7 @@ export type ScheduleItem = {
   title: string;
   startTime: string;
   endTime: string;
-  location: string; // For room number, etc.
+  location?: string; // For room number, etc.
 };
 
 export type Habit = {
@@ -98,9 +98,12 @@ export type Feedback = {
 export type Locale = 'pt-BR' | 'en-US';
 
 export type NewItemBadges = {
+  dashboard: boolean;
   tasks: boolean;
+  calendar: boolean;
   wellbeing: boolean;
   notes: boolean;
+  finances: boolean;
   news: boolean;
 };
 

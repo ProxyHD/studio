@@ -10,10 +10,19 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
-import type { Task, Habit, Note } from '@/lib/types';
+import type { Task, Habit, Note, Event, ScheduleItem, Transaction } from '@/lib/types';
 
 export function RoutineSuggester() {
-  const { locale, setTasks, setHabits, setNotes, setNewItemBadge } = useContext(AppContext);
+  const { 
+    locale, 
+    setTasks, 
+    setHabits, 
+    setNotes, 
+    setEvents,
+    setScheduleItems,
+    setTransactions,
+    setNewItemBadge 
+  } = useContext(AppContext);
   const [userData, setUserData] = useState('');
   const [suggestionText, setSuggestionText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +87,36 @@ export function RoutineSuggester() {
         setNotes(prev => [...prev, ...newNotes]);
         setNewItemBadge('notes');
         createdItemsMessage += `${newNotes.length} ${t('note(s) created', locale)}. `;
+      }
+
+      if (result.createdEvents && result.createdEvents.length > 0) {
+        const newEvents: Event[] = result.createdEvents.map(event => ({
+            id: crypto.randomUUID(),
+            ...event
+        }));
+        setEvents(prev => [...prev, ...newEvents]);
+        setNewItemBadge('calendar');
+        createdItemsMessage += `${newEvents.length} ${t('event(s) created', locale)}. `;
+      }
+      
+      if (result.createdScheduleItems && result.createdScheduleItems.length > 0) {
+        const newScheduleItems: ScheduleItem[] = result.createdScheduleItems.map(item => ({
+            id: crypto.randomUUID(),
+            ...item
+        }));
+        setScheduleItems(prev => [...prev, ...newScheduleItems]);
+        setNewItemBadge('calendar');
+        createdItemsMessage += `${newScheduleItems.length} ${t('schedule item(s) created', locale)}. `;
+      }
+
+      if (result.createdTransactions && result.createdTransactions.length > 0) {
+        const newTransactions: Transaction[] = result.createdTransactions.map(item => ({
+            id: crypto.randomUUID(),
+            ...item
+        }));
+        setTransactions(prev => [...prev, ...newTransactions]);
+        setNewItemBadge('finances');
+        createdItemsMessage += `${newTransactions.length} ${t('transaction(s) created', locale)}. `;
       }
       
       if(createdItemsMessage) {

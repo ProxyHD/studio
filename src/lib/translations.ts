@@ -73,6 +73,9 @@ const translations: Record<string, Record<Locale, string>> = {
   'task(s) created': { 'pt-BR': 'tarefa(s) criada(s)', 'en-US': 'task(s) created' },
   'habit(s) created': { 'pt-BR': 'hábito(s) criado(s)', 'en-US': 'habit(s) created' },
   'note(s) created': { 'pt-BR': 'nota(s) criada(s)', 'en-US': 'note(s) created' },
+  'event(s) created': { 'pt-BR': 'evento(s) criado(s)', 'en-US': 'event(s) created' },
+  'schedule item(s) created': { 'pt-BR': 'item(ns) de horário criado(s)', 'en-US': 'schedule item(s) created' },
+  'transaction(s) created': { 'pt-BR': 'transação(ões) criada(s)', 'en-US': 'transaction(s) created' },
 
 
   // Login / Register / Reset Password
