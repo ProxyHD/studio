@@ -55,7 +55,6 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
 function CustomThemeProvider({ children }: { children: React.ReactNode }) {
   const { theme: nextTheme, setTheme: setNextTheme } = useNextTheme();
   const [palette, setPalette] = useState<ColorPalette>(defaultPalette);
-  const isPlusUser = true; // All features are now free
 
   const applyColors = useCallback((selectedPalette: ColorPalette) => {
     const root = document.documentElement;
@@ -128,7 +127,6 @@ function CustomThemeProvider({ children }: { children: React.ReactNode }) {
     palette,
     setPalette: setColorPalette,
     palettes,
-    isPlusUser,
     setCustomColor,
     resetPalette,
   };

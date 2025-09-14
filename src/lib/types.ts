@@ -5,7 +5,6 @@ export type UserProfile = {
   firstName: string;
   lastName: string;
   email: string;
-  plan: 'free' | 'plus' | 'pro';
 };
 
 export type Task = {
@@ -161,7 +160,6 @@ export type ThemeContextType = {
   palette: ColorPalette;
   setPalette: (paletteName: string) => void;
   palettes: ColorPalette[];
-  isPlusUser: boolean;
   setCustomColor: (colorName: 'primary' | 'secondary' | 'accent', value: string) => void;
   resetPalette: () => void;
 };

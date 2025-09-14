@@ -35,14 +35,13 @@ import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
 export default function NotesPage() {
-  const { notes, setNotes, locale, profile } = useContext(AppContext);
+  const { notes, setNotes, locale } = useContext(AppContext);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [summary, setSummary] = useState('');
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const { toast } = useToast();
-  const isPro = profile?.plan === 'pro';
 
   const filteredNotes = notes.filter(note =>
     note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -88,7 +87,7 @@ export default function NotesPage() {
   };
 
   const handleSummarize = async () => {
-    if (!selectedNote || !isPro) return;
+    if (!selectedNote) return;
 
     setIsSummaryLoading(true);
     setSummary('');
@@ -242,7 +241,7 @@ export default function NotesPage() {
                     />
                 </div>
                 <div className="p-4 border-t mt-auto flex justify-between">
-                   <Button onClick={handleSummarize} disabled={!isPro || isSummaryLoading}>
+                   <Button onClick={handleSummarize} disabled={isSummaryLoading}>
                       {isSummaryLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       ) : (

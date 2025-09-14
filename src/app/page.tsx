@@ -97,7 +97,6 @@ export default function LoginPage() {
             firstName: firstName || '',
             lastName: lastName || '',
             email: user.email,
-            plan: 'free', // Set default plan on creation
           },
           tasks: [],
           notes: [],
