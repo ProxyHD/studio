@@ -1,10 +1,11 @@
+
 'use client';
 
 import { useState, useContext, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Bell, Menu, Search, CheckSquare, Notebook, Calendar as CalendarIcon } from 'lucide-react';
+import { Bell, Menu, Search, CheckSquare, Notebook, Calendar as CalendarIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -62,17 +63,22 @@ export function SiteHeader({ title }: SiteHeaderProps) {
   const hasResults = searchResults.tasks.length > 0 || searchResults.notes.length > 0 || searchResults.events.length > 0;
 
   useEffect(() => {
-    if (debouncedSearchQuery) {
+    if (debouncedSearchQuery && hasResults) {
       setIsSearchOpen(true);
     } else {
       setIsSearchOpen(false);
     }
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, hasResults]);
 
   const handleResultClick = (path: string) => {
     setIsSearchOpen(false);
-    setSearchQuery('');
+    setSearchQuery(''); // Limpa o campo de busca
     router.push(path);
+  }
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setIsSearchOpen(false);
   }
 
   return (
@@ -107,8 +113,18 @@ export function SiteHeader({ title }: SiteHeaderProps) {
                 className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-background"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => { if (debouncedSearchQuery) setIsSearchOpen(true); }}
+                onFocus={() => { if (debouncedSearchQuery && hasResults) setIsSearchOpen(true); }}
               />
+               {searchQuery && (
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+                    onClick={handleClearSearch}
+                  >
+                    <X className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                )}
             </div>
           </DropdownMenuTrigger>
           {hasResults && (
