@@ -60,7 +60,7 @@ export default function UpgradePage() {
               className={cn(
                 "flex flex-col",
                 plan.accent && "border-primary ring-2 ring-primary shadow-lg",
-                profile?.plan === plan.id && "bg-muted"
+                profile?.plan?.toLowerCase() === plan.id && "bg-muted"
               )}
             >
               {plan.accent && (
@@ -84,7 +84,7 @@ export default function UpgradePage() {
                 </ul>
               </CardContent>
               <CardFooter>
-                {profile?.plan === plan.id ? (
+                {profile?.plan?.toLowerCase() === plan.id ? (
                   <Button className="w-full" variant="outline" disabled>{t('Current Plan', locale)}</Button>
                 ) : (
                   <Button

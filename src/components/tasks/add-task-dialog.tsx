@@ -66,7 +66,7 @@ interface AddTaskDialogProps {
 
 export function AddTaskDialog({ isOpen, onOpenChange, onSaveTask, task }: AddTaskDialogProps) {
   const { locale, profile } = useContext(AppContext);
-  const isPlusUser = profile?.plan === 'plus' || profile?.plan === 'pro';
+  const isPlusUser = profile?.plan?.toLowerCase() === 'plus' || profile?.plan?.toLowerCase() === 'pro';
   const dateLocale = locale === 'pt-BR' ? ptBR : enUS;
   const isEditing = !!task;
 

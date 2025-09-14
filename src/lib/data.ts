@@ -33,7 +33,7 @@ const plansData: Record<Locale, Plan[]> = {
     {
       id: 'pro',
       name: 'Pro',
-      price: '€9.99',
+      price: '€9,99',
       priceFrequency: '/mês',
       features: [
         'Tudo do plano Plus',

@@ -21,7 +21,7 @@ import { t } from '@/lib/translations';
 export function ColorForm() {
   const { palette, setPalette, palettes, setCustomColor, resetPalette } = useTheme();
   const { locale, profile } = useContext(AppContext);
-  const isPlusUser = profile?.plan === 'plus' || profile?.plan === 'pro';
+  const isPlusUser = profile?.plan?.toLowerCase() === 'plus' || profile?.plan?.toLowerCase() === 'pro';
 
 
   // Helper to convert HSL string to HEX color for the color input

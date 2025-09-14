@@ -33,7 +33,7 @@ export default function FinancesPage() {
   const [isProcessingPdf, setIsProcessingPdf] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const isProUser = profile?.plan === 'pro';
+  const isProUser = profile?.plan?.toLowerCase() === 'pro';
 
   const handleOpenAddDialog = () => {
     setEditingTransaction(null);

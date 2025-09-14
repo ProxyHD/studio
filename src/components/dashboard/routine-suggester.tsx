@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useContext } from 'react';
@@ -27,7 +28,7 @@ export function RoutineSuggester() {
   const [suggestionText, setSuggestionText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const isProUser = profile?.plan === 'pro';
+  const isProUser = profile?.plan?.toLowerCase() === 'pro';
 
   const handleGenerate = async () => {
     if (!userData.trim()) {
