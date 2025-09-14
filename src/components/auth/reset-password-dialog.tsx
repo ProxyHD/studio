@@ -69,7 +69,12 @@ export function ResetPasswordDialog({ isOpen, onOpenChange, initialEmail }: Rese
 
   const onSubmit = async (data: ResetFormValues) => {
     try {
-      await sendPasswordResetEmail(auth, data.email);
+      const actionCodeSettings = {
+        // This URL is where the user will be redirected after clicking the reset link
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+        handleCodeInApp: true, // This is important
+      };
+      await sendPasswordResetEmail(auth, data.email, actionCodeSettings);
       toast({
         title: t('Password reset email sent', locale),
         description: t('Please check your inbox to reset your password.', locale),
