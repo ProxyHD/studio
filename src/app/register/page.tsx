@@ -71,14 +71,18 @@ export default function RegisterPage() {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
+          plan: 'free', // Set default plan on creation
         },
         tasks: [],
         notes: [],
         events: [],
+        scheduleItems: [],
         transactions: [],
         habits: [],
         completedHabits: [],
         moodLogs: [],
+        feedback: null,
+        locale: 'pt-BR',
       });
 
       toast({

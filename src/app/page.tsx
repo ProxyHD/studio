@@ -97,14 +97,18 @@ export default function LoginPage() {
             firstName: firstName || '',
             lastName: lastName || '',
             email: user.email,
+            plan: 'free', // Set default plan on creation
           },
           tasks: [],
           notes: [],
           events: [],
+          scheduleItems: [],
           transactions: [],
           habits: [],
           completedHabits: [],
           moodLogs: [],
+          feedback: null,
+          locale: 'pt-BR',
         });
       }
       
