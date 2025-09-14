@@ -150,7 +150,7 @@ function TaskColumn({ title, tasks, onToggleTask, onToggleSubtask, onDeleteTask,
                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEditTask(task)}>
                       <Pencil className="h-4 w-4" />
                    </Button>
-                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => deleteTask(task.id)}>
+                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onDeleteTask(task.id)}>
                       <Trash2 className="h-4 w-4" />
                    </Button>
                 </div>
