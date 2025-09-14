@@ -1,10 +1,10 @@
 'use client';
 
-import { createContext, useState, ReactNode, useEffect, useContext } from 'react';
+import { createContext, useState, ReactNode, useEffect, useContext, useCallback } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
-import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit, ScheduleItem } from '@/lib/types';
+import type { Task, Habit, AppContextType, Note, Event, UserProfile, Locale, Transaction, MoodLog, CompletedHabit, ScheduleItem, Feedback } from '@/lib/types';
 import { useDebouncedCallback } from 'use-debounce';
 
 export const AppContext = createContext<AppContextType>({
@@ -26,9 +26,12 @@ export const AppContext = createContext<AppContextType>({
   setHabits: () => {},
   completedHabits: [],
   setCompletedHabits: () => {},
+  feedback: undefined,
+  setFeedback: () => {},
   handleHabitToggle: () => {},
   locale: 'pt-BR',
   setLocale: () => {},
+  formatCurrency: () => '',
   loading: true,
   newItems: { tasks: false, wellbeing: false, notes: false, news: false },
   setNewItemBadge: () => {},
@@ -48,6 +51,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [moodLogs, setMoodLogs] = useState<MoodLog[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [completedHabits, setCompletedHabits] = useState<CompletedHabit[]>([]);
+  const [feedback, setFeedback] = useState<Feedback | null | undefined>(undefined);
   const [locale, setLocale] = useState<Locale>('pt-BR');
   const [newItems, setNewItems] = useState({ tasks: false, wellbeing: false, notes: false, news: false });
   
@@ -79,10 +83,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
         moodLogs,
         habits,
         completedHabits,
+        feedback: feedback === undefined ? null : feedback,
         locale,
       });
     }
-  }, [profile, tasks, notes, events, scheduleItems, transactions, moodLogs, habits, completedHabits, locale, user, loading, debouncedSaveData]);
+  }, [profile, tasks, notes, events, scheduleItems, transactions, moodLogs, habits, completedHabits, feedback, locale, user, loading, debouncedSaveData]);
 
 
   // Effect to load data from Firestore on user login
@@ -106,6 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setMoodLogs(data.moodLogs || []);
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
+          setFeedback(data.feedback || null);
           setLocale(data.locale || 'pt-BR');
         } else {
           // New user, document doesn't exist yet, but we can set up a default profile
@@ -119,6 +125,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setMoodLogs([]);
           setHabits([]);
           setCompletedHabits([]);
+          setFeedback(null);
           setLocale('pt-BR');
            // Save the initial empty state for the new user
           setDoc(docRef, { 
@@ -131,6 +138,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             moodLogs: [],
             habits: [],
             completedHabits: [],
+            feedback: null,
             locale: 'pt-BR',
           });
         }
@@ -154,6 +162,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setMoodLogs([]);
       setHabits([]);
       setCompletedHabits([]);
+      setFeedback(undefined);
       setLocale('pt-BR');
     }
     
@@ -180,6 +189,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setNewItems(prev => ({ ...prev, [key]: false }));
   };
   
+  const formatCurrency = useCallback((amount: number) => {
+    const currency = locale === 'pt-BR' ? 'EUR' : 'USD';
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency,
+    }).format(amount);
+  }, [locale]);
+
   return (
     <AppContext.Provider
       value={{
@@ -201,9 +218,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setHabits,
         completedHabits,
         setCompletedHabits,
+        feedback,
+        setFeedback: setFeedback as Dispatch<SetStateAction<Feedback | null>>,
         handleHabitToggle,
         locale,
         setLocale,
+        formatCurrency,
         loading,
         newItems,
         setNewItemBadge,

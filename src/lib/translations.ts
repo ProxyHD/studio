@@ -32,6 +32,9 @@ const translations: Record<string, Record<Locale, string>> = {
   'Main': { 'pt-BR': 'Principal', 'en-US': 'Main' },
   'Tools': { 'pt-BR': 'Ferramentas', 'en-US': 'Tools' },
   'Events': { 'pt-BR': 'Eventos', 'en-US': 'Events' },
+  'Title is required': { 'pt-BR': 'O título é obrigatório.', 'en-US': 'Title is required.' },
+  'Date is required': { 'pt-BR': 'A data é obrigatória.', 'en-US': 'Date is required.' },
+  'Subtask title is required': { 'pt-BR': 'O título da sub-tarefa é obrigatório.', 'en-US': 'Subtask title is required.' },
 
 
   // Dashboard
@@ -115,6 +118,11 @@ const translations: Record<string, Record<Locale, string>> = {
     'en-US': 'Unlock your potential with LifeHub. Choose the plan that best suits your life and goals.' 
   },
   'Most Popular': { 'pt-BR': 'Mais Popular', 'en-US': 'Most Popular' },
+  'Configuration needed': { 'pt-BR': 'Configuração necessária', 'en-US': 'Configuration needed' },
+  'Stripe Price ID is missing': { 'pt-BR': 'O ID de Preço do Stripe está ausente no arquivo .env.', 'en-US': 'This plan\'s Price ID is missing from the .env file.' },
+  'Stripe configuration error for plan': { 'pt-BR': 'Erro de configuração do Stripe para o plano', 'en-US': 'Configuration error for plan' },
+  'Could not initiate payment process': { 'pt-BR': 'Não foi possível iniciar o processo de pagamento. Por favor, tente novamente.', 'en-US': 'Could not initiate the payment process. Please try again.' },
+
 
   // Settings
   'Language and Region': { 'pt-BR': 'Idioma e Região', 'en-US': 'Language and Region' },
@@ -298,6 +306,16 @@ const translations: Record<string, Record<Locale, string>> = {
   'Latest Updates from LifeHub': { 'pt-BR': 'Últimas Atualizações do LifeHub', 'en-US': 'Latest Updates from LifeHub' },
   'Click on a headline to read the full story.': { 'pt-BR': 'Clique em uma manchete para ler a história completa.', 'en-US': 'Click on a headline to read the full story.' },
   'Select a news item to read.': { 'pt-BR': 'Selecione uma notícia para ler.', 'en-US': 'Select a news item to read.' },
+
+  // Feedback
+  'Share Your Feedback': { 'pt-BR': 'Partilhe o Seu Feedback', 'en-US': 'Share Your Feedback' },
+  'We would love to hear what you think about LifeHub. How is your experience so far?': { 'pt-BR': 'Gostaríamos muito de saber o que pensa sobre o LifeHub. Como está a ser a sua experiência até agora?', 'en-US': 'We would love to hear what you think about LifeHub. How is your experience so far?' },
+  'Tell us more about your experience... (optional)': { 'pt-BR': 'Conte-nos mais sobre a sua experiência... (opcional)', 'en-US': 'Tell us more about your experience... (optional)' },
+  'Maybe Later': { 'pt-BR': 'Talvez Depois', 'en-US': 'Maybe Later' },
+  'Submit Feedback': { 'pt-BR': 'Enviar Feedback', 'en-US': 'Submit Feedback' },
+  'Please select a rating before submitting.': { 'pt-BR': 'Por favor, selecione uma classificação antes de enviar.', 'en-US': 'Please select a rating before submitting.' },
+  'Thank you!': { 'pt-BR': 'Obrigado!', 'en-US': 'Thank you!' },
+  'Your feedback has been submitted successfully.': { 'pt-BR': 'O seu feedback foi enviado com sucesso.', 'en-US': 'Your feedback has been submitted successfully.' },
 
 };
 

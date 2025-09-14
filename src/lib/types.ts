@@ -89,6 +89,12 @@ export type NewsItem = {
   imageHint: string;
 };
 
+export type Feedback = {
+  rating: number;
+  comment?: string;
+  submittedAt: string; // ISO string
+};
+
 export type Locale = 'pt-BR' | 'en-US';
 
 export type NewItemBadges = {
@@ -117,9 +123,12 @@ export interface AppContextType {
   setHabits: Dispatch<SetStateAction<Habit[]>>;
   completedHabits: CompletedHabit[];
   setCompletedHabits: Dispatch<SetStateAction<CompletedHabit[]>>;
+  feedback: Feedback | null | undefined; // undefined means loading, null means no feedback yet
+  setFeedback: Dispatch<SetStateAction<Feedback | null>>;
   handleHabitToggle: (habitId: string) => void;
   locale: Locale;
   setLocale: Dispatch<SetStateAction<Locale>>;
+  formatCurrency: (amount: number) => string;
   loading: boolean;
   newItems: NewItemBadges;
   setNewItemBadge: (key: keyof NewItemBadges) => void;
