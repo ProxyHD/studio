@@ -95,6 +95,12 @@ const translations: Record<string, Record<Locale, string>> = {
   'Enable Email/Password login in the Firebase Console.': { 'pt-BR': 'Ative o login por E-mail/Senha no Console do Firebase.', 'en-US': 'Enable Email/Password login in the Firebase Console.' },
   'Enable Google login in the Firebase Console.': { 'pt-BR': 'Ative o login com Google no Console do Firebase.', 'en-US': 'Enable Google login in the Firebase Console.' },
   'Login popup was blocked by the browser.': { 'pt-BR': 'O pop-up de login foi bloqueado pelo navegador.', 'en-US': 'Login popup was blocked by the browser.' },
+  'Email required': { 'pt-BR': 'E-mail obrigatório', 'en-US': 'Email required' },
+  'Please enter your email address to reset your password.': { 'pt-BR': 'Por favor, insira o seu endereço de e-mail para redefinir a sua senha.', 'en-US': 'Please enter your email address to reset your password.' },
+  'Password reset email sent': { 'pt-BR': 'E-mail de redefinição de senha enviado', 'en-US': 'Password reset email sent' },
+  'Please check your inbox to reset your password.': { 'pt-BR': 'Por favor, verifique a sua caixa de entrada para redefinir a sua senha.', 'en-US': 'Please check your inbox to reset your password.' },
+  'Could not send reset email. Please try again.': { 'pt-BR': 'Não foi possível enviar o e-mail de redefinição. Por favor, tente novamente.', 'en-US': 'Could not send reset email. Please try again.' },
+  'No account found with this email address.': { 'pt-BR': 'Nenhuma conta encontrada com este endereço de e-mail.', 'en-US': 'No account found with this email address.' },
   
   'Register': { 'pt-BR': 'Cadastro', 'en-US': 'Register' },
   'Create your LifeHub account to start organizing your life': { 'pt-BR': 'Crie sua conta LifeHub para começar a organizar sua vida', 'en-US': 'Create your LifeHub account to start organizing your life' },
@@ -120,9 +126,18 @@ const translations: Record<string, Record<Locale, string>> = {
   },
   'Most Popular': { 'pt-BR': 'Mais Popular', 'en-US': 'Most Popular' },
   'Configuration needed': { 'pt-BR': 'Configuração necessária', 'en-US': 'Configuration needed' },
-  'Stripe Price ID is missing': { 'pt-BR': 'O ID de Preço do Stripe está ausente no arquivo .env.', 'en-US': 'This plan\'s Price ID is missing from the .env file.' },
-  'Stripe configuration error for plan': { 'pt-BR': 'Erro de configuração do Stripe para o plano', 'en-US': 'Configuration error for plan' },
-  'Could not initiate payment process': { 'pt-BR': 'Não foi possível iniciar o processo de pagamento. Por favor, tente novamente.', 'en-US': 'Could not initiate the payment process. Please try again.' },
+  'This plan\'s Price ID is missing or incorrect in the .env file. It should start with "price_".': {
+    'pt-BR': 'O ID de Preço deste plano está ausente ou incorreto no ficheiro .env. Deve começar com "price_".',
+    'en-US': 'This plan\'s Price ID is missing or incorrect in the .env file. It should start with "price_".'
+  },
+  'Configuration error for plan "{planId}". Please check the Price ID in the .env file.': {
+    'pt-BR': 'Erro de configuração para o plano "{planId}". Por favor, verifique o ID de Preço no ficheiro .env.',
+    'en-US': 'Configuration error for plan "{planId}". Please check the Price ID in the .env file.'
+  },
+  'Could not initiate the payment process. Please try again.': {
+    'pt-BR': 'Não foi possível iniciar o processo de pagamento. Por favor, tente novamente.',
+    'en-US': 'Could not initiate the payment process. Please try again.'
+  },
 
 
   // Settings

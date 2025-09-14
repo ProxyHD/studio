@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useContext, useEffect } from 'react';
@@ -11,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, getAdditionalUserInfo } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, getAdditionalUserInfo, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
@@ -122,6 +123,36 @@ export default function LoginPage() {
     }
   };
   
+  const handlePasswordReset = async () => {
+    const email = form.getValues('email');
+    if (!email) {
+      form.trigger('email');
+      toast({
+        title: t('Email required', locale),
+        description: t('Please enter your email address to reset your password.', locale),
+        variant: 'destructive',
+      });
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast({
+        title: t('Password reset email sent', locale),
+        description: t('Please check your inbox to reset your password.', locale),
+      });
+    } catch (error: any) {
+      let description = t('Could not send reset email. Please try again.', locale);
+      if (error.code === 'auth/user-not-found') {
+        description = t('No account found with this email address.', locale);
+      }
+      toast({
+        title: t('Error', locale),
+        description,
+        variant: 'destructive',
+      });
+    }
+  };
+
   // Do not render the login form if the user is already logged in and redirection is imminent
   if (loading || user) {
     return null; // Or a loading spinner
@@ -166,12 +197,13 @@ export default function LoginPage() {
                   <FormItem>
                     <div className="flex items-center">
                       <FormLabel>{t('Password', locale)}</FormLabel>
-                      <Link
-                        href="#"
+                      <button
+                        type="button"
+                        onClick={handlePasswordReset}
                         className="ml-auto inline-block text-sm underline"
                       >
                         {t('Forgot your password?', locale)}
-                      </Link>
+                      </button>
                     </div>
                     <FormControl>
                       <Input type="password" {...field} />
