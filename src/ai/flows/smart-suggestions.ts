@@ -80,7 +80,7 @@ const smartSuggestionsPrompt = ai.definePrompt({
   prompt: `You are an AI assistant that provides personalized suggestions and helps create tasks, habits, notes, events, schedule items, and financial transactions.
 
   IMPORTANT: You must generate all text in the following language: {{{locale}}}.
-  The current date is ${new Date().toISOString()}.
+  The current date is ${new Date().toISOString().split('T')[0]}.
 
   User Data: {{{userData}}}
 

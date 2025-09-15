@@ -44,6 +44,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const dataLoadedRef = useRef(false);
+  const isSavingRef = useRef(false);
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -61,30 +62,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   
   const debouncedSaveData = useDebouncedCallback(
-    async (userId: string, data: any) => {
+    useCallback(async (userId: string, data: any) => {
+      isSavingRef.current = true;
       setSaveStatus('saving');
       try {
         const docRef = doc(db, 'users', userId);
-        // Ensure feedback is not undefined before saving
         const dataToSave = {
             ...data,
             feedback: data.feedback === undefined ? null : data.feedback,
         };
         await setDoc(docRef, dataToSave, { merge: true });
         setSaveStatus('saved');
-        setTimeout(() => setSaveStatus('idle'), 2000);
+        setTimeout(() => {
+          if (saveStatus !== 'saving') setSaveStatus('idle');
+        }, 2000);
       } catch (error) {
         console.error("Error saving user data:", error);
         setSaveStatus('idle'); // Reset on error
+      } finally {
+        isSavingRef.current = false;
       }
-    },
+    }, [saveStatus]), // Dependency on saveStatus to ensure timeout clears correctly
     1500
   );
 
   // Effect to save all data to Firestore when it changes
   useEffect(() => {
-    // Only save data if it has been loaded from Firestore first
-    if (!dataLoadedRef.current || !user) {
+    if (!dataLoadedRef.current || !user || isSavingRef.current) {
       return;
     }
     
@@ -135,8 +139,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setLocale(data.locale || 'pt-BR');
         } else {
           // Document doesn't exist, likely a new user registration in progress.
-          // The registration process will create the document.
-          // We can set defaults here to ensure the app is usable while that happens.
           const initialProfile: UserProfile = {
             firstName: user.displayName?.split(' ')[0] || '',
             lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
@@ -156,7 +158,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setLocale('pt-BR');
         }
         setLoading(false);
-        // Mark that initial data has been loaded
         setTimeout(() => { dataLoadedRef.current = true; }, 100);
       }, (error) => {
         console.error("Error fetching user data:", error);
