@@ -1,7 +1,7 @@
 
 'use client';
 
-import { createContext, useState, ReactNode, useEffect, useContext, useCallback, Dispatch, SetStateAction } from 'react';
+import { createContext, useState, ReactNode, useEffect, useContext, useCallback, Dispatch, SetStateAction, useRef } from 'react';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { useAuth } from './auth-provider';
 import { db } from '@/lib/firebase';
@@ -43,6 +43,7 @@ export const AppContext = createContext<AppContextType>({
 export function AppProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const dataLoadedRef = useRef(false);
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -77,24 +78,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Effect to save all data to Firestore when it changes
   useEffect(() => {
-    // We don't save if the app is still loading or if there's no user.
-    // The profile check ensures we don't save empty data on initial load before Firestore data arrives.
-    if (user && !loading && profile) {
-      debouncedSaveData(user.uid, {
-        profile,
-        tasks,
-        notes,
-        events,
-        scheduleItems,
-        transactions,
-        moodLogs,
-        habits,
-        completedHabits,
-        feedback: feedback === undefined ? null : feedback,
-        locale,
-      });
+    // We only save if the initial data has been loaded and a user is present.
+    if (!dataLoadedRef.current || !user) {
+      return;
     }
-  }, [profile, tasks, notes, events, scheduleItems, transactions, moodLogs, habits, completedHabits, feedback, locale, user, loading, debouncedSaveData]);
+    
+    debouncedSaveData(user.uid, {
+      profile,
+      tasks,
+      notes,
+      events,
+      scheduleItems,
+      transactions,
+      moodLogs,
+      habits,
+      completedHabits,
+      feedback: feedback === undefined ? null : feedback,
+      locale,
+    });
+  }, [profile, tasks, notes, events, scheduleItems, transactions, moodLogs, habits, completedHabits, feedback, locale, user, debouncedSaveData]);
 
 
   // Effect to load data from Firestore on user login
@@ -103,12 +105,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     if (user) {
       setLoading(true);
+      dataLoadedRef.current = false;
       const docRef = doc(db, 'users', user.uid);
       
       unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data();
-          // Ensure profile is at least an empty object if it doesn't exist, to stop loading state
           const userProfile: UserProfile = {
              firstName: data.profile?.firstName || '',
              lastName: data.profile?.lastName || '',
@@ -124,7 +126,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setMoodLogs(data.moodLogs || []);
           setHabits(data.habits || []);
           setCompletedHabits(data.completedHabits || []);
-          setFeedback(data.feedback === undefined ? null : data.feedback); // Handle undefined case
+          setFeedback(data.feedback === undefined ? null : data.feedback);
           setLocale(data.locale || 'pt-BR');
         } else {
           // New user, document doesn't exist yet, but we can set up a default profile
@@ -161,16 +163,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
           });
         }
         setLoading(false);
+        dataLoadedRef.current = true;
       }, (error) => {
         console.error("Error fetching user data:", error);
         setLoading(false);
+        dataLoadedRef.current = true;
       });
 
     } else {
       // No user, clear all data and don't show loading screen
-      if (window.location.pathname === '/' || window.location.pathname === '/register' || window.location.pathname === '/reset-password') {
-        setLoading(false);
-      }
+      setLoading(false);
+      dataLoadedRef.current = false;
       setProfile(null);
       setTasks([]);
       setNotes([]);
