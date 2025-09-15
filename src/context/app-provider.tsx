@@ -62,13 +62,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {
       try {
-        if (data.profile) {
-          setSaveStatus('saving');
-          const docRef = doc(db, 'users', userId);
-          await setDoc(docRef, data, { merge: true });
-          setSaveStatus('saved');
-          setTimeout(() => setSaveStatus('idle'), 2000); // Reset after 2 seconds
-        }
+        setSaveStatus('saving');
+        const docRef = doc(db, 'users', userId);
+        await setDoc(docRef, data, { merge: true });
+        setSaveStatus('saved');
+        setTimeout(() => setSaveStatus('idle'), 2000); // Reset after 2 seconds
       } catch (error) {
         console.error("Error saving user data:", error);
         setSaveStatus('idle'); // Reset on error
@@ -79,7 +77,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Effect to save all data to Firestore when it changes
   useEffect(() => {
-    if (user && !loading) {
+    // We don't save if the app is still loading or if there's no user.
+    // The profile check ensures we don't save empty data on initial load before Firestore data arrives.
+    if (user && !loading && profile) {
       debouncedSaveData(user.uid, {
         profile,
         tasks,
