@@ -44,7 +44,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const dataLoadedRef = useRef(false);
-  const isSavingRef = useRef(false);
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -63,16 +62,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
   
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {
+      setSaveStatus('saving');
       try {
         const docRef = doc(db, 'users', userId);
-        await setDoc(docRef, data, { merge: true });
+        // Ensure feedback is not undefined before saving
+        const dataToSave = {
+            ...data,
+            feedback: data.feedback === undefined ? null : data.feedback,
+        };
+        await setDoc(docRef, dataToSave, { merge: true });
         setSaveStatus('saved');
         setTimeout(() => setSaveStatus('idle'), 2000);
       } catch (error) {
         console.error("Error saving user data:", error);
-        setSaveStatus('idle');
-      } finally {
-        isSavingRef.current = false;
+        setSaveStatus('idle'); // Reset on error
       }
     },
     1500
@@ -80,13 +83,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Effect to save all data to Firestore when it changes
   useEffect(() => {
-    if (!dataLoadedRef.current || !user || isSavingRef.current) {
+    // Only save data if it has been loaded from Firestore first
+    if (!dataLoadedRef.current || !user) {
       return;
     }
     
-    isSavingRef.current = true;
-    setSaveStatus('saving');
-
     debouncedSaveData(user.uid, {
       profile,
       tasks,
@@ -97,7 +98,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       moodLogs,
       habits,
       completedHabits,
-      feedback: feedback === undefined ? null : feedback,
+      feedback,
       locale,
     });
   }, [profile, tasks, notes, events, scheduleItems, transactions, moodLogs, habits, completedHabits, feedback, locale, user, debouncedSaveData]);
@@ -155,7 +156,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setLocale('pt-BR');
         }
         setLoading(false);
-        dataLoadedRef.current = true;
+        // Mark that initial data has been loaded
+        setTimeout(() => { dataLoadedRef.current = true; }, 100);
       }, (error) => {
         console.error("Error fetching user data:", error);
         setLoading(false);
