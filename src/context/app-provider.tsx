@@ -44,6 +44,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const dataLoadedRef = useRef(false);
+  const isSavingRef = useRef(false);
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -63,26 +64,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const debouncedSaveData = useDebouncedCallback(
     async (userId: string, data: any) => {
       try {
-        setSaveStatus('saving');
         const docRef = doc(db, 'users', userId);
         await setDoc(docRef, data, { merge: true });
         setSaveStatus('saved');
-        setTimeout(() => setSaveStatus('idle'), 2000); // Reset after 2 seconds
+        setTimeout(() => setSaveStatus('idle'), 2000);
       } catch (error) {
         console.error("Error saving user data:", error);
-        setSaveStatus('idle'); // Reset on error
+        setSaveStatus('idle');
+      } finally {
+        isSavingRef.current = false;
       }
     },
-    1500 // 1.5 second debounce delay
+    1500
   );
 
   // Effect to save all data to Firestore when it changes
   useEffect(() => {
-    // We only save if the initial data has been loaded and a user is present.
-    if (!dataLoadedRef.current || !user) {
+    if (!dataLoadedRef.current || !user || isSavingRef.current) {
       return;
     }
     
+    isSavingRef.current = true;
+    setSaveStatus('saving');
+
     debouncedSaveData(user.uid, {
       profile,
       tasks,
@@ -129,7 +133,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setFeedback(data.feedback === undefined ? null : data.feedback);
           setLocale(data.locale || 'pt-BR');
         } else {
-          // New user, document doesn't exist yet, but we can set up a default profile
+          // Document doesn't exist, likely a new user registration in progress.
+          // The registration process will create the document.
+          // We can set defaults here to ensure the app is usable while that happens.
           const initialProfile: UserProfile = {
             firstName: user.displayName?.split(' ')[0] || '',
             lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
@@ -147,20 +153,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
           setCompletedHabits([]);
           setFeedback(null);
           setLocale('pt-BR');
-           // Save the initial empty state for the new user
-          setDoc(docRef, { 
-            profile: initialProfile,
-            tasks: [],
-            notes: [],
-            events: [],
-            scheduleItems: [],
-            transactions: [],
-            moodLogs: [],
-            habits: [],
-            completedHabits: [],
-            feedback: null,
-            locale: 'pt-BR',
-          });
         }
         setLoading(false);
         dataLoadedRef.current = true;
