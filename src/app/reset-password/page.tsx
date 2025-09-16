@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect, useContext, Suspense } from 'react';
@@ -16,6 +15,17 @@ import { auth } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
+
+const resetSchema = z.object({
+  newPassword: z.string().min(6, 'Password must be at least 6 characters.'),
+  confirmPassword: z.string(),
+}).refine(data => data.newPassword === data.confirmPassword, {
+  message: 'Passwords do not match.',
+  path: ['confirmPassword'],
+});
+
+type ResetFormValues = z.infer<typeof resetSchema>;
+
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -45,22 +55,6 @@ function ResetPasswordForm() {
     };
     verifyCode();
   }, [oobCode, locale]);
-
-  const getResetSchema = (locale: 'pt-BR' | 'en-US') => z.object({
-    newPassword: z.string().min(6, t('Password must be at least 6 characters.', locale)),
-    confirmPassword: z.string(),
-  }).refine(data => data.newPassword === data.confirmPassword, {
-    message: t('Passwords do not match.', locale),
-    path: ['confirmPassword'],
-  });
-
-  const [resetSchema, setResetSchema] = useState(getResetSchema(locale));
-
-  useEffect(() => {
-    setResetSchema(getResetSchema(locale));
-  }, [locale]);
-
-  type ResetFormValues = z.infer<typeof resetSchema>;
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),

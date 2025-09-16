@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { ScheduleItem, DayOfWeek } from '@/lib/types';
+import type { ScheduleItem } from '@/lib/types';
 import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
@@ -40,7 +40,7 @@ const scheduleItemSchema = z.object({
   }),
   startTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format.'),
   endTime: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Invalid time format.'),
-  location: z.string().min(1, 'Location/Room is required.'),
+  location: z.string().optional(),
 }).refine(data => data.startTime < data.endTime, {
     message: "End time must be after start time.",
     path: ["endTime"],

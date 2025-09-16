@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
@@ -20,6 +19,15 @@ import { useAppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 import { useAuth } from '@/context/auth-provider';
 
+const registerSchema = z.object({
+  firstName: z.string().min(3, 'First name must be at least 3 characters.'),
+  lastName: z.string().min(3, 'Last name must be at least 3 characters.'),
+  email: z.string().email('Please enter a valid email.').min(1, 'Email is required.'),
+  password: z.string().min(6, 'Password must be at least 6 characters.'),
+});
+
+type RegisterFormValues = z.infer<typeof registerSchema>;
+
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -31,21 +39,6 @@ export default function RegisterPage() {
       router.push('/dashboard');
     }
   }, [user, loading, router]);
-  
-  const getRegisterSchema = (locale: 'pt-BR' | 'en-US') => z.object({
-    firstName: z.string().min(3, t('First name must be at least 3 characters.', locale)),
-    lastName: z.string().min(3, t('Last name must be at least 3 characters.', locale)),
-    email: z.string().email(t('Please enter a valid email.', locale)).min(1, t('Email is required.', locale)),
-    password: z.string().min(6, t('Password must be at least 6 characters.', locale)),
-  });
-
-  const [registerSchema, setRegisterSchema] = useState(getRegisterSchema(locale));
-
-  useEffect(() => {
-    setRegisterSchema(getRegisterSchema(locale));
-  }, [locale]);
-  
-  type RegisterFormValues = z.infer<typeof registerSchema>;
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -56,11 +49,6 @@ export default function RegisterPage() {
       password: '',
     },
   });
-  
-  useEffect(() => {
-    form.trigger();
-  }, [locale, form]);
-
 
   async function onSubmit(data: RegisterFormValues) {
     try {

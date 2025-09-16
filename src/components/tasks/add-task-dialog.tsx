@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useContext, useEffect } from 'react';
@@ -46,12 +45,12 @@ import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
 const taskSchema = z.object({
-  title: z.string().min(1, 'O título é obrigatório.'),
+  title: z.string().min(1, 'Title is required.'),
   priority: z.enum(['low', 'medium', 'high']),
   dueDate: z.date().optional(),
   project: z.string().optional(),
   subtasks: z.array(z.object({
-    title: z.string().min(1, 'O título da sub-tarefa é obrigatório.'),
+    title: z.string().min(1, 'Subtask title is required.'),
   })).optional(),
 });
 

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useContext } from 'react';
@@ -40,16 +39,16 @@ import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
 const eventSchema = z.object({
-  title: z.string().min(1, 'O título é obrigatório.'),
+  title: z.string().min(1, 'Title is required.'),
   date: z.date({
-    required_error: 'A data é obrigatória.',
+    required_error: 'A date is required.',
   }),
   startTime: z.string().optional(),
   endTime: z.string().optional(),
   description: z.string().optional(),
   location: z.string().optional(),
   guests: z.array(z.object({
-    email: z.string().email('Por favor, insira um e-mail válido.'),
+    email: z.string().email('Please enter a valid email.'),
   })).optional(),
 });
 

@@ -45,11 +45,11 @@ import { AppContext } from '@/context/app-provider';
 import { t } from '@/lib/translations';
 
 const transactionSchema = z.object({
-  type: z.enum(['income', 'expense'], { required_error: 'O tipo é obrigatório.' }),
-  description: z.string().min(1, 'A descrição é obrigatória.'),
-  amount: z.coerce.number().positive('O valor deve ser positivo.'),
-  category: z.string().min(1, 'A categoria é obrigatória.'),
-  date: z.date({ required_error: 'A data é obrigatória.' }),
+  type: z.enum(['income', 'expense'], { required_error: 'Type is required.' }),
+  description: z.string().min(1, 'Description is required.'),
+  amount: z.coerce.number().positive('Amount must be positive.'),
+  category: z.string().min(1, 'Category is required.'),
+  date: z.date({ required_error: 'Date is required.' }),
 });
 
 type TransactionFormValues = z.infer<typeof transactionSchema>;

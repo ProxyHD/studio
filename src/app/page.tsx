@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useContext, useEffect } from 'react';
@@ -21,6 +20,13 @@ import { t } from '@/lib/translations';
 import { useAuth } from '@/context/auth-provider';
 import { ResetPasswordDialog } from '@/components/auth/reset-password-dialog';
 
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email.').min(1, 'Email is required.'),
+  password: z.string().min(1, 'Password is required.'),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
+
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -33,20 +39,7 @@ export default function LoginPage() {
       router.push('/dashboard');
     }
   }, [user, loading, router]);
-
-  const getLoginSchema = (locale: 'pt-BR' | 'en-US') => z.object({
-    email: z.string().email(t('Please enter a valid email.', locale)).min(1, t('Email is required.', locale)),
-    password: z.string().min(1, t('Password is required.', locale)),
-  });
-
-  const [loginSchema, setLoginSchema] = useState(getLoginSchema(locale));
-
-  useEffect(() => {
-    setLoginSchema(getLoginSchema(locale));
-  }, [locale]);
-
-  type LoginFormValues = z.infer<typeof loginSchema>;
-
+  
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -54,11 +47,6 @@ export default function LoginPage() {
       password: '',
     },
   });
-  
-  useEffect(() => {
-    form.trigger();
-  }, [locale, form]);
-
 
   async function onSubmit(data: LoginFormValues) {
     try {

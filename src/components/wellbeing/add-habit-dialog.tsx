@@ -31,7 +31,7 @@ import { t } from '@/lib/translations';
 
 const habitSchema = z.object({
   name: z.string().min(1, 'Habit name is required.'),
-  days: z.array(z.string()).min(1, 'Select at least one day of the week.'),
+  days: z.array(z.string()).min(1, 'Select at least one day.'),
 });
 
 type HabitFormValues = z.infer<typeof habitSchema>;
@@ -100,7 +100,7 @@ export function AddHabitDialog({ isOpen, onOpenChange, onSaveHabit, habit }: Add
                   <FormControl>
                     <Input placeholder={t('e.g., Read for 30 minutes', locale)} {...field} />
                   </FormControl>
-                  <FormMessage>{t('Habit name is required.', locale)}</FormMessage>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -131,7 +131,7 @@ export function AddHabitDialog({ isOpen, onOpenChange, onSaveHabit, habit }: Add
                         ))}
                     </ToggleGroup>
                   </FormControl>
-                   <FormMessage>{t('Select at least one day of the week.', locale)}</FormMessage>
+                   <FormMessage />
                 </FormItem>
               )}
             />

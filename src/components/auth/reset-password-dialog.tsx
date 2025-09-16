@@ -34,21 +34,15 @@ interface ResetPasswordDialogProps {
   initialEmail?: string;
 }
 
+const resetSchema = z.object({
+  email: z.string().email('Please enter a valid email.').min(1, 'Email is required.'),
+});
+
+type ResetFormValues = z.infer<typeof resetSchema>;
+
 export function ResetPasswordDialog({ isOpen, onOpenChange, initialEmail }: ResetPasswordDialogProps) {
   const { locale } = useContext(AppContext);
   const { toast } = useToast();
-
-  const getResetSchema = (locale: 'pt-BR' | 'en-US') => z.object({
-    email: z.string().email(t('Please enter a valid email.', locale)).min(1, t('Email is required.', locale)),
-  });
-
-  const [resetSchema, setResetSchema] = useState(getResetSchema(locale));
-  
-  useEffect(() => {
-    setResetSchema(getResetSchema(locale));
-  }, [locale]);
-  
-  type ResetFormValues = z.infer<typeof resetSchema>;
 
   const form = useForm<ResetFormValues>({
     resolver: zodResolver(resetSchema),
@@ -62,10 +56,6 @@ export function ResetPasswordDialog({ isOpen, onOpenChange, initialEmail }: Rese
       form.setValue('email', initialEmail);
     }
   }, [initialEmail, form]);
-
-  useEffect(() => {
-    form.trigger('email');
-  }, [locale, form]);
 
   const onSubmit = async (data: ResetFormValues) => {
     try {
